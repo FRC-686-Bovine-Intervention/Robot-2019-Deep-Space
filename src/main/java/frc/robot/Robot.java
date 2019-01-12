@@ -30,7 +30,8 @@ import frc.robot.loops.LoopController;
 import frc.robot.loops.RobotStateLoop;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Superstructure;
-import frc.robot.BabyShark;
+import frc.robot.HatchDeploy;
+import frc.robot.CargoBallIntake;
 
 public class Robot extends IterativeRobot {
 
@@ -50,8 +51,8 @@ public class Robot extends IterativeRobot {
 	DataLogController robotLogger;
 
 	UsbCamera usbCamera;
-	BabyShark babyShark;
-
+	HatchDeploy hatchDeploy;
+	CargoBallIntake cargoBallIntake;
 	
 	enum OperationalMode 
     {
@@ -79,7 +80,8 @@ public class Robot extends IterativeRobot {
     		usbCamera = CameraServer.getInstance().startAutomaticCapture("Intake Camera", 0);
     		usbCamera.setResolution(320, 240);
 			usbCamera.setFPS(15);
-			babyShark = BabyShark.getInstance();
+			hatchDeploy = HatchDeploy.getInstance();
+			cargoBallIntake = CargoBallIntake.getInstance();
     		// view camera at http://10.6.86.2:1181?action=stream
     		// use Ctrl-+ to increase size to full screen
     		
@@ -276,7 +278,8 @@ public class Robot extends IterativeRobot {
 	{
 		try
 		{
-			babyShark.run();
+			hatchDeploy.run();
+			cargoBallIntake.run();
 			DriveCommand driveCmd = controls.getDriveCommand();
 			drive.setOpenLoop(driveCmd);
 		}
