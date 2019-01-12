@@ -28,7 +28,9 @@ public class SmartDashboardInteractions
     {
         LEFT_START("Left", FieldDimensions.getLeftStartPose()),
         CENTER_START("Center", FieldDimensions.getCenterStartPose()),
-        RIGHT_START("Right", FieldDimensions.getRightStartPose());
+        RIGHT_START("Right", FieldDimensions.getRightStartPose()),
+        RIGHT_PLATFORM_START("Right Platform", FieldDimensions.getRightStartPose()),
+        LEFT_PLATFORM_START("Left Platform", FieldDimensions.getLeftStartPose());
 
         public final String name;
         public final Pose initialPose;
@@ -100,6 +102,8 @@ public class SmartDashboardInteractions
         startChooser.addDefault(StartPositionOption.LEFT_START.toString(),    StartPositionOption.LEFT_START);
         startChooser.addObject(StartPositionOption.CENTER_START.toString(),    StartPositionOption.CENTER_START);
         startChooser.addObject(StartPositionOption.RIGHT_START.toString(),    StartPositionOption.RIGHT_START);
+        startChooser.addObject(StartPositionOption.RIGHT_PLATFORM_START.toString(),    StartPositionOption.RIGHT_PLATFORM_START);
+        startChooser.addDefault(StartPositionOption.LEFT_PLATFORM_START.toString(),    StartPositionOption.LEFT_PLATFORM_START);
         SmartDashboard.putData("Start Position", startChooser);
         
         startDelayChooser = new SendableChooser<StartDelayOption>();
