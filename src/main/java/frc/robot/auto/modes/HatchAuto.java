@@ -2,7 +2,7 @@ package frc.robot.auto.modes;
 
 import frc.robot.auto.AutoModeBase;
 import frc.robot.auto.AutoModeEndedException;
-import frc.robot.auto.actions.DriveStraightAction;
+import frc.robot.auto.actions.*;
 import frc.robot.HatchDeploy;
 
 /**
@@ -17,6 +17,13 @@ public class HatchAuto extends AutoModeBase {
     @Override
     protected void routine() throws AutoModeEndedException 
     {
-    	 runAction(new DriveStraightAction(0, 0));       		         
+         runAction(new DriveStraightAction(0, 0)); 
+         runAction(new DeployHatchAction());
+         runAction(new PathFollowerAction(turnStationPath));    
+         runAction(new PathFollowerAction(driveToHatchPath)); 
+         runAction(new PathFollowerAction(backupPath));
+         runAction(new PathFollowerAction(turnAroundPath)); 
+         runAction(new PathFollowerAction(driveToShipPath));
+         runAction(new lineupAction());		         
     }
 }

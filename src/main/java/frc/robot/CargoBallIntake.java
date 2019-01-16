@@ -31,7 +31,7 @@ public void run()
         cargoBallMotor.set(cargoBallSpeed);
         liftMechanism.setPosition(groundHeight);
     }
-    else
+    else // if(proximitySensor)
     {
         cargoBallMotor.set(cargoBallStop);
         liftMechanism.setPosition(rocketHeight);
