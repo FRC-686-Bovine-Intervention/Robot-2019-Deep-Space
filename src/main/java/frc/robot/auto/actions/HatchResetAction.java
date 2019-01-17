@@ -34,7 +34,7 @@ public class HatchResetAction implements Action {
 	{
 System.out.println("Starting HatchResetAction");		
 		boolean extended = true;
-        hatchDeploy.deploy(); 
+        hatchDeploy.done(); 
         finished = true;
 	}
 
