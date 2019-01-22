@@ -95,7 +95,9 @@ public class Constants extends ConstantsBase
 
 	public static int kIntakeButton 			= kXboxButtonRB;
 	public static int kOuttakeButton 			= kXboxButtonLB;
-	public static int kQuickTurnButton 			= kXboxButtonX;
+    public static int kGroundPickupButton 		= kXboxButtonY;
+    public static int kBumperButton = kXboxButtonX;
+    public static int kHatchShootButton = kXboxButtonA;
 
 	
     // Gyro

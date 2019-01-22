@@ -1,10 +1,12 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Talon;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.lib.joystick.ArcadeDriveJoystick;
 import frc.robot.lib.joystick.JoystickControlsBase;
-import frc.robot.Constants;
 
 public class HatchDeploy {
     public static HatchDeploy mInstance = new HatchDeploy();
@@ -13,69 +15,61 @@ public class HatchDeploy {
         return mInstance;
     }
 
-    public Talon dropMotor;
-    public DoubleSolenoid topHatchSolenoid;
-    public DoubleSolenoid bttmHatchSolenoid;
-    private static DigitalInput limitSwitch;
+    public TalonSRX dropMotor;
+    public Solenoid HatchSolenoid;
+    public DigitalInput limitSwitch;
     public final int dropPort = 4;
-    public final int tFwdPort = 1;
-    public final int tRvsPort = 2;
-    public final int bFwdPort = 3;
-    public final int bRvsPort = 4;
-    public static double startingHeight = 1;
-    public static double pickUpHeight = 0.75;
-    public static double groundHeight = 0;
-    //boolean limitSwitchTriggered = true; 
+    public final int hatchPort = 0;
+    public final double zeroingSpeed = -0.1;
+    public final double startingAngle = 1;
+    public final double pickUpAngle = 0.75;
+    public final double groundAngle = 0;
 
-    INIT (startingHeight),
-	TO_BUMPER (pickUpHeight),
-    GROUND (groundHeight);
-    // HatchDeployStateEnum(double startingHeight, double pickUpHeight, double groundHeight)  {
-    //     this.startingHeight = startingHeight;
-    //     this.pickUpHeight = pickUpHeight;
-    //     this.groundHeight = groundHeight;
-    // }
-    // public HatchDeployStateEnum state = HatchDeployStateEnum.INIT;
-    limitSwitch = new DigitalInput();
-
-    public HatchDeploy() {
-        topHatchSolenoid = new DoubleSolenoid(0, tFwdPort, tRvsPort);
-        bttmHatchSolenoid = new DoubleSolenoid(0, bFwdPort, bRvsPort);
-        dropMotor = new Talon(dropPort);
+    public enum HatchDeployStateEnum {
+        INIT, TO_BUMPER, GROUND;
     }
 
-    //    public void INIT ()
-    //    {
-    //     if (limitSwitchTriggered) 		{ set(HatchDeployStateEnum.TO_BUMPER); }
-    //     if (Constants.kXboxButtonY) 		{ set(HatchDeployStateEnum.GROUND); }
-    //    }
-       
-    //    case INIT
-    //    talon.set(ControlMode.MotionMagic, inchesToEncoderUnits(target));
-   
-}
+    public HatchDeployStateEnum state = HatchDeployStateEnum.INIT;
 
-/*
-JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
-if (controls.getButton(Constants.kXboxButtonX)) {
-    drop();
-} else if (controls.getButton(Constants.kXboxButtonY)) {
-    deploy();
-} else {
-    done();
-}
-public void drop() {
-    dropMotor.set(floorLevel);
-}
+    public HatchDeploy() {
+        HatchSolenoid = new Solenoid(0, hatchPort);
+        dropMotor = new TalonSRX(dropPort);
+        limitSwitch = new DigitalInput(5);
+        state = HatchDeployStateEnum.INIT;
+    }
 
-public void deploy() {
-    topHatchSolenoid.set(DoubleSolenoid.Value.kForward);
-    bttmHatchSolenoid.set(DoubleSolenoid.Value.kForward);
-}
+    public void run() {
+        JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
+        switch (state) {
+        case INIT:
+            dropMotor.set(ControlMode.PercentOutput, zeroingSpeed);
+            if (limitSwitch.get()) {
+                state = HatchDeployStateEnum.TO_BUMPER;
+            }
+            break;
 
-public void done() {
-    topHatchSolenoid.set(DoubleSolenoid.Value.kReverse);
-    bttmHatchSolenoid.set(DoubleSolenoid.Value.kReverse);
-    dropMotor.set(highLevel);
+        case TO_BUMPER:
+            dropMotor.set(ControlMode.MotionMagic, inchesToEncoderUnits(pickUpAngle));
+            if (controls.getButton(Constants.kGroundPickupButton)) {
+                state = HatchDeployStateEnum.GROUND;
+            }
+            break;
+        case GROUND:
+            dropMotor.set(ControlMode.MotionMagic, inchesToEncoderUnits(groundAngle));
+            if (controls.getButton(Constants.kBumperButton)) {
+                state = HatchDeployStateEnum.TO_BUMPER;
+            }
+            break;
+        }
+
+        boolean ejectButton = controls.getButton(Constants.kHatchShootButton);
+        HatchSolenoid.set(ejectButton);
+
+    }
+
+    public double inchesToEncoderUnits(double angle) {
+        // to do: write this function
+        return 0.0;
+    }
+
 }
-*/
