@@ -24,9 +24,10 @@ public class HatchDeploy {
     public final double startingAngle = 1;
     public final double pickUpAngle = 0.75;
     public final double groundAngle = 0;
+    public final double defenseAngle = 0.9;
 
     public enum HatchDeployStateEnum {
-        INIT, TO_BUMPER, GROUND;
+        INIT, DEFENSE, TO_BUMPER, GROUND;
     }
 
     public HatchDeployStateEnum state = HatchDeployStateEnum.INIT;
@@ -47,7 +48,13 @@ public class HatchDeploy {
                 state = HatchDeployStateEnum.TO_BUMPER;
             }
             break;
-
+        case DEFENSE:
+            dropMotor.set(ControlMode.MotionMagic, inchesToEncoderUnits(defenseAngle));
+            if (controls.getButton(Constants.kBumperButton))
+            {
+                state = HatchDeployStateEnum.TO_BUMPER;
+            }
+            break;
         case TO_BUMPER:
             dropMotor.set(ControlMode.MotionMagic, inchesToEncoderUnits(pickUpAngle));
             if (controls.getButton(Constants.kGroundPickupButton)) {
@@ -57,7 +64,7 @@ public class HatchDeploy {
         case GROUND:
             dropMotor.set(ControlMode.MotionMagic, inchesToEncoderUnits(groundAngle));
             if (controls.getButton(Constants.kBumperButton)) {
-                state = HatchDeployStateEnum.TO_BUMPER;
+                state = HatchDeployStateEnum.DEFENSE;
             }
             break;
         }
