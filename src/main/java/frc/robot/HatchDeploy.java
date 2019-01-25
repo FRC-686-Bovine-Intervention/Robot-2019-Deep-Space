@@ -25,6 +25,8 @@ public class HatchDeploy {
     public final double pickUpAngle = 0.75;
     public final double groundAngle = 0;
     public final double defenseAngle = 0.9;
+    boolean on;
+    boolean off;
 
     public enum HatchDeployStateEnum {
         INIT, DEFENSE, TO_BUMPER, GROUND;
@@ -79,5 +81,14 @@ public class HatchDeploy {
         // to do: write this function
         return 0.0;
     }
+public void drop() {
+    dropMotor.set(ControlMode.MotionMagic, inchesToEncoderUnits(groundAngle));
+}
+public void deploy(){
+    HatchSolenoid.set(on);
+}
+public void done() {
+    HatchSolenoid.set(off);
+}
 
 }

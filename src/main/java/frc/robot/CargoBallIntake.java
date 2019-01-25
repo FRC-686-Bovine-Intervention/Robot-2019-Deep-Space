@@ -54,7 +54,7 @@ public class CargoBallIntake {
             break;
         case DEFENSE:
             liftMechanism.set(ControlMode.MotionMagic, inchesToEncoderUnits(defenseAngle));
-            if (controls.getButton(Constants.kGroundButton)) {
+            if (controls.getButton(Constants.kIntakeButton)) {
                 state = CargoBallEnum.GROUND;
             }
             break;

@@ -17,6 +17,8 @@ public class HatchAuto extends AutoModeBase {
     @Override
     protected void routine() throws AutoModeEndedException 
     {
+
+
         // runAction(new DriveStraightAction(0, 0)); can set drive parameters this way if driving straight 
         //drive off platform 
         //drive to cargoship - john
