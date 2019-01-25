@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Talon;
 import frc.robot.lib.joystick.ArcadeDriveJoystick;
 import frc.robot.lib.joystick.JoystickControlsBase;
 
@@ -17,7 +18,7 @@ public class CargoBallIntake {
 
     public DigitalInput limitSwitch;
     public DigitalInput proximitySensor;
-    public TalonSRX cargoBallMotor;
+    public Talon cargoIntakeMotor;
     public TalonSRX liftMechanism;
     public final int liftPort = 1;
     public final int cargoPort = 2;
@@ -36,7 +37,7 @@ public class CargoBallIntake {
     public CargoBallEnum state = CargoBallEnum.START_POS;
 
     public CargoBallIntake() {
-        cargoBallMotor = new TalonSRX(cargoPort);
+        cargoIntakeMotor = new Talon(cargoPort);
         liftMechanism = new TalonSRX(liftPort);
         limitSwitch = new DigitalInput(5);
         state = CargoBallEnum.START_POS;
@@ -59,24 +60,27 @@ public class CargoBallIntake {
             break;
         case GROUND:
             liftMechanism.set(ControlMode.MotionMagic, inchesToEncoderUnits(groundAngle));
-            cargoBallMotor.set(ControlMode.MotionMagic, inchesToEncoderUnits(cargoBallSpeed));
+            cargoIntakeMotor.set(cargoBallSpeed);
             if (proximitySensor.get()) {
                 state = CargoBallEnum.CARGO;
             }
             break;
         case CARGO:
+            cargoIntakeMotor.set(cargoBallStop);
             liftMechanism.set(ControlMode.MotionMagic, inchesToEncoderUnits(cargoAngle));
-            cargoBallMotor.set(ControlMode.MotionMagic, inchesToEncoderUnits(cargoBallStop));
             if (controls.getButton(Constants.kRocketButton)) {
                 state = CargoBallEnum.ROCKET;
             }
             break;
         case ROCKET:
             liftMechanism.set(ControlMode.MotionMagic, inchesToEncoderUnits(rocketAngle));
-            if (controls.getButton(Constants.kReturnDefaultBttn)) {
+            if (controls.getButton(Constants.kDefenseButton)) {
                 state = CargoBallEnum.DEFENSE;
             }
-
+        }
+        
+        if (controls.getButton(Constants.kOuttakeButton)) {
+            cargoIntakeMotor.set(cargoBallSpeed);
         }
     }
 

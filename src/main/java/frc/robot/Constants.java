@@ -94,12 +94,12 @@ public class Constants extends ConstantsBase {
     public static int kXboxRStickYAxis = 5;
 
     // Button Board Controls
-	public static int kElevatorGroundButton 	= 2;
-	public static int kElevatorExchangeButton 	= 1;
-	public static int kElevatorSwitchButton 	= 6;
-	public static int kElevatorScaleLowButton 	= 4;
-	public static int kElevatorScaleMedButton 	= 3;
-	public static int kElevatorScaleHighButton 	= 5;
+	// public static int kElevatorGroundButton 	= 2;
+	// public static int kElevatorExchangeButton 	= 1;
+	// public static int kElevatorSwitchButton 	= 6;
+	// public static int kElevatorScaleLowButton 	= 4;
+	// public static int kElevatorScaleMedButton 	= 3;
+	// public static int kElevatorScaleHighButton 	= 5;
 
     public static int kIntakeButton = kXboxButtonRB;
     public static int kOuttakeButton = kXboxButtonLB;
@@ -108,7 +108,7 @@ public class Constants extends ConstantsBase {
     public static int kHatchShootButton = kXboxButtonA;
     public static int kGroundButton = kXboxButtonLB;
     public static int kRocketButton = kXboxButtonRB;
-    public static int kReturnDefaultBttn = kXboxButtonB;
+    public static int kDefenseButton = kXboxButtonB;
 
     // Gyro
     public enum GyroSelectionEnum {
