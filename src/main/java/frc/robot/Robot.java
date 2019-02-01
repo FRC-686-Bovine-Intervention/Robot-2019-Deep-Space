@@ -281,6 +281,12 @@ public class Robot extends IterativeRobot {
 			hatchDeploy.run();
 			cargoBallIntake.run();
 			DriveCommand driveCmd = controls.getDriveCommand();
+			DriveCommand driveCmdReverse = controls.getDriveCommand();
+
+
+			// TODO: modify drive controls based on buttons
+			driveCmdReverse = controlsReverse( driveCmd, Constants.kControlsReverseButton );
+			drive.setOpenLoop(driveCmdReverse);
 			drive.setOpenLoop(driveCmd);
 		}
 		catch (Throwable t)

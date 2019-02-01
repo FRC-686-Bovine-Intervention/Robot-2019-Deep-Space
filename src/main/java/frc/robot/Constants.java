@@ -94,9 +94,9 @@ public class Constants extends ConstantsBase {
     public static int kXboxRStickYAxis = 5;
 
   //  Button Board Controls
-	public static int kBumperButton 	= 2;
-	public static int kRocketButton 	= 1;
-    public static int kDefenseButton 	= 6;
+	public static int kBumperButton 	= 1;
+	public static int kRocketButton 	= 2;
+    public static int kDefenseButton 	= 3;
     
 
     public static int kIntakeButton = kXboxButtonRB;
@@ -104,6 +104,8 @@ public class Constants extends ConstantsBase {
     public static int kGroundPickupButton = kXboxButtonY;
     public static int kHatchShootButton = kXboxButtonA;
     public static int kQuickTurnButton = kXboxButtonX;
+    public static int kControlsReverseButton = kXboxButtonB;
+    
 
 
     // Gyro

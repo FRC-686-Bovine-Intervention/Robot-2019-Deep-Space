@@ -26,17 +26,17 @@ public class HatchAuto extends AutoModeBase {
         // turn on vision & line sensor to line up with reflective and white tape
         //drive forward to close distance
         //deploy hatch action
-        // turn over to jhon to get another hatch and drive to ship
+        // turn over to john to get another hatch and drive to ship
         //turn on vision & line sensor to line up with reflective and white tape
         //drive forward to close distance
         //deploy hatch action
-        runAction(new DeployHatchAction());
-         runAction(new HatchResetAction());
-         runAction(new PathFollowerAction(turnStationPath));    
-         runAction(new PathFollowerAction(driveToHatchPath)); 
-         runAction(new PathFollowerAction(backupPath));
-         runAction(new PathFollowerAction(turnAroundPath)); 
-         runAction(new PathFollowerAction(driveToShipPath));
-         runAction(new lineupAction());		         
+        // runAction(new DeployHatchAction());
+        //  runAction(new HatchResetAction());
+        //  runAction(new PathFollowerAction(turnStationPath));    
+        //  runAction(new PathFollowerAction(driveToHatchPath)); 
+        //  runAction(new PathFollowerAction(backupPath));
+        //  runAction(new PathFollowerAction(turnAroundPath)); 
+        //  runAction(new PathFollowerAction(driveToShipPath));
+        //  runAction(new lineupAction());		         
     }
 }

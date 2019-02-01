@@ -39,7 +39,8 @@ public class CargoBallIntake {
     public CargoBallIntake() {
         cargoIntakeMotor = new Talon(cargoPort);
         liftMechanism = new TalonSRX(liftPort);
-        limitSwitch = new DigitalInput(5);
+        limitSwitch = new DigitalInput(4);
+        proximitySensor = new DigitalInput(5);
         state = CargoBallEnum.START_POS;
     }
 
@@ -62,11 +63,11 @@ public class CargoBallIntake {
             liftMechanism.set(ControlMode.MotionMagic, inchesToEncoderUnits(groundAngle));
             cargoIntakeMotor.set(cargoBallSpeed);
             if (proximitySensor.get()) {
+                cargoIntakeMotor.set(cargoBallStop);
                 state = CargoBallEnum.CARGO;
             }
             break;
         case CARGO:
-            cargoIntakeMotor.set(cargoBallStop);
             liftMechanism.set(ControlMode.MotionMagic, inchesToEncoderUnits(cargoAngle));
             if (controls.getButton(Constants.kRocketButton)) {
                 state = CargoBallEnum.ROCKET;
@@ -81,6 +82,9 @@ public class CargoBallIntake {
         
         if (controls.getButton(Constants.kOuttakeButton)) {
             cargoIntakeMotor.set(cargoBallSpeed);
+        }
+        else {
+            cargoIntakeMotor.set(cargoBallStop);
         }
     }
 
