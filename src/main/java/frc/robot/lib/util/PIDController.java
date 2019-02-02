@@ -1,8 +1,6 @@
 package frc.robot.lib.util;
 
 
-import edu.wpi.first.wpilibj.util.BoundaryException;
-
 /**
  * This class implements a PID Control Loop.
  * 
@@ -114,7 +112,7 @@ public class PIDController {
     {
         if (_minimumInput > _maximumInput) 
         {
-            throw new BoundaryException("Lower bound is greater than upper bound");
+            // throw new BoundaryException("Lower bound is greater than upper bound");
         }
         minIn = _minimumInput;
         maxIn = _maximumInput;
@@ -128,7 +126,7 @@ public class PIDController {
     {
         if (_minimumOutput > _maximumOutput) 
         {
-            throw new BoundaryException("Lower bound is greater than upper bound");
+            // throw new BoundaryException("Lower bound is greater than upper bound");
         }
         minOut = _minimumOutput;
         maxOut = _maximumOutput;
