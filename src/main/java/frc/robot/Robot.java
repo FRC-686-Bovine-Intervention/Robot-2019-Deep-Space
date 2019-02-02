@@ -53,7 +53,6 @@ public class Robot extends IterativeRobot {
 	UsbCamera usbCamera;
 	HatchDeploy hatchDeploy;
 	CargoBallIntake cargoBallIntake;
-	CargoShooter cargoShooter;
 
 	enum OperationalMode 
     {
@@ -83,7 +82,6 @@ public class Robot extends IterativeRobot {
 			usbCamera.setFPS(15);
 			hatchDeploy = HatchDeploy.getInstance();
 			cargoBallIntake = CargoBallIntake.getInstance();
-			cargoShooter = CargoShooter.getInstance();
     		// view camera at http://10.6.86.2:1181?action=stream
     		// use Ctrl-+ to increase size to full screen
     		
@@ -282,8 +280,13 @@ public class Robot extends IterativeRobot {
 		{
 			hatchDeploy.run();
 			cargoBallIntake.run();
-			cargoShooter.run();
 			DriveCommand driveCmd = controls.getDriveCommand();
+			DriveCommand driveCmdReverse = controls.getDriveCommand();
+
+
+			// TODO: modify drive controls based on buttons
+			driveCmdReverse = controlsReverse( driveCmd, Constants.kControlsReverseButton );
+			drive.setOpenLoop(driveCmdReverse);
 			drive.setOpenLoop(driveCmd);
 		}
 		catch (Throwable t)
