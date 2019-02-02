@@ -20,11 +20,11 @@ public class HatchAuto extends AutoModeBase {
          runAction(new DriveStraightAction(0, 0)); 
          runAction(new DeployHatchAction());
          runAction(new HatchResetAction());
-         runAction(new PathFollowerAction(turnStationPath));    
-         runAction(new PathFollowerAction(driveToHatchPath)); 
-         runAction(new PathFollowerAction(backupPath));
-         runAction(new PathFollowerAction(turnAroundPath)); 
-         runAction(new PathFollowerAction(driveToShipPath));
-         runAction(new lineupAction());		         
+        //  runAction(new PathFollowerAction(turnStationPath));    
+        //  runAction(new PathFollowerAction(driveToHatchPath)); 
+        //  runAction(new PathFollowerAction(backupPath));
+        //  runAction(new PathFollowerAction(turnAroundPath)); 
+        //  runAction(new PathFollowerAction(driveToShipPath));
+        //  runAction(new lineupAction());		         
     }
 }
