@@ -9,5 +9,9 @@ public abstract class GyroBase
 	// 0 is along the x-axis, angle increases as robot turns to the left
 	// angle is continuous, and does not reset to zero when passing +/- 360 degrees
     public abstract double getHeadingDeg();
-    
+
+	public void zeroSensor()
+	{
+		// no code
+	}
 }

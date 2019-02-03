@@ -34,11 +34,6 @@ public class Pose implements Interpolable<Pose>
 		heading  = _heading;
     }
 
-    public Pose(Vector2d _position) 
-    {
-    	this(_position, 0.0);
-    }
-
     public Pose(Pose that) 
     {
     	this(that.position, that.heading);
@@ -78,11 +73,16 @@ public class Pose implements Interpolable<Pose>
     	return new Pose(position.add(_translation), heading);
     }
     
-    
-    // sub performs vector translation.  The original heading is not changed
-    public Pose sub(Vector2d _translation)
+    // returns vector from that to this.position
+    public Vector2d sub(Vector2d _translation)
     {
-    	return new Pose(position.sub(_translation), heading);
+    	return position.sub(_translation);
+    }
+    
+    // returns vector from that.position to this.position
+    public Vector2d sub(Pose _that)
+    {
+    	return this.sub(_that.position);
     }
     
     // adjust heading without changing position
@@ -143,35 +143,25 @@ public class Pose implements Interpolable<Pose>
     }
 
     // transforms pose from one coordinate system to another coordinate system
-	// this: Pose of some object relative to the current coordinate system
-	// _currentCSrelToNewCS: contains the location of the origin of the old coordinate system (the coordinate system of this Pose) and 
-	//                       the angle of the old coordinate system with respect to the new coordinate system
-	// returns: Pose of same object with respect to the new coordinate system
-	//
-	// example: this = pose of target with respect to camera
-	//          _currentCSrelToNewCS: pose of camera with respect to field
-	//          returns: pose of target with respect to field
-	public Pose changeCoordinateSystem(Pose _currentCSrelToNewCS)
+    // that gives the position and heading of the first coordinate system with respect to that's coordinate system
+    // for example: the pose of the camera on the robot is found relative to the field
+    //              this would be the pose of the camera with respect to the robot's center of rotation and heading
+    //              that would give the pose of the robot with respect to the field
+	public Pose transformBy(Pose _that)
 	{
-		Pose poseRelNewCS = this.rotate(_currentCSrelToNewCS.heading);		// first, rotate by angle of new CS
-		poseRelNewCS = poseRelNewCS.add(_currentCSrelToNewCS.position);		// then translate by origin of new CS
-		return poseRelNewCS;
+																// assume robot's center of rotation is (0,0)
+		Pose transformedPose = this.rotate(_that.heading);	// first, rotate by that.heading
+		transformedPose = transformedPose.add(_that.position);	// then translate by that.position
+		return transformedPose;
 	}
-
-	// inverse of above function, where you have the pose of the new coordinate system with respect to the current one
-	// this: Pose of some object relative to the current coordinate system
-	// _newCSrelToCurrentCS: contains the location of the origin of the new coordinate system (the coordinate system of this Pose) and 
-	//                       the angle of the new coordinate system with respect to the current coordinate system
-	// returns: Pose of same object with respect to the new coordinate system
-	//
-	// example: this = pose of target with respect to field
-	//          _newCSrelToCurrentCS: pose of camera with respect to field
-	//          returns: pose of target with respect to camera
-	public Pose inverseChangeCoordinateSystem(Pose _newCSrelToCurrentCS)
-	{
-		Pose poseRelCurrentCS = this.sub(_newCSrelToCurrentCS.position);			// first translate by -origin of new CS
-		poseRelCurrentCS = poseRelCurrentCS.rotate(-_newCSrelToCurrentCS.heading);	// then rotate by -angle of new CS
-		return poseRelCurrentCS;
+	
+	// Returns the inverse transform
+    // The inverse of this transform "undoes" the effect of translating by this transform.
+    public Pose inverse()
+    {
+    	Pose T = new Pose(-this.getTranslation().x, -this.getTranslation().y, 0);	// invert translation
+    	T = T.rotate(-this.getRotation());								// rotate translation by inverse of rotation
+    	return T;												
     }
 	
 }

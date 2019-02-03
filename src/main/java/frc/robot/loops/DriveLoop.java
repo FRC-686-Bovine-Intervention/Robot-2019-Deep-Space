@@ -422,12 +422,12 @@ public class DriveLoop implements Loop
 	}
 
 	// Talon SRX reports position in rotations while in closed-loop Position mode
-	private static double encoderUnitsToInches(int _encoderPosition) {	return (double)_encoderPosition / (double)kQuadEncoderUnitsPerRev  * kDriveWheelCircumInches; }
-	private static int inchesToEncoderUnits(double _inches) { return (int)(_inches / kDriveWheelCircumInches * kQuadEncoderUnitsPerRev); }
+	public static double encoderUnitsToInches(int _encoderPosition) {	return (double)_encoderPosition / (double)kQuadEncoderUnitsPerRev  * kDriveWheelCircumInches; }
+	public static int inchesToEncoderUnits(double _inches) { return (int)(_inches / kDriveWheelCircumInches * kQuadEncoderUnitsPerRev); }
 
 	// Talon SRX reports speed in RPM while in closed-loop Speed mode
-	private static double encoderUnitsPerFrameToInchesPerSecond(int _encoderEdgesPerFrame) { return encoderUnitsToInches(_encoderEdgesPerFrame) / kQuadEncoderStatusFramePeriod; }
-	private static int inchesPerSecondToEncoderUnitsPerFrame(double _inchesPerSecond) { return (int)(inchesToEncoderUnits(_inchesPerSecond) * kQuadEncoderStatusFramePeriod); }
+	public static double encoderUnitsPerFrameToInchesPerSecond(int _encoderEdgesPerFrame) { return encoderUnitsToInches(_encoderEdgesPerFrame) / kQuadEncoderStatusFramePeriod; }
+	public static int inchesPerSecondToEncoderUnitsPerFrame(double _inchesPerSecond) { return (int)(inchesToEncoderUnits(_inchesPerSecond) * kQuadEncoderStatusFramePeriod); }
 
 	
 	
