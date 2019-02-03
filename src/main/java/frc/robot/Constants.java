@@ -62,13 +62,20 @@ public class Constants extends ConstantsBase {
     public static double kCameraLatencySeconds = 0.240; // Camera image capturing latency
     public static double kTargetLocationFilterConstant = (30.0 * kLoopDt); // 30 time constants in 1 second
 
+    // math for limit switch
+    public static double kHatchQuadEncoderUnitsPerRev = 4096;
+    public static double kHatchQuadEncoderDegsPerRev = 360;
+    public static double kHatchEncoderUnitsPerDegs = kHatchQuadEncoderUnitsPerRev/kHatchQuadEncoderDegsPerRev;
+
+
+
     // Motor Controllers
     // (Note that if multiple Talons are dedicated to a mechanism, any sensors are
     // attached to the master)
     public static int kLeftMotorMasterTalonId = 1;
     public static int kLeftMotorSlave1TalonId = 2;
-    public static int kRightMotorMasterTalonId = 4;
-    public static int kRightMotorSlave1TalonId = 5;
+    public static int kRightMotorMasterTalonId = 3;
+    public static int kRightMotorSlave1TalonId = 4;
 
     // motors inversions
     public static boolean kLeftMotorInverted = false;

@@ -18,7 +18,7 @@ public class HatchDeploy {
     public TalonSRX dropMotor;
     public Solenoid HatchSolenoid;
     public DigitalInput limitSwitch;
-    public final int dropPort = 4;
+    public final int dropPort = 8;
     public final int hatchPort = 0;
     public final double zeroingSpeed = -0.1;
     public final double startingAngle = 1;
@@ -37,7 +37,7 @@ public class HatchDeploy {
     public HatchDeploy() {
         HatchSolenoid = new Solenoid(0, hatchPort);
         dropMotor = new TalonSRX(dropPort);
-        limitSwitch = new DigitalInput(5);
+        limitSwitch = new DigitalInput(10);
         state = HatchDeployStateEnum.INIT;
     }
 
@@ -51,20 +51,20 @@ public class HatchDeploy {
             }
             break;
         case DEFENSE:
-            dropMotor.set(ControlMode.MotionMagic, inchesToEncoderUnits(defenseAngle));
+            dropMotor.set(ControlMode.MotionMagic, degsToEncoderUnits(defenseAngle));
             if (controls.getButton(Constants.kBumperButton))
             {
                 state = HatchDeployStateEnum.TO_BUMPER;
             }
             break;
         case TO_BUMPER:
-            dropMotor.set(ControlMode.MotionMagic, inchesToEncoderUnits(pickUpAngle));
+            dropMotor.set(ControlMode.MotionMagic, degsToEncoderUnits(pickUpAngle));
             if (controls.getButton(Constants.kGroundPickupButton)) {
                 state = HatchDeployStateEnum.GROUND;
             }
             break;
         case GROUND:
-            dropMotor.set(ControlMode.MotionMagic, inchesToEncoderUnits(groundAngle));
+            dropMotor.set(ControlMode.MotionMagic, degsToEncoderUnits(groundAngle));
             if (controls.getButton(Constants.kBumperButton)) {
                 state = HatchDeployStateEnum.DEFENSE;
             }
@@ -77,12 +77,24 @@ public class HatchDeploy {
 
     }
 
-    public double inchesToEncoderUnits(double angle) {
-        // to do: write this function
-        return 0.0;
-    }
+    public static double dedegsToEncoderUnits(int _encoderUnits)
+	{
+		return _encoderUnits / Constants.kHatchEncoderUnitsPerDegs;
+	}
+	
+	public static int degsToEncoderUnits(double _inches)
+	{
+		return (int)(_inches * Constants.kHatchEncoderUnitsPerDegs);
+	}
+	
+	public double encoderVelocityToDegsPerSec(int _encoderVelocity)
+	{
+		// extra factor of 10 because velocity is reported over 100ms periods 
+		return _encoderVelocity * 10.0 / Constants.kHatchEncoderUnitsPerDegs;
+	}
+    
 public void drop() {
-    dropMotor.set(ControlMode.MotionMagic, inchesToEncoderUnits(groundAngle));
+    dropMotor.set(ControlMode.MotionMagic, degsToEncoderUnits(groundAngle));
 }
 public void deploy(){
     HatchSolenoid.set(on);

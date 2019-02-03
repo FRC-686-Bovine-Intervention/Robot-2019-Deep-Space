@@ -285,8 +285,8 @@ public class Robot extends IterativeRobot {
 
 
 			// TODO: modify drive controls based on buttons
-			driveCmdReverse = controlsReverse( driveCmd, Constants.kControlsReverseButton );
-			drive.setOpenLoop(driveCmdReverse);
+			// driveCmdReverse = controlsReverse( driveCmd, Constants.kControlsReverseButton );
+			// drive.setOpenLoop(driveCmdReverse);
 			drive.setOpenLoop(driveCmd);
 		}
 		catch (Throwable t)
