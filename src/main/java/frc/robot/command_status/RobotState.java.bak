@@ -5,7 +5,6 @@ import frc.robot.lib.util.InterpolatingDouble;
 import frc.robot.lib.util.InterpolatingTreeMap;
 import frc.robot.lib.util.Kinematics;
 import frc.robot.lib.util.Pose;
-import frc.robot.Constants;
 
 /**
  * RobotState keeps track of the poses of various coordinate frames throughout
@@ -60,11 +59,11 @@ public class RobotState
 		return instance;
 	}
 
-	public static final int kObservationBufferSize = 100;
-	public static final double kMaxTargetAge = 0.4;
+    public static final int kObservationBufferSize = 100;
+    public static final double kMaxTargetAge = 0.4;
 
-	private InterpolatingTreeMap<InterpolatingDouble, Pose> fieldToRobot;
-	private Kinematics.LinearAngularSpeed robotSpeed;
+    private InterpolatingTreeMap<InterpolatingDouble, Pose> fieldToRobot;
+    private Kinematics.LinearAngularSpeed robotSpeed;
 
     private double gyroCorrection;
     
@@ -73,8 +72,8 @@ public class RobotState
     
     public RobotState() { reset( 0, 0, 0, new Pose() ); }
 
-	public synchronized void reset(double _startTime, double _lEncoderDistance, double _rEncoderDistance,
-			Pose _initialFieldToRobot) {
+	public synchronized void reset(double _startTime, double _lEncoderDistance, double _rEncoderDistance, Pose _initialFieldToRobot) 
+	{
 		// calibrate initial position to initial pose (set by autonomous mode)
         fieldToRobot = new InterpolatingTreeMap<>(kObservationBufferSize);
         fieldToRobot.put(new InterpolatingDouble(_startTime), _initialFieldToRobot);
@@ -140,39 +139,6 @@ public class RobotState
     	return robotSpeed.linearSpeed;
     }
     
-	// Field to camera functions
-
-	public static final Pose robotToCamera = new Pose(Constants.kCameraPoseX, Constants.kCameraPoseY,
-			Constants.kCameraPoseThetaRad);
-
-	public synchronized Pose getFieldToCamera(double timestamp) {
-		Pose fieldToRobot = getFieldToVehicle(timestamp);
-		Pose fieldToCamera = robotToCamera.changeCoordinateSystem(fieldToRobot);
-		return fieldToCamera;
-	}
-
-	public synchronized Pose getPredictedFieldToCamera(double _lookaheadTime) {
-		Pose fieldToRobot = getPredictedFieldToVehicle(_lookaheadTime);
-		Pose fieldToCamera = robotToCamera.changeCoordinateSystem(fieldToRobot);
-		return fieldToCamera;
-	}
-
-	// Field to camera functions
-
-	public static final Pose robotToShooter = new Pose(Constants.kShooterPoseX, Constants.kShooterPoseY,
-			Constants.kShooterPoseThetaRad);
-
-	public synchronized Pose getFieldToShooter(double timestamp) {
-		Pose fieldToRobot = getFieldToVehicle(timestamp);
-		Pose fieldToShooter = robotToShooter.changeCoordinateSystem(fieldToRobot);
-		return fieldToShooter;
-	}
-
-	public synchronized Pose getPredictedFieldToShooter(double _lookaheadTime) {
-		Pose fieldToRobot = getPredictedFieldToVehicle(_lookaheadTime);
-		Pose fieldToShooter = robotToShooter.changeCoordinateSystem(fieldToRobot);
-		return fieldToShooter;
-	}
     
 	private final DataLogger logger = new DataLogger()
     {
