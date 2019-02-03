@@ -2,46 +2,42 @@ package frc.robot;
 
 import frc.robot.lib.util.ConstantsBase;
 
-
 /**
  * Attribution: adapted from FRC Team 254
  */
-
 
 /**
  * A list of constants used by the rest of the robot code. This include physics
  * constants as well as constants determined through calibrations.
  */
-public class Constants extends ConstantsBase
-{
- 	// singleton class
-     private static Constants instance = null;
-     public static Constants getInstance() 
-     { 
-         if (instance == null) {
-             instance = new Constants();
-         }
-         return instance;
-     }
-     
+public class Constants extends ConstantsBase {
+    // singleton class
+    private static Constants instance = null;
+
+    public static Constants getInstance() {
+        if (instance == null) {
+            instance = new Constants();
+        }
+        return instance;
+    }
+
     public static double kLoopDt = 0.01;
-    public static double kDriveWatchdogTimerThreshold = 0.500;    
-    public static int kTalonTimeoutMs = 5;	// ms
-    public static int kTalonPidIdx = 0;		// 0 for non-cascaded PIDs, 1 for cascaded PIDs
-    	
+    public static double kDriveWatchdogTimerThreshold = 0.500;
+    public static int kTalonTimeoutMs = 5; // ms
+    public static int kTalonPidIdx = 0; // 0 for non-cascaded PIDs, 1 for cascaded PIDs
+
     public static double kNominalBatteryVoltage = 12.0;
-    
-    
+
     // Bumpers
-    public static double kCenterToFrontBumper 		= 18.0;	// position of front bumper with respect to robot center of rotation
-    public static double kCenterToExtendedIntake 	= 18.0;	// position of intake sweetspot when extended with respect to robot center of rotation
-    public static double kCenterToRearBumper 		= 18.0;	// position of rear bumper with respect to robot center of rotation
-    public static double kCenterToSideBumper 		= 18.0;	// position of side bumper with respect to robot center of rotation
-	public static double kCenterToCornerBumper 		= Math.sqrt(kCenterToRearBumper*kCenterToRearBumper + kCenterToSideBumper*kCenterToSideBumper);
+    public static double kCenterToFrontBumper = 18.0; // position of front bumper with respect to robot center of
+                                                      // rotation
+    public static double kCenterToExtendedIntake = 18.0; // position of intake sweetspot when extended with respect to
+                                                         // robot center of rotation
+    public static double kCenterToRearBumper = 18.0; // position of rear bumper with respect to robot center of rotation
+    public static double kCenterToSideBumper = 18.0; // position of side bumper with respect to robot center of rotation
+    public static double kCenterToCornerBumper = Math
+            .sqrt(kCenterToRearBumper * kCenterToRearBumper + kCenterToSideBumper * kCenterToSideBumper);
 
-
-    
-    
     // Vision constants
     public static double kCameraFrameRate = 90.0;		// frames per second
     public static double kCameraPoseX        = +9.00;	// camera location with respect to robot center of rotation, X axis is in direction of travel
@@ -64,6 +60,10 @@ public class Constants extends ConstantsBase
     public static double kVisionLookaheadDist = 24.0;	// inches
     
 
+    // math for limit switch
+    public static double kHatchQuadEncoderUnitsPerRev = 4096;
+    public static double kHatchQuadEncoderDegsPerRev = 360;
+    public static double kHatchEncoderUnitsPerDegs = kHatchQuadEncoderUnitsPerRev/kHatchQuadEncoderDegsPerRev;
     // Shooter Constants
     public static double kShooterPoseX        =     0;	// shooter location with respect to robot center of rotation, X axis is in direction of travel
     public static double kShooterPoseY        =     0;	// shooter location with respect to robot center of rotation, Y axis is positive to the left
@@ -71,18 +71,19 @@ public class Constants extends ConstantsBase
     public static double kShooterPoseThetaRad =     0;	// shooter angle with respect to robot heading, in radians
     public static double kAutoAimPredictionTime =   0;	// set to 0 since we don't have a turret and need to point the entire robot
 
-     // Motor Controllers
+
+    // Motor Controllers
     // (Note that if multiple Talons are dedicated to a mechanism, any sensors are attached to the master)
-	public static int kLeftMotorMasterTalonId   = 1;
-	public static int kLeftMotorSlave1TalonId 	= 2;
-    public static int kRightMotorMasterTalonId 	= 4;
-	public static int kRightMotorSlave1TalonId 	= 5;
+    public static int kLeftMotorMasterTalonId = 1;
+    public static int kLeftMotorSlave1TalonId = 2;
+    public static int kRightMotorMasterTalonId = 3;
+    public static int kRightMotorSlave1TalonId = 4;
 
     // motors inversions
-    public static boolean	kLeftMotorInverted  	= false;
-    public static boolean	kRightMotorInverted 	= true;
-    public static boolean	kLeftMotorSensorPhase 	= false;
-    public static boolean	kRightMotorSensorPhase 	= false;
+    public static boolean kLeftMotorInverted = false;
+    public static boolean kRightMotorInverted = true;
+    public static boolean kLeftMotorSensorPhase = false;
+    public static boolean kRightMotorSensorPhase = false;
 
 	public static int kDriveTrainCurrentLimit = 25;
 
@@ -98,33 +99,40 @@ public class Constants extends ConstantsBase
     
 
     // Joystick Controls
-    public static int kXboxButtonA  = 1;
-    public static int kXboxButtonB  = 2;
-    public static int kXboxButtonX  = 3;
-    public static int kXboxButtonY  = 4;
+    public static int kXboxButtonA = 1;
+    public static int kXboxButtonB = 2;
+    public static int kXboxButtonX = 3;
+    public static int kXboxButtonY = 4;
     public static int kXboxButtonLB = 5;
     public static int kXboxButtonRB = 6;
-    
-    public static int kXboxLStickXAxis  = 0;
-    public static int kXboxLStickYAxis  = 1;
+
+    public static int kXboxLStickXAxis = 0;
+    public static int kXboxLStickYAxis = 1;
     public static int kXboxLTriggerAxis = 2;
     public static int kXboxRTriggerAxis = 3;
-    public static int kXboxRStickXAxis  = 4;
-    public static int kXboxRStickYAxis  = 5;
+    public static int kXboxRStickXAxis = 4;
+    public static int kXboxRStickYAxis = 5;
 
-	public static int kIntakeButton 			= kXboxButtonRB;
-	public static int kOuttakeButton 			= kXboxButtonLB;
-	public static int kQuickTurnButton 			= kXboxButtonX;
-    public static int kVisionAssistanceButton   = kXboxButtonRB;
+  //  Button Board Controls
+	public static int kBumperButton 	= 1;
+	public static int kRocketButton 	= 2;
+    public static int kDefenseButton 	= 3;
+    
 
-	
+    public static int kIntakeButton =           kXboxButtonRB;
+    public static int kOuttakeButton =          kXboxButtonLB;
+    public static int kGroundPickupButton =     kXboxButtonY;
+    public static int kHatchShootButton =       kXboxButtonA;
+    public static int kQuickTurnButton =        99;
+    public static int kControlsReverseButton =  kXboxButtonB;
+    public static int kVisionAssistanceButton = kXboxButtonX;
+    
+
+
     // Gyro
     public enum GyroSelectionEnum { BNO055, NAVX, PIGEON; }
     //public static GyroSelectionEnum GyroSelection = GyroSelectionEnum.BNO055;
     // public static GyroSelectionEnum GyroSelection = GyroSelectionEnum.NAVX;
     public static GyroSelectionEnum GyroSelection = GyroSelectionEnum.PIGEON;
 
-    
- };
-   
-  
+};

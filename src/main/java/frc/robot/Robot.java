@@ -62,7 +62,6 @@ public class Robot extends TimedRobot {
 
 	HatchDeploy hatchDeploy;
 	CargoBallIntake cargoBallIntake;
-	CargoShooter cargoShooter;
 
 	enum OperationalMode 
     {
@@ -89,7 +88,6 @@ public class Robot extends TimedRobot {
 
 			hatchDeploy = HatchDeploy.getInstance();
 			cargoBallIntake = CargoBallIntake.getInstance();
-			cargoShooter = CargoShooter.getInstance();
     		// view camera at http://10.6.86.2:1181?action=stream
     		// use Ctrl-+ to increase size to full screen
     		
@@ -298,9 +296,14 @@ public class Robot extends TimedRobot {
 		{
 			hatchDeploy.run();
 			cargoBallIntake.run();
-			cargoShooter.run();
 			DriveCommand driveCmd = controls.getDriveCommand();
 			driveCmd = visionDriveAssistant.assist(driveCmd, controls.getButton(Constants.kVisionAssistanceButton));
+			DriveCommand driveCmdReverse = controls.getDriveCommand();
+
+
+			// TODO: modify drive controls based on buttons
+			// driveCmdReverse = controlsReverse( driveCmd, Constants.kControlsReverseButton );
+			// drive.setOpenLoop(driveCmdReverse);
 			drive.setOpenLoop(driveCmd);
 		}
 		catch (Throwable t)

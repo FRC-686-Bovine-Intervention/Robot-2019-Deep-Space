@@ -1,9 +1,9 @@
 package frc.robot.lib.joystick;
 
-import frc.robot.lib.joystick.JoystickControlsBase;
-import frc.robot.lib.util.Util;
 import frc.robot.Constants;
 import frc.robot.command_status.DriveCommand;
+import frc.robot.lib.util.Util;
+import frc.robot.lib.joystick.JoystickControlsBase;
 
 /**
  * Joystick controls that use the trigger buttons for acceleration/deceleration.
