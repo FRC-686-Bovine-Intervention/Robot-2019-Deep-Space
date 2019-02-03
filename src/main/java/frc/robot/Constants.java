@@ -43,24 +43,33 @@ public class Constants extends ConstantsBase
     
     
     // Vision constants
-    public static double kCameraPoseX     = 0.0;	// camera location with respect to robot center of rotation, +X axis is in direction of travel
-    public static double kCameraPoseY     = 0.0;	// camera location with respect to robot center of rotation, +Y axis is positive to the left
-    public static double kCameraPoseTheta = 0.0;	// camera angle with respect to robot heading
+    public static double kCameraFrameRate = 90.0;		// frames per second
+    public static double kCameraPoseX        = +9.00;	// camera location with respect to robot center of rotation, X axis is in direction of travel
+    public static double kCameraPoseY        =     0;	// camera location with respect to robot center of rotation, Y axis is positive to the left
+    public static double kCameraPoseZ        =   9.0;	// camera location with respect to floor, Z axis is positive with increasing elevation
+    public static double kCameraPoseThetaRad =   0.0;	// camera angle with respect to robot heading, in radians
+    public static double kCameraPitchRad     =     0;   // camera vertical angle with respect to level ground, in radians
+    public static double kCameraDeadband = 0.0;
     
     public static double kVisionMaxVel    = 20.0; // inches/sec  		
     public static double kVisionMaxAccel  = 20.0; // inches/sec^2		
     public static double kTargetWidthInches = 10.25;
-    public static double kPegTargetDistanceThresholdFromBumperInches = 18;		// inches to stop from target, measured from front bumper
-    public static double kPegTargetDistanceThresholdFromCameraInches = kCenterToFrontBumper - kCameraPoseX + kPegTargetDistanceThresholdFromBumperInches;
+    public static double kTargetHeightInches = 14.00;
+    public static double kCenterOfTargetHeightInches = 13.25;
+    public static double kTargetDistanceThresholdFromBumperInches = 18;		// inches to stop from target, measured from front bumper
+    public static double kTargetDistanceThresholdFromCameraInches = kCenterToFrontBumper - kCameraPoseX + kTargetDistanceThresholdFromBumperInches;
+    
     public static double kVisionCompletionTolerance = 1.0; 
     public static double kVisionMaxDistanceInches = 240;		// ignore targets greater than this distance
     public static double kVisionLookaheadDist = 24.0;	// inches
-    public static double kCameraFOVDegrees = 42.5;			// Camera Field of View (degrees)
-    public static double kCameraHalfFOVRadians = kCameraFOVDegrees/2.0 * Math.PI/180.0;			// Half of Camera Field of View (radians)
-    public static double kTangentCameraHalfFOV = Math.tan(kCameraHalfFOVRadians);
-    public static double kCameraLatencySeconds = 0.240;			// Camera image capturing latency
-    public static double kTargetLocationFilterConstant = (30.0 * kLoopDt);		// 30 time constants in 1 second
     
+
+    // Shooter Constants
+    public static double kShooterPoseX        =     0;	// shooter location with respect to robot center of rotation, X axis is in direction of travel
+    public static double kShooterPoseY        =     0;	// shooter location with respect to robot center of rotation, Y axis is positive to the left
+    public static double kShooterPoseZ        =     0;	// shooter location with respect to floor, Z axis is positive with increasing elevation
+    public static double kShooterPoseThetaRad =     0;	// shooter angle with respect to robot heading, in radians
+    public static double kAutoAimPredictionTime =   0;	// set to 0 since we don't have a turret and need to point the entire robot
 
      // Motor Controllers
     // (Note that if multiple Talons are dedicated to a mechanism, any sensors are attached to the master)
@@ -76,7 +85,17 @@ public class Constants extends ConstantsBase
     public static boolean	kRightMotorSensorPhase 	= false;
 
 	public static int kDriveTrainCurrentLimit = 25;
-	
+
+    // Wheel Encoder
+    public static int    kQuadEncoderCodesPerRev = 256;
+    public static int    kQuadEncoderUnitsPerRev = 4*kQuadEncoderCodesPerRev;
+    public static double kQuadEncoderStatusFramePeriod = 0.100;	// 100ms
+    public static double kDriveSecondsFromNeutralToFull = 0.375;
+    
+    // CONTROL LOOP GAINS
+    public static double kFullThrottleRPM = 520;	// measured max RPM using NI web interface
+    public static double kFullThrottleEncoderPulsePer100ms = kFullThrottleRPM / 60.0 * kQuadEncoderStatusFramePeriod * kQuadEncoderUnitsPerRev; 
+    
 
     // Joystick Controls
     public static int kXboxButtonA  = 1;
@@ -96,11 +115,14 @@ public class Constants extends ConstantsBase
 	public static int kIntakeButton 			= kXboxButtonRB;
 	public static int kOuttakeButton 			= kXboxButtonLB;
 	public static int kQuickTurnButton 			= kXboxButtonX;
+    public static int kVisionAssistanceButton   = kXboxButtonRB;
 
 	
     // Gyro
-    public enum GyroSelectionEnum { BNO055, NAVX; }
-    public static GyroSelectionEnum GyroSelection = GyroSelectionEnum.BNO055;
+    public enum GyroSelectionEnum { BNO055, NAVX, PIGEON; }
+    //public static GyroSelectionEnum GyroSelection = GyroSelectionEnum.BNO055;
+    // public static GyroSelectionEnum GyroSelection = GyroSelectionEnum.NAVX;
+    public static GyroSelectionEnum GyroSelection = GyroSelectionEnum.PIGEON;
 
     
  };

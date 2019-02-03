@@ -109,6 +109,7 @@ public class DriveCommand
     public synchronized void   setMotors(double _left, double _right) { wheelSpeed.left = _left; wheelSpeed.right = _right; setCommandTime(); }
     public synchronized double getLeftMotor()  { return wheelSpeed.left; }
     public synchronized double getRightMotor() { return wheelSpeed.right; }
+    public synchronized double getSpeed() { return (wheelSpeed.left + wheelSpeed.right)/2.0; }
 
     public synchronized void        setNeutralMode(NeutralMode _neutralMode) { neutralMode = _neutralMode; }
     public synchronized static NeutralMode getNeutralMode()  { return neutralMode; }

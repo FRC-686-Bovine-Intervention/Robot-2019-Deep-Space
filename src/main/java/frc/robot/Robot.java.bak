@@ -10,35 +10,30 @@ package frc.robot;
 import java.util.TimeZone;
 
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 
 import frc.robot.auto.AutoModeExecuter;
 import frc.robot.command_status.DriveCommand;
 import frc.robot.command_status.DriveState;
-import frc.robot.command_status.GoalStates;
 import frc.robot.command_status.RobotState;
 import frc.robot.lib.joystick.ArcadeDriveJoystick;
 import frc.robot.lib.joystick.JoystickControlsBase;
-import frc.robot.lib.sensors.Limelight;
 import frc.robot.lib.util.CrashTracker;
 import frc.robot.lib.util.DataLogController;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.Pose;
 import frc.robot.loops.DriveLoop;
-import frc.robot.loops.GoalStateLoop;
 import frc.robot.loops.LoopController;
 import frc.robot.loops.RobotStateLoop;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Superstructure;
-import frc.robot.vision.VisionDriveAssistant;
-import frc.robot.vision.VisionLoop;
-import frc.robot.vision.VisionTargetList;
 import frc.robot.HatchDeploy;
 import frc.robot.CargoBallIntake;
 
-public class Robot extends TimedRobot {
+public class Robot extends IterativeRobot {
 
 	PowerDistributionPanel pdp = new PowerDistributionPanel();
 
@@ -46,9 +41,6 @@ public class Robot extends TimedRobot {
 
 	RobotState robotState = RobotState.getInstance();
 	Drive drive = Drive.getInstance();
-	VisionTargetList visionTargetList = VisionTargetList.getInstance();
-	VisionDriveAssistant visionDriveAssistant = VisionDriveAssistant.getInstance();
-
 	Superstructure superStructure = Superstructure.getInstance();
 
 	AutoModeExecuter autoModeExecuter = null;
@@ -58,8 +50,7 @@ public class Robot extends TimedRobot {
 	SmartDashboardInteractions smartDashboardInteractions;
 	DataLogController robotLogger;
 
-	Limelight frontCamera = Limelight.getFrontInstance();
-
+	UsbCamera usbCamera;
 	HatchDeploy hatchDeploy;
 	CargoBallIntake cargoBallIntake;
 	CargoShooter cargoShooter;
@@ -87,6 +78,9 @@ public class Robot extends TimedRobot {
     	{
     		CrashTracker.logRobotInit();
 
+    		usbCamera = CameraServer.getInstance().startAutomaticCapture("Intake Camera", 0);
+    		usbCamera.setResolution(320, 240);
+			usbCamera.setFPS(15);
 			hatchDeploy = HatchDeploy.getInstance();
 			cargoBallIntake = CargoBallIntake.getInstance();
 			cargoShooter = CargoShooter.getInstance();
@@ -97,9 +91,7 @@ public class Robot extends TimedRobot {
     		loopController.register(drive.getVelocityPIDLoop());
     		loopController.register(DriveLoop.getInstance());
        		loopController.register(RobotStateLoop.getInstance());
-    		loopController.register(VisionLoop.getInstance());
-			loopController.register(GoalStateLoop.getInstance());
-
+    		
     		smartDashboardInteractions = new SmartDashboardInteractions();
     		smartDashboardInteractions.initWithDefaults();
     		
@@ -107,14 +99,11 @@ public class Robot extends TimedRobot {
     		TimeZone.setDefault(TimeZone.getTimeZone("America/New_York"));
     		
     		robotLogger = DataLogController.getRobotLogController();
-    		robotLogger.register(this.getLogger());
-			robotLogger.register(Drive.getInstance().getLogger());
-			robotLogger.register(drive.getCommand().getLogger());
-			robotLogger.register(DriveState.getInstance().getLogger());
-			robotLogger.register(RobotState.getInstance().getLogger());
-			robotLogger.register(VisionTargetList.getInstance().getLogger());
-			robotLogger.register(GoalStateLoop.getInstance().getGoalTracker().getLogger());
-			robotLogger.register(GoalStates.getInstance().getLogger());
+    		robotLogger.register(Drive.getInstance().getLogger());
+    		robotLogger.register(drive.getCommand().getLogger());
+    		robotLogger.register(DriveState.getInstance().getLogger());
+    		robotLogger.register(Superstructure.getInstance().getLogger());
+    		robotLogger.register(RobotState.getInstance().getLogger());
     		
     		setInitialPose(new Pose());
 
@@ -160,7 +149,6 @@ public class Robot extends TimedRobot {
 		boolean logToFile = true;
 		boolean logToSmartDashboard = true;
 		robotLogger.setOutputMode(logToFile, logToSmartDashboard);
-		zeroAllSensors();
 
 		try
 		{
@@ -209,8 +197,6 @@ public class Robot extends TimedRobot {
     	boolean logToFile = true;
     	boolean logToSmartDashboard = true;
     	robotLogger.setOutputMode(logToFile, logToSmartDashboard);
-
-		frontCamera.autoInit();
 
     	try
     	{
@@ -263,8 +249,6 @@ public class Robot extends TimedRobot {
 		boolean logToSmartDashboard = true;
 		robotLogger.setOutputMode(logToFile, logToSmartDashboard); 
 
-		frontCamera.teleopInit();
-
 		try 
 		{
 			CrashTracker.logTeleopInit();
@@ -300,7 +284,6 @@ public class Robot extends TimedRobot {
 			cargoBallIntake.run();
 			cargoShooter.run();
 			DriveCommand driveCmd = controls.getDriveCommand();
-			driveCmd = visionDriveAssistant.assist(driveCmd, controls.getButton(Constants.kVisionAssistanceButton));
 			drive.setOpenLoop(driveCmd);
 		}
 		catch (Throwable t)
