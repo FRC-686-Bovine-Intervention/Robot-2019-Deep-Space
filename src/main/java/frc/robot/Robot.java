@@ -9,11 +9,9 @@ package frc.robot;
 
 import java.util.TimeZone;
 
-import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-
 import frc.robot.auto.AutoModeExecuter;
 import frc.robot.command_status.DriveCommand;
 import frc.robot.command_status.DriveState;
@@ -23,6 +21,7 @@ import frc.robot.lib.joystick.ArcadeDriveJoystick;
 import frc.robot.lib.joystick.JoystickControlsBase;
 import frc.robot.lib.joystick.ReversibleArcadeDriveJoystick;
 import frc.robot.lib.sensors.Limelight;
+import frc.robot.lib.util.ControlsReverse;
 import frc.robot.lib.util.CrashTracker;
 import frc.robot.lib.util.DataLogController;
 import frc.robot.lib.util.DataLogger;
@@ -36,8 +35,6 @@ import frc.robot.subsystems.Superstructure;
 import frc.robot.vision.VisionDriveAssistant;
 import frc.robot.vision.VisionLoop;
 import frc.robot.vision.VisionTargetList;
-import frc.robot.HatchDeploy;
-import frc.robot.CargoBallIntake;
 
 public class Robot extends TimedRobot {
 
@@ -311,10 +308,9 @@ public class Robot extends TimedRobot {
 			driveCmd = visionDriveAssistant.assist(driveCmd, controls.getButton(Constants.kVisionAssistanceButton));
 			DriveCommand driveCmdReverse = controls.getDriveCommand();
 
-
-			// TODO: modify drive controls based on buttons
-			// driveCmdReverse = controlsReverse( driveCmd, Constants.kControlsReverseButton );
-			// drive.setOpenLoop(driveCmdReverse);
+			//modify drive controls based on buttons
+			driveCmdReverse = controlsReverse.run( driveCmd, Constants.kControlsReverseButton);
+			drive.setOpenLoop(driveCmdReverse);
 			drive.setOpenLoop(driveCmd);
 		}
 		catch (Throwable t)

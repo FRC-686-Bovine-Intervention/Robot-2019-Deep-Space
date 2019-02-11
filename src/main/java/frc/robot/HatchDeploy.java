@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.lib.joystick.ArcadeDriveJoystick;
 import frc.robot.lib.joystick.JoystickControlsBase;
+import frc.robot.lib.util.RisingEdgeDetector;
 
 public class HatchDeploy {
     public static HatchDeploy mInstance = new HatchDeploy();
@@ -25,6 +26,7 @@ public class HatchDeploy {
     public final double pickUpAngle = 0.75;
     public final double groundAngle = 0;
     public final double defenseAngle = 0.9;
+    public RisingEdgeDetector defenseBttnRisingEdgeDetector;
     boolean on;
     boolean off;
 
@@ -43,6 +45,8 @@ public class HatchDeploy {
 
     public void run() {
         JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
+        boolean dBtnIsPushed = controls.getButton(Constants.kDefenseButton);
+        boolean dBttnEdgeDetectorValue = defenseBttnRisingEdgeDetector.update(dBtnIsPushed);
         switch (state) {
         case INIT:
             dropMotor.set(ControlMode.PercentOutput, zeroingSpeed);
@@ -50,23 +54,27 @@ public class HatchDeploy {
                 state = HatchDeployStateEnum.TO_BUMPER;
             }
             break;
+            case TO_BUMPER:
+            dropMotor.set(ControlMode.MotionMagic, degsToEncoderUnits(pickUpAngle));
+            if (controls.getButton(Constants.kGroundPickupButton)) {
+                state = HatchDeployStateEnum.GROUND;
+            }
+            if (dBttnEdgeDetectorValue)
+            {
+                state = HatchDeployStateEnum.DEFENSE;
+            }
+            break;
         case DEFENSE:
             dropMotor.set(ControlMode.MotionMagic, degsToEncoderUnits(defenseAngle));
-            if (controls.getButton(Constants.kDefenseButton))
+            if (dBttnEdgeDetectorValue)
             {
                 state = HatchDeployStateEnum.TO_BUMPER;
             }
             break;
-        case TO_BUMPER:
-            dropMotor.set(ControlMode.MotionMagic, degsToEncoderUnits(pickUpAngle));
-            if (controls.getButton(Constants.kCargoIntakeRetractButton)) {
-                state = HatchDeployStateEnum.GROUND;
-            }
-            break;
         case GROUND:
             dropMotor.set(ControlMode.MotionMagic, degsToEncoderUnits(groundAngle));
-            if (controls.getButton(Constants.kCargoIntakeRetractButton)) {
-                state = HatchDeployStateEnum.DEFENSE;
+            if (controls.getButton(Constants.kBumperButton)) {
+                state = HatchDeployStateEnum.TO_BUMPER;
             }
             break;
         }
