@@ -79,6 +79,12 @@ public class VisionDriveAssistant
                 approachSpeed = maxSpeed;
             }   
 
+            // keep on target even when backing up
+            if (approachSpeed < 0)
+            {
+                curvature = -curvature;
+            }
+
             // calculate left/right motor speeds for this approach speed & curvature
             wheelSpeed = Kinematics.inverseKinematicsFromSpeedCurvature(approachSpeed, curvature);
 

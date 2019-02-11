@@ -11,10 +11,10 @@ public class ButtonBoard
 	 private static ButtonBoard instance = null;
 	 public static ButtonBoard getInstance() 
 	 { 
-			 if (instance == null) {
-					 instance = new ButtonBoard();
-			 }
-			 return instance;
+		if (instance == null) {
+			instance = new ButtonBoard();
+		}
+		return instance;
 	 }
 
     protected final Joystick mStick;

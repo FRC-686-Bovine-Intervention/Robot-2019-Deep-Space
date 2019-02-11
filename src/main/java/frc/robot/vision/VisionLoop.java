@@ -3,6 +3,7 @@ package frc.robot.vision;
 import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Robot;
 import frc.robot.lib.sensors.Limelight;
 import frc.robot.loops.Loop;
 
@@ -16,7 +17,10 @@ public class VisionLoop implements Loop
     private static VisionLoop instance = new VisionLoop();
     public static VisionLoop getInstance() { return instance; }
 	
-	public Limelight frontCamera = Limelight.getFrontInstance();
+	// camera selection
+	public Limelight cargoCamera = Limelight.getCargoInstance();
+	public Limelight hatchCamera = Limelight.getHatchInstance();
+	public Robot robot = Robot.getInstance();
 
 	public VisionTargetList visionTargetList = VisionTargetList.getInstance();
 
@@ -40,18 +44,20 @@ public class VisionLoop implements Loop
 
 	public void getTargets(double currentTime)
 	{
-		double cameraLatency = frontCamera.getTotalLatencyMs() / 1000.0;
+		double cameraLatency = cargoCamera.getTotalLatencyMs() / 1000.0;
 		double imageCaptureTimestamp = currentTime - cameraLatency;		// assumes transport time from phone to this code is instantaneous
 
 		int numTargets = 1;	// for Limelight
 		ArrayList<VisionTargetList.Target> targets = new ArrayList<>(numTargets);
 
-		if (frontCamera.getIsTargetFound())
+		Limelight cameraSelection = robot.getJoystick().getDrivingForward() ? cargoCamera : hatchCamera;
+
+		if (cameraSelection.getIsTargetFound())
 		{
-			double hAngle = frontCamera.getTargetHorizontalAngleRad();
-			double vAngle = frontCamera.getTargetVerticalAngleRad();
-			double hWidth = frontCamera.getHorizontalWidthRad();
-			double vWidth = frontCamera.getVerticalWidthRad();
+			double hAngle = cameraSelection.getTargetHorizontalAngleRad();
+			double vAngle = cameraSelection.getTargetVerticalAngleRad();
+			double hWidth = cameraSelection.getHorizontalWidthRad();
+			double vWidth = cameraSelection.getVerticalWidthRad();
 			
 			VisionTargetList.Target target = new VisionTargetList.Target(hAngle, vAngle, hWidth, vWidth);
 			targets.add(target);

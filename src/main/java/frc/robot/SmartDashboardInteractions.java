@@ -41,6 +41,12 @@ public class SmartDashboardInteractions
         }
     }
 
+    public Pose getStartPosition()
+    {
+        StartPositionOption startPosition = (StartPositionOption)startChooser.getSelected();
+        
+		return startPosition.initialPose;
+    }
     
     
     SendableChooser<StartDelayOption> startDelayChooser;
@@ -83,6 +89,7 @@ public class SmartDashboardInteractions
     enum JoystickOption 
     {
         ARCADE_DRIVE("Arcade Drive"),
+        REVERSIBLE_ARCADE_DRIVE("Reversible Arcade Drive"),
         TRIGGER_DRIVE("Trigger Drive"),				// works for Xbox controller and Xbox steering wheel
         TANK_DRIVE("Tank Drive"),
         CHEESY_ARCADE_DRIVE("Cheesy Arcade Drive"),
@@ -121,7 +128,8 @@ public class SmartDashboardInteractions
     	
     	joystickModeChooser = new SendableChooser<JoystickOption>();
     	joystickModeChooser.addObject(JoystickOption.ARCADE_DRIVE.name,        JoystickOption.ARCADE_DRIVE);
-    	joystickModeChooser.addDefault(JoystickOption.TRIGGER_DRIVE.name,        JoystickOption.TRIGGER_DRIVE);
+    	joystickModeChooser.addObject(JoystickOption.REVERSIBLE_ARCADE_DRIVE.toString(),        JoystickOption.REVERSIBLE_ARCADE_DRIVE);
+		joystickModeChooser.addDefault(JoystickOption.TRIGGER_DRIVE.name,        JoystickOption.TRIGGER_DRIVE);
     	joystickModeChooser.addObject(JoystickOption.TANK_DRIVE.name, 	      JoystickOption.TANK_DRIVE);
      	joystickModeChooser.addObject(JoystickOption.CHEESY_ARCADE_DRIVE.name,  JoystickOption.CHEESY_ARCADE_DRIVE);
     	joystickModeChooser.addObject(JoystickOption.CHEESY_TRIGGER_DRIVE.name, JoystickOption.CHEESY_TRIGGER_DRIVE);
@@ -136,11 +144,6 @@ public class SmartDashboardInteractions
     {
     	AutoModeOption autoMode = (AutoModeOption)autoModeChooser.getSelected();
 
-    	String gameData = DriverStation.getInstance().getGameSpecificMessage();
-    	while(gameData.length() < 1){
-    		gameData = DriverStation.getInstance().getGameSpecificMessage(); 
-    	}
-    	
     	switch(autoMode)
     	{
     	case STAND_STILL:
@@ -164,6 +167,9 @@ public class SmartDashboardInteractions
     	{
     	case ARCADE_DRIVE:
 			return ArcadeDriveJoystick.getInstance();
+			
+		case REVERSIBLE_ARCADE_DRIVE:
+			return ReversibleArcadeDriveJoystick.getInstance();
 			
     	case TRIGGER_DRIVE:
 			return TriggerDriveJoystick.getInstance();

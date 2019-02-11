@@ -52,20 +52,20 @@ public class HatchDeploy {
             break;
         case DEFENSE:
             dropMotor.set(ControlMode.MotionMagic, degsToEncoderUnits(defenseAngle));
-            if (controls.getButton(Constants.kBumperButton))
+            if (controls.getButton(Constants.kDefenseButton))
             {
                 state = HatchDeployStateEnum.TO_BUMPER;
             }
             break;
         case TO_BUMPER:
             dropMotor.set(ControlMode.MotionMagic, degsToEncoderUnits(pickUpAngle));
-            if (controls.getButton(Constants.kGroundPickupButton)) {
+            if (controls.getButton(Constants.kCargoIntakeRetractButton)) {
                 state = HatchDeployStateEnum.GROUND;
             }
             break;
         case GROUND:
             dropMotor.set(ControlMode.MotionMagic, degsToEncoderUnits(groundAngle));
-            if (controls.getButton(Constants.kBumperButton)) {
+            if (controls.getButton(Constants.kCargoIntakeRetractButton)) {
                 state = HatchDeployStateEnum.DEFENSE;
             }
             break;

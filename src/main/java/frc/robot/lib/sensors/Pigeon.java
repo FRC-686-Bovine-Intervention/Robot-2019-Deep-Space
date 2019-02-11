@@ -6,10 +6,10 @@ import frc.robot.Constants;
 
 public class Pigeon extends GyroBase
 {
-	private static GyroBase instance = new Pigeon();
-	public static GyroBase getInstance() { return instance; }
-	
-    PigeonIMU pigeon;
+        private static GyroBase instance = new Pigeon();
+        public static GyroBase getInstance() { return instance; }
+        
+        PigeonIMU pigeon;
     
     // yaw/picth/roll constants
     final int kYAW   = 0;
