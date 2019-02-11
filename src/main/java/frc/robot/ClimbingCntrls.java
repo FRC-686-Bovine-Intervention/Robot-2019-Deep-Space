@@ -1,6 +1,6 @@
 package  frc.robot;
 
-import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.lib.joystick.ArcadeDriveJoystick;
 import frc.robot.lib.joystick.JoystickControlsBase;
 
@@ -8,14 +8,13 @@ public class ClimbingCntrls {
 
     public static ClimbingCntrls mInstance = new ClimbingCntrls();
     public static ClimbingCntrls getInstance() { return mInstance; }
-    public Talon shooterMotor;
-    public static int shooterPort = 2;
-    public static double shooterSpeed = 1;
-    public static double shooterStop = 0;
+    public DoubleSolenoid climberSolenoid;
+    public final int cFwdPort = 1;
+    public final int cRvsPort = 2;
 
 public ClimbingCntrls()
 {
- shooterMotor = new Talon(shooterPort);
+   climberSolenoid = new DoubleSolenoid(0, cFwdPort, cRvsPort);
 }
     
 public void run()
@@ -23,11 +22,11 @@ public void run()
     JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
     if(controls.getButton(Constants.kXboxButtonLB))
     {
-        shooterMotor.set(shooterSpeed);
+        //shooterMotor.set(shooterSpeed);
     }
     else 
     {
-        shooterMotor.set(shooterStop);
+        //shooterMotor.set(shooterStop);
     }
 }
 
