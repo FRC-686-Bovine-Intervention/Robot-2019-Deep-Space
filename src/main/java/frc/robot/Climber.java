@@ -3,14 +3,12 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.CargoIntake.CargoDeployPositionEnum;
 import frc.robot.CargoIntake.CargoDeployStateEnum;
 import frc.robot.command_status.DriveCommand;
 import frc.robot.lib.joystick.ButtonBoard;
-import frc.robot.lib.sensors.GyroBase;
 import frc.robot.lib.sensors.Pigeon;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.loops.Loop;

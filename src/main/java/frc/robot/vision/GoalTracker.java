@@ -9,7 +9,6 @@ import java.util.Optional;
 
 import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.Vector2d;
-import frc.robot.Constants;
 import frc.robot.command_status.GoalStates.GoalState;
 
 import edu.wpi.first.wpilibj.Timer;

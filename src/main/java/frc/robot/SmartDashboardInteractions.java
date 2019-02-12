@@ -7,7 +7,6 @@ import frc.robot.lib.joystick.*;
 
 import frc.robot.lib.util.Pose;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
