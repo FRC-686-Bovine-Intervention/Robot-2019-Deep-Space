@@ -9,7 +9,7 @@ import frc.robot.Constants;
 public class ClimberCylinders
 {
     private static ClimberCylinders mInstance = null;
-    private DoubleSolenoid solenoid;
+    private DoubleSolenoid lSolenoid;
     private final DoubleSolenoid.Value kSolenoidStateWhenExtended = DoubleSolenoid.Value.kForward; // switch kForward<-->kReverse to reverse the controls polarity
     private DoubleSolenoid.Value kSolenoidStateWhenRetracted;
     private DoubleSolenoid.Value direction;
@@ -26,7 +26,8 @@ public class ClimberCylinders
 
     private ClimberCylinders()
     {
-        solenoid = new DoubleSolenoid(Constants.kExample2ForwardChannel, Constants.kExample2ReverseChannel);
+        lSolenoid = new DoubleSolenoid(Constants.kLeftClimberForwardChannel, Constants.kLeftClimberReverseChannel);
+        // TODO: add other solenoid
 
         kSolenoidStateWhenRetracted = DoubleSolenoid.Value.kReverse;
         if (kSolenoidStateWhenExtended == DoubleSolenoid.Value.kReverse)
@@ -47,7 +48,7 @@ public class ClimberCylinders
         if (direction != kSolenoidStateWhenExtended)
         {
             direction = kSolenoidStateWhenExtended;
-            solenoid.set(direction);
+            lSolenoid.set(direction);
         }
     }
 
@@ -56,7 +57,7 @@ public class ClimberCylinders
         if (direction != kSolenoidStateWhenRetracted)
         {
             direction = kSolenoidStateWhenRetracted;
-            solenoid.set(direction);
+            lSolenoid.set(direction);
         }
     }
 
@@ -65,7 +66,7 @@ public class ClimberCylinders
         if (direction != DoubleSolenoid.Value.kOff)
         {
             direction = DoubleSolenoid.Value.kOff;
-            solenoid.set(direction);
+            lSolenoid.set(direction);
         }
     }
 }

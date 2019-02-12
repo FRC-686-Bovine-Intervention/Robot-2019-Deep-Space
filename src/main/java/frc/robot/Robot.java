@@ -12,6 +12,7 @@ import java.util.TimeZone;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import frc.robot.auto.AutoModeExecuter;
 import frc.robot.command_status.DriveCommand;
 import frc.robot.command_status.DriveState;
@@ -19,7 +20,6 @@ import frc.robot.command_status.GoalStates;
 import frc.robot.command_status.RobotState;
 import frc.robot.lib.joystick.ArcadeDriveJoystick;
 import frc.robot.lib.joystick.JoystickControlsBase;
-import frc.robot.lib.joystick.ReversibleArcadeDriveJoystick;
 import frc.robot.lib.sensors.Limelight;
 import frc.robot.lib.util.ControlsReverse;
 import frc.robot.lib.util.CrashTracker;
@@ -69,6 +69,7 @@ public class Robot extends TimedRobot {
 	Limelight hatchCamera = Limelight.getHatchInstance();
 
 	HatchDeploy hatchDeploy;
+	ControlsReverse controlsReverse = ControlsReverse.getInstance();
 
 	enum OperationalMode 
     {
@@ -92,6 +93,8 @@ public class Robot extends TimedRobot {
 		try
     	{
     		CrashTracker.logRobotInit();
+
+			LiveWindow.disableTelemetry(pdp);	// stops CAN error
 
 			hatchDeploy = HatchDeploy.getInstance();
     		
@@ -195,7 +198,7 @@ public class Robot extends TimedRobot {
 			cargoCamera.disabledPeriodic();
 			hatchCamera.disabledPeriodic();
 			   
-			System.gc(); // runs garbage collector
+			// System.gc(); // runs garbage collector
 		}
 		catch (Throwable t)
 		{
@@ -320,6 +323,8 @@ public class Robot extends TimedRobot {
 		}
 	}
 
+
+	
 	/****************************************************************
 	 * TEST MODE
 	 ****************************************************************/
@@ -341,6 +346,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotPeriodic()
 	{
+		loopController.run();		
 		robotLogger.log();
 	}
 

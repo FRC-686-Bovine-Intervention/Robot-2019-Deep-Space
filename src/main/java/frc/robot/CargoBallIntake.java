@@ -40,8 +40,8 @@ public class CargoBallIntake implements Loop
     public ButtonBoard buttonBoard = ButtonBoard.getInstance();
 
     public RisingEdgeDetector onIntakeButtonPress;
-    public RisingEdgeDetector onDefenseButtonPress;
-    public RisingEdgeDetector onClimbingButtonPress;
+    public RisingEdgeDetector onDefenseButtonPress = new RisingEdgeDetector();
+    public RisingEdgeDetector onClimbingButtonPress = new RisingEdgeDetector();
     public boolean intakeActive = false;
 
     public enum CargoDeployStateEnum { ZEROING, OPERATIONAL, DEFENSE, CLIMBING; }
@@ -75,15 +75,15 @@ public class CargoBallIntake implements Loop
 
     public final double kMinFwdOutput = +0;
     public final double kMinRevOutput = -0;
-    public final double kMaxFwdOutput = +0.1;   // start with low voltage!!!  TODO: increase to 0.5 max (6V)
-    public final double kMaxRevOutput = -0.1;
+    public final double kMaxFwdOutput = +0.5;   // start with low voltage!!!  TODO: increase to 0.5 max (6V)
+    public final double kMaxRevOutput = -0.5;
 
     public final int kSlotIdx = 0;
 
-    public final double kMaxEncoderPulsePer100ms = 1;	//TODO: fix bogus value // velocity at a max throttle (measured using Phoenix Tuner)
-    public final double kMaxPercentOutput 		= 0.1;	//TODO: fix bogus value 	// percent output of motor at above throttle (using Phoenix Tuner)
+    public final double kMaxEncoderPulsePer100ms = 60;	// velocity at a max throttle (measured using Phoenix Tuner)
+    public final double kMaxPercentOutput 		= 1.0;	// percent output of motor at above throttle (using Phoenix Tuner)
 
-    public final double kCruiseVelocity = 0.75 * kMaxEncoderPulsePer100ms;		// cruise below top speed
+    public final double kCruiseVelocity = 0.50 * kMaxEncoderPulsePer100ms;		// cruise below top speed
     public final double kTimeToCruiseVelocity = 0.25;				// seconds to reach cruise velocity
     public final double kAccel = kCruiseVelocity / kTimeToCruiseVelocity; 
     
@@ -124,7 +124,7 @@ public class CargoBallIntake implements Loop
 		// configure encoder
 		deployMotorMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, Constants.kTalonPidIdx, Constants.kTalonTimeoutMs);
 		deployMotorMaster.setSensorPhase(true); // set so that positive motor input results in positive change in sensor value
-		deployMotorMaster.setInverted(false);   // set to have green LEDs when driving forward
+		deployMotorMaster.setInverted(true);   // set to have green LEDs when driving forward
 		
 		// set relevant frame periods to be at least as fast as periodic rate
 		deployMotorMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General,      (int)(1000 * Constants.kLoopDt), Constants.kTalonTimeoutMs);
@@ -238,24 +238,24 @@ public class CargoBallIntake implements Loop
         {
             case ZEROING:
             // on first activation after power-cycling, start moving arm backwards until limit switch is reached
-            deployMotorMaster.set(ControlMode.PercentOutput, zeroingPercentOutput);
+            // deployMotorMaster.set(ControlMode.PercentOutput, zeroingPercentOutput);
 
-            if (getReverseLimitSwitch()) 
-            {
+            // if (getReverseLimitSwitch()) 
+            // {
 
-                calibrated = true;  // set so we don't have to zero again
+            //     calibrated = true;  // set so we don't have to zero again
 
-                // set the current sensor position to our retracted position
-                deployMotorMaster.setSelectedSensorPosition( kDeployMotorReverseSoftLimit, Constants.kTalonPidIdx, Constants.kTalonTimeoutMs);
+            //     // set the current sensor position to our retracted position
+            //     deployMotorMaster.setSelectedSensorPosition( kDeployMotorReverseSoftLimit, Constants.kTalonPidIdx, Constants.kTalonTimeoutMs);
 
-                // enable soft limits after zeroing
-				deployMotorMaster.configReverseSoftLimitEnable(true, Constants.kTalonTimeoutMs);
-				deployMotorMaster.configForwardSoftLimitEnable(true, Constants.kTalonTimeoutMs);
-				deployMotorMaster.overrideLimitSwitchesEnable(true);	// disable soft limit switches during zeroing
+            //     // enable soft limits after zeroing
+			// 	deployMotorMaster.configReverseSoftLimitEnable(true, Constants.kTalonTimeoutMs);
+			// 	deployMotorMaster.configForwardSoftLimitEnable(true, Constants.kTalonTimeoutMs);
+			// 	deployMotorMaster.overrideLimitSwitchesEnable(true);	// disable soft limit switches during zeroing
 
-                state = CargoDeployStateEnum.OPERATIONAL;
-                position = CargoDeployPositionEnum.RETRACTED;
-            }
+            //     state = CargoDeployStateEnum.OPERATIONAL;
+            //     position = CargoDeployPositionEnum.RETRACTED;
+            // }
             break;
  
         case OPERATIONAL:

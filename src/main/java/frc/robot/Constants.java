@@ -1,5 +1,6 @@
 package frc.robot;
 
+import frc.robot.lib.joystick.ButtonBoard;
 import frc.robot.lib.util.ConstantsBase;
 
 /**
@@ -37,18 +38,18 @@ public class Constants extends ConstantsBase {
     public static int kCargoDeployMasterTalonId =   5;   
     public static int kCargoDeploySlaveTalonId =    6;   
     public static int kCargoIntakeTalonId =         7;
-    public static int kClimberDriveMotorTalonId =   99;
+    public static int kHatchDeployTalonId =         8;
+    public static int kClimberDriveMotorTalonId =   12;
 
     // RoboRIO DIO ports
     public static int kBallDetectSensorPort = 0;  
 
     // Pnuematic Control Channels
-    public static int kExample2ForwardChannel = 99; // REMOVE!
-    public static int kExample2ReverseChannel = 99; // REMOVE!
-    public static int kLeftClimberForwardChannel = 0;    // TODO: MAKE THIS RIGHT!!!
-    public static int kLeftClimberReverseChannel = 1;
+    public static int kLeftClimberForwardChannel =  0;
+    public static int kLeftClimberReverseChannel =  1;
     public static int kRightClimberForwardChannel = 2;
     public static int kRightClimberReverseChannel = 3;
+    public static int kHatchEjectChannel =          4;
 
 
 
@@ -91,22 +92,22 @@ public class Constants extends ConstantsBase {
     public static int kXboxRStickYAxis = 5;
 
     // Driver Joystick Configuration
-    public static int kCargoIntakeButton =          kXboxButtonRB;
-    public static int kCargoOuttakeButton =         kXboxButtonLB;
-    public static int kHatchExtendRetractButton =   kXboxButtonY;
-    public static int kHatchShootButton =           kXboxButtonA;
-    public static int kQuickTurnButton =            99;
+    public static int kHatchExtendRetractButton =   kXboxButtonRB;
+    public static int kHatchShootButton =           kXboxRTriggerAxis;  // TODO: shoot hatch when trigger > 0.5
+    public static int kCargoIntakeButton =          kXboxButtonLB;
+    public static int kCargoOuttakeButton =         kXboxLTriggerAxis;
+    public static int kVisionAssistanceButton =     kXboxButtonA;
     public static int kControlsReverseButton =      kXboxButtonB;
-    public static int kVisionAssistanceButton =     kXboxButtonX;
+    public static int kQuickTurnButton =            kXboxButtonY; // bogus setting to make TriggerDrive Joysticks happy
 
     // Operator Button Board Configuration
-    public static int kCargoIntakeRetractButton =   1;
-    public static int kCargoIntakeRocketButton =    2;
-    public static int kCargoIntakeCargoShipButton = 3;
-    public static int kDefenseButton =              4;
-    public static int kClimbingStartButton =        5;
-    public static int kClimbingExtendButton =       6;
-    public static int kClimbingRetractButton =      7;
+    public static int kCargoIntakeRetractButton =   kXboxButtonX;           // TODO: ask which button drive team wants
+    public static int kCargoIntakeRocketButton =    ButtonBoard.kButtonBoardB;
+    public static int kCargoIntakeCargoShipButton = ButtonBoard.kButtonBoardA;
+    public static int kDefenseButton =              ButtonBoard.kButtonBoardRB;
+    public static int kClimbingStartButton =        ButtonBoard.kButtonBoardLB;
+    public static int kClimbingExtendButton =       ButtonBoard.kButtonBoardX;
+    public static int kClimbingRetractButton =      ButtonBoard.kButtonBoardY;
 
   
     
