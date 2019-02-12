@@ -3,13 +3,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import frc.robot.Constants;
 
-// TODO: need to have 2 cylinders -- left and right
-// need separate control channels for each, but both will extend and retract together
-
 public class ClimberCylinders
 {
     private static ClimberCylinders mInstance = null;
     private DoubleSolenoid lSolenoid;
+    private DoubleSolenoid rSolenoid;
     private final DoubleSolenoid.Value kSolenoidStateWhenExtended = DoubleSolenoid.Value.kForward; // switch kForward<-->kReverse to reverse the controls polarity
     private DoubleSolenoid.Value kSolenoidStateWhenRetracted;
     private DoubleSolenoid.Value direction;
@@ -27,7 +25,7 @@ public class ClimberCylinders
     private ClimberCylinders()
     {
         lSolenoid = new DoubleSolenoid(Constants.kLeftClimberForwardChannel, Constants.kLeftClimberReverseChannel);
-        // TODO: add other solenoid
+        rSolenoid = new DoubleSolenoid(Constants.kRightClimberForwardChannel, Constants.kRightClimberReverseChannel);
 
         kSolenoidStateWhenRetracted = DoubleSolenoid.Value.kReverse;
         if (kSolenoidStateWhenExtended == DoubleSolenoid.Value.kReverse)
@@ -49,6 +47,7 @@ public class ClimberCylinders
         {
             direction = kSolenoidStateWhenExtended;
             lSolenoid.set(direction);
+            rSolenoid.set(direction);
         }
     }
 
@@ -58,6 +57,7 @@ public class ClimberCylinders
         {
             direction = kSolenoidStateWhenRetracted;
             lSolenoid.set(direction);
+            rSolenoid.set(direction);
         }
     }
 
@@ -67,6 +67,7 @@ public class ClimberCylinders
         {
             direction = DoubleSolenoid.Value.kOff;
             lSolenoid.set(direction);
+            rSolenoid.set(direction);
         }
     }
 }

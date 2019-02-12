@@ -20,7 +20,7 @@ public class VisionDriveAssistant
     // configuration parameters
     public static boolean allowSpeedControl = false;
     public static double kLookaheadDist = 24.0;   // inches
-    public static double kFullThrottleSpeed =      DriveLoop.encoderUnitsPerFrameToInchesPerSecond((int)Constants.kFullThrottleEncoderPulsePer100ms); // inches/sec
+    public static double kFullThrottleSpeed =      DriveLoop.encoderUnitsPerFrameToInchesPerSecond((int)DriveLoop.kFullThrottleEncoderPulsePer100ms); // inches/sec
     public static double kMaxSpeed =      100.0; // inches/sec
     public static double kMaxAccel =      200.0; // inches/sec^2	
     public static double kTargetStoppingDistanceFromBumper = 16.0; // inches to stop from target, measured from front bumper

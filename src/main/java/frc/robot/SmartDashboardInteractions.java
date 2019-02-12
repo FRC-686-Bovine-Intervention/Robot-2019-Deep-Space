@@ -106,34 +106,34 @@ public class SmartDashboardInteractions
     public void initWithDefaults() 
     {
         startChooser = new SendableChooser<StartPositionOption>();
-        startChooser.addDefault(StartPositionOption.LEFT_START.toString(),    StartPositionOption.LEFT_START);
-        startChooser.addObject(StartPositionOption.CENTER_START.toString(),    StartPositionOption.CENTER_START);
-        startChooser.addObject(StartPositionOption.RIGHT_START.toString(),    StartPositionOption.RIGHT_START);
-        startChooser.addObject(StartPositionOption.RIGHT_PLATFORM_START.toString(),    StartPositionOption.RIGHT_PLATFORM_START);
-        startChooser.addDefault(StartPositionOption.LEFT_PLATFORM_START.toString(),    StartPositionOption.LEFT_PLATFORM_START);
+        startChooser.addOption(StartPositionOption.LEFT_START.toString(),    StartPositionOption.LEFT_START);
+        startChooser.addOption(StartPositionOption.CENTER_START.toString(),    StartPositionOption.CENTER_START);
+        startChooser.addOption(StartPositionOption.RIGHT_START.toString(),    StartPositionOption.RIGHT_START);
+        startChooser.addOption(StartPositionOption.RIGHT_PLATFORM_START.toString(),    StartPositionOption.RIGHT_PLATFORM_START);
+        startChooser.setDefaultOption(StartPositionOption.LEFT_PLATFORM_START.toString(),    StartPositionOption.LEFT_PLATFORM_START);
         SmartDashboard.putData("Start Position", startChooser);
         
         startDelayChooser = new SendableChooser<StartDelayOption>();
-        startDelayChooser.addDefault(StartDelayOption.DELAY_0_SEC.toString(), StartDelayOption.DELAY_0_SEC);
-        startDelayChooser.addObject(StartDelayOption.DELAY_1_SEC.toString(), StartDelayOption.DELAY_1_SEC);
-        startDelayChooser.addObject(StartDelayOption.DELAY_2_SEC.toString(), StartDelayOption.DELAY_2_SEC);
-        startDelayChooser.addObject(StartDelayOption.DELAY_3_SEC.toString(), StartDelayOption.DELAY_3_SEC);
-        startDelayChooser.addObject(StartDelayOption.DELAY_4_SEC.toString(), StartDelayOption.DELAY_4_SEC);
-        startDelayChooser.addObject(StartDelayOption.DELAY_5_SEC.toString(), StartDelayOption.DELAY_5_SEC);
+        startDelayChooser.setDefaultOption(StartDelayOption.DELAY_0_SEC.toString(), StartDelayOption.DELAY_0_SEC);
+        startDelayChooser.addOption(StartDelayOption.DELAY_1_SEC.toString(), StartDelayOption.DELAY_1_SEC);
+        startDelayChooser.addOption(StartDelayOption.DELAY_2_SEC.toString(), StartDelayOption.DELAY_2_SEC);
+        startDelayChooser.addOption(StartDelayOption.DELAY_3_SEC.toString(), StartDelayOption.DELAY_3_SEC);
+        startDelayChooser.addOption(StartDelayOption.DELAY_4_SEC.toString(), StartDelayOption.DELAY_4_SEC);
+        startDelayChooser.addOption(StartDelayOption.DELAY_5_SEC.toString(), StartDelayOption.DELAY_5_SEC);
         SmartDashboard.putData("Auto Start Delay", startDelayChooser);
        
         autoModeChooser = new SendableChooser<AutoModeOption>();
-        autoModeChooser.addObject(AutoModeOption.STAND_STILL.name, AutoModeOption.STAND_STILL);
+        autoModeChooser.addOption(AutoModeOption.STAND_STILL.name, AutoModeOption.STAND_STILL);
         SmartDashboard.putData("Auto Mode", autoModeChooser);
     	
     	joystickModeChooser = new SendableChooser<JoystickOption>();
-    	joystickModeChooser.addObject(JoystickOption.ARCADE_DRIVE.name,        JoystickOption.ARCADE_DRIVE);
-    	joystickModeChooser.addObject(JoystickOption.REVERSIBLE_ARCADE_DRIVE.toString(),        JoystickOption.REVERSIBLE_ARCADE_DRIVE);
-		joystickModeChooser.addDefault(JoystickOption.TRIGGER_DRIVE.name,        JoystickOption.TRIGGER_DRIVE);
-    	joystickModeChooser.addObject(JoystickOption.TANK_DRIVE.name, 	      JoystickOption.TANK_DRIVE);
-     	joystickModeChooser.addObject(JoystickOption.CHEESY_ARCADE_DRIVE.name,  JoystickOption.CHEESY_ARCADE_DRIVE);
-    	joystickModeChooser.addObject(JoystickOption.CHEESY_TRIGGER_DRIVE.name, JoystickOption.CHEESY_TRIGGER_DRIVE);
-    	joystickModeChooser.addObject(JoystickOption.CHEESY_2STICK_DRIVE.name,  JoystickOption.CHEESY_2STICK_DRIVE);
+    	joystickModeChooser.addOption(JoystickOption.ARCADE_DRIVE.name,        JoystickOption.ARCADE_DRIVE);
+    	joystickModeChooser.setDefaultOption(JoystickOption.REVERSIBLE_ARCADE_DRIVE.toString(),        JoystickOption.REVERSIBLE_ARCADE_DRIVE);
+		joystickModeChooser.addOption(JoystickOption.TRIGGER_DRIVE.name,        JoystickOption.TRIGGER_DRIVE);
+    	joystickModeChooser.addOption(JoystickOption.TANK_DRIVE.name, 	      JoystickOption.TANK_DRIVE);
+     	joystickModeChooser.addOption(JoystickOption.CHEESY_ARCADE_DRIVE.name,  JoystickOption.CHEESY_ARCADE_DRIVE);
+    	joystickModeChooser.addOption(JoystickOption.CHEESY_TRIGGER_DRIVE.name, JoystickOption.CHEESY_TRIGGER_DRIVE);
+    	joystickModeChooser.addOption(JoystickOption.CHEESY_2STICK_DRIVE.name,  JoystickOption.CHEESY_2STICK_DRIVE);
     	SmartDashboard.putData("Joystick Chooser", joystickModeChooser);
     	
      }

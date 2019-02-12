@@ -55,6 +55,14 @@ public class DriveLoop implements Loop
 	private static final int kVelocityControlSlot = 0;
 	private static final int kBaseLockControlSlot = 1;
 
+    // Motor Controller Inversions
+    public static boolean kLeftMotorInverted = false;
+    public static boolean kRightMotorInverted = true;
+    public static boolean kLeftMotorSensorPhase = false;
+    public static boolean kRightMotorSensorPhase = false;
+
+    public static int kDriveTrainCurrentLimit = 25;
+
 
 	// Wheels
 	public static double kDriveWheelCircumInches    = 18.800;
@@ -75,6 +83,10 @@ public class DriveLoop implements Loop
 	public static double kDriveSecondsFromNeutralToFull = 0.375;		// decrease acceleration (reduces current, robot tipping)
 	public static double kNominalEncoderPulsePer100ms = 85;		// velocity at a nominal throttle (measured using NI web interface)
 	public static double kNominalPercentOutput 		 = 0.4447;	// percent output of motor at above throttle (using NI web interface)
+   
+   // CONTROL LOOP GAINS
+   public static double kFullThrottleRPM = 520;	// measured max RPM using NI web interface
+   public static double kFullThrottleEncoderPulsePer100ms = kFullThrottleRPM / 60.0 * kQuadEncoderStatusFramePeriod * kQuadEncoderUnitsPerRev; 
 
     // PID gains for drive velocity loop (sent to Talon)
     // Units: error is 4*256 counts/rev. Max output is +/- 1023 units.
@@ -146,10 +158,10 @@ public class DriveLoop implements Loop
 		// Set up the encoders
 		lMotorMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, Constants.kTalonPidIdx, Constants.kTalonTimeoutMs);	// configure for closed-loop PID
 		rMotorMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, Constants.kTalonPidIdx, Constants.kTalonTimeoutMs);
-		lMotorMaster.setSensorPhase(Constants.kLeftMotorSensorPhase);
-		rMotorMaster.setSensorPhase(Constants.kRightMotorSensorPhase);
-		lMotorMaster.setInverted(Constants.kLeftMotorInverted);
-		rMotorMaster.setInverted(Constants.kRightMotorInverted);
+		lMotorMaster.setSensorPhase(kLeftMotorSensorPhase);
+		rMotorMaster.setSensorPhase(kRightMotorSensorPhase);
+		lMotorMaster.setInverted(kLeftMotorInverted);
+		rMotorMaster.setInverted(kRightMotorInverted);
 		
 		// Load velocity control gains
 		lMotorMaster.config_kF(kVelocityControlSlot, kDriveVelocityKf, Constants.kTalonTimeoutMs);
@@ -192,7 +204,6 @@ public class DriveLoop implements Loop
 		 *****************************************************************/
 		lMotorSlaves = new ArrayList<BaseMotorController>();	
 		rMotorSlaves = new ArrayList<BaseMotorController>();	
-		System.out.println("Competition Bot: 1 VictorSPX slave per side");
 		lMotorSlaves.add(new VictorSPX(Constants.kLeftMotorSlave1TalonId));
 		rMotorSlaves.add(new VictorSPX(Constants.kRightMotorSlave1TalonId));			
 		
@@ -200,13 +211,13 @@ public class DriveLoop implements Loop
         {
     		lMotorSlave.follow(lMotorMaster);	// give slave the TalonID of it's master
     		lMotorSlave.setNeutralMode(NeutralMode.Coast);
-    		lMotorSlave.setInverted(Constants.kLeftMotorInverted);
+    		lMotorSlave.setInverted(kLeftMotorInverted);
         }
         for (BaseMotorController rMotorSlave : rMotorSlaves) 
         {
     		rMotorSlave.follow(rMotorMaster);	// give slave the TalonID of it's master
     		rMotorSlave.setNeutralMode(NeutralMode.Coast);
-    		rMotorSlave.setInverted(Constants.kRightMotorInverted);
+    		rMotorSlave.setInverted(kRightMotorInverted);
         }
         
 		/*****************************************************************

@@ -104,7 +104,7 @@ public class Robot extends TimedRobot {
        		loopController.register(RobotStateLoop.getInstance());
     		loopController.register(VisionLoop.getInstance());
 			loopController.register(GoalStateLoop.getInstance());
-			loopController.register(CargoBallIntake.getInstance());
+			loopController.register(CargoIntake.getInstance());
 			loopController.register(Climber.getInstance());
 
     		smartDashboardInteractions = new SmartDashboardInteractions();
@@ -122,6 +122,8 @@ public class Robot extends TimedRobot {
 			robotLogger.register(VisionTargetList.getInstance().getLogger());
 			robotLogger.register(GoalStateLoop.getInstance().getGoalTracker().getLogger());
 			robotLogger.register(GoalStates.getInstance().getLogger());
+			robotLogger.register(CargoIntake.getInstance().getLogger());
+			robotLogger.register(Climber.getInstance().getLogger());
     		
     		setInitialPose(new Pose());
 

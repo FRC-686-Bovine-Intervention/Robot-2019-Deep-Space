@@ -28,6 +28,13 @@ public class HatchDeploy {
     boolean on;
     boolean off;
 
+
+    // math for limit switch
+    public static double kEncoderUnitsPerRev = 4096;
+    public static double kEncoderDegPerRev = 360;
+    public static double kEncoderUnitsPerDeg = kEncoderUnitsPerRev/kEncoderDegPerRev;
+    
+    
     public enum HatchDeployStateEnum {
         INIT, DEFENSE, TO_BUMPER, GROUND;
     }
@@ -87,18 +94,18 @@ public class HatchDeploy {
 
     public static double dedegsToEncoderUnits(int _encoderUnits)
 	{
-		return _encoderUnits / Constants.kHatchEncoderUnitsPerDegs;
+		return _encoderUnits / kEncoderUnitsPerDeg;
 	}
 	
 	public static int degsToEncoderUnits(double _inches)
 	{
-		return (int)(_inches * Constants.kHatchEncoderUnitsPerDegs);
+		return (int)(_inches * kEncoderUnitsPerDeg);
 	}
 	
 	public double encoderVelocityToDegsPerSec(int _encoderVelocity)
 	{
 		// extra factor of 10 because velocity is reported over 100ms periods 
-		return _encoderVelocity * 10.0 / Constants.kHatchEncoderUnitsPerDegs;
+		return _encoderVelocity * 10.0 / kEncoderUnitsPerDeg;
 	}
     
 public void drop() {

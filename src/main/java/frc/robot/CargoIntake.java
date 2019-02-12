@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -10,20 +11,23 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.lib.joystick.ArcadeDriveJoystick;
 import frc.robot.lib.joystick.ButtonBoard;
 import frc.robot.lib.joystick.JoystickControlsBase;
+import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.RisingEdgeDetector;
+import frc.robot.lib.util.Util;
 import frc.robot.loops.Loop;
 
-public class CargoBallIntake implements Loop
+public class CargoIntake implements Loop
 {
 	// singleton class
-    private static CargoBallIntake instance = null;
-    public static CargoBallIntake getInstance() 
+    private static CargoIntake instance = null;
+    public static CargoIntake getInstance() 
     { 
         if (instance == null) {
-            instance = new CargoBallIntake();
+            instance = new CargoIntake();
         }
         return instance;
     }
@@ -49,20 +53,21 @@ public class CargoBallIntake implements Loop
 
     public enum CargoDeployPositionEnum
     {
-        RETRACTED(120.0), 
-        GROUND(0.0), 
-        CARGO_SHIP(45.0), 
-        ROCKET(60.0), 
-        PLATFORM(90.0),
-        PUSHUP(-10.0); 
+        RETRACTED(109.5), 
+        PLATFORM(63.5),
+        CARGO_SHIP(56.0), 
+        ROCKET(36.0), 
+        GROUND(-8.7), 
+        PUSHUP(-14.3); 
     
         public final double angleDeg;
 
         CargoDeployPositionEnum(double _angleDeg) { angleDeg = _angleDeg; }
     }
-    public CargoDeployPositionEnum position = CargoDeployPositionEnum.RETRACTED;
-    
-    public boolean calibrated = false;
+    public CargoDeployPositionEnum targetPosition = CargoDeployPositionEnum.RETRACTED;
+    public double targetAngleDeg = targetPosition.angleDeg;
+
+    public boolean zeroed = false;
 
     //====================================================
     // Constants
@@ -80,14 +85,14 @@ public class CargoBallIntake implements Loop
 
     public final int kSlotIdx = 0;
 
-    public final double kMaxEncoderPulsePer100ms = 60;	// velocity at a max throttle (measured using Phoenix Tuner)
-    public final double kMaxPercentOutput 		= 1.0;	// percent output of motor at above throttle (using Phoenix Tuner)
+    public final double kCalMaxEncoderPulsePer100ms = 60;	// velocity at a max throttle (measured using Phoenix Tuner)
+    public final double kCalMaxPercentOutput 		= 1.0;	// percent output of motor at above throttle (using Phoenix Tuner)
 
-    public final double kCruiseVelocity = 0.50 * kMaxEncoderPulsePer100ms;		// cruise below top speed
+    public final double kCruiseVelocity = 0.50 * kCalMaxEncoderPulsePer100ms;		// cruise below top speed
     public final double kTimeToCruiseVelocity = 0.25;				// seconds to reach cruise velocity
     public final double kAccel = kCruiseVelocity / kTimeToCruiseVelocity; 
     
-	public final double kKf = kMaxPercentOutput * 1023.0 / kMaxEncoderPulsePer100ms;
+	public final double kKf = kCalMaxPercentOutput * 1023.0 / kCalMaxEncoderPulsePer100ms;
 	public final double kKp = 0.4;	   
 	public final double kKd = 0.0;	// to resolve any overshoot, start at 10*Kp 
 	public final double kKi = 0.0;    
@@ -97,17 +102,17 @@ public class CargoBallIntake implements Loop
 	public static double kEncoderUnitsPerDeg = kQuadEncoderUnitsPerRev * kQuadEncoderGain / 360.0; 
 
     public final int    kAllowableError = (int)(1.0 * kEncoderUnitsPerDeg);
-    public final double kAllowableGroundAngle = 5.0;
+    public final double kAllowableGroundAngleDeg = CargoDeployPositionEnum.GROUND.angleDeg + 3.0;
 
-    public final int kPeakCurrentLimit = 30;
+    public final int kPeakCurrentLimit = 50;
     public final int kPeakCurrentDuration = 200;
-    public final int kContinuousCurrentLimit = 20;  // TODO: this might be too low
+    public final int kContinuousCurrentLimit = 40;
 
     public final int kDeployMotorForwardSoftLimit = angleDegToEncoderUnits(CargoDeployPositionEnum.GROUND.angleDeg);
     public final int kDeployMotorReverseSoftLimit = angleDegToEncoderUnits(CargoDeployPositionEnum.RETRACTED.angleDeg);
     
     
-    public CargoBallIntake() 
+    public CargoIntake() 
     {
         deployMotorMaster = new TalonSRX(Constants.kCargoDeployMasterTalonId);
         deployMotorSlave = new VictorSPX(Constants.kCargoDeploySlaveTalonId);
@@ -144,18 +149,17 @@ public class CargoBallIntake implements Loop
         deployMotorMaster.config_kP(kSlotIdx, kKp, Constants.kTalonTimeoutMs); 
         deployMotorMaster.config_kI(kSlotIdx, kKi, Constants.kTalonTimeoutMs); 
         deployMotorMaster.config_kD(kSlotIdx, kKd, Constants.kTalonTimeoutMs);
+        deployMotorMaster.configAllowableClosedloopError(kSlotIdx, kAllowableError, Constants.kTalonTimeoutMs);
         
 		// set acceleration and cruise velocity
 		deployMotorMaster.configMotionCruiseVelocity((int)kCruiseVelocity, Constants.kTalonTimeoutMs);
 		deployMotorMaster.configMotionAcceleration((int)kAccel, Constants.kTalonTimeoutMs);	
         
-        deployMotorMaster.configAllowableClosedloopError(kSlotIdx, kAllowableError, Constants.kTalonTimeoutMs);
-                
-        deployMotorMaster.set(ControlMode.PercentOutput, 0.0);
-        deployMotorMaster.setNeutralMode(NeutralMode.Brake);
+        // configure talon to automatically reset its position when the reverse limit switch is hit
+        deployMotorMaster.configSetParameter(ParamEnum.eClearPositionOnLimitR, 1, 0x00, 0x00, Constants.kTalonTimeoutMs);
         
 		// set soft limits (will not be valid until calibration completes)
-		deployMotorMaster.configForwardSoftLimitThreshold( kDeployMotorForwardSoftLimit,   Constants.kTalonTimeoutMs);
+		deployMotorMaster.configForwardSoftLimitThreshold( kDeployMotorForwardSoftLimit, Constants.kTalonTimeoutMs);
 		deployMotorMaster.configReverseSoftLimitThreshold( kDeployMotorReverseSoftLimit, Constants.kTalonTimeoutMs);
         
         // current limits
@@ -163,34 +167,34 @@ public class CargoBallIntake implements Loop
         deployMotorMaster.configPeakCurrentDuration(kPeakCurrentDuration, Constants.kTalonTimeoutMs);
         deployMotorMaster.configContinuousCurrentLimit(kContinuousCurrentLimit, Constants.kTalonTimeoutMs);
         deployMotorMaster.enableCurrentLimit(true);
- 
         
-
+        
         // configure followers
         deployMotorSlave.follow(deployMotorMaster);
         deployMotorSlave.setInverted(InvertType.OpposeMaster);  // motor is mounted 180 degrees, so set direction opposite of master
+ 
+        // begin with motors stopped
+        deployMotorMaster.set(ControlMode.PercentOutput, 0.0);
+        deployMotorMaster.setNeutralMode(NeutralMode.Brake);
         
-
+        
     
-        calibrated = false;     // calibrate only once per RoboRIO power cycle
+        zeroed = false;     // calibrate only once per RoboRIO power cycle
     }
     
 	@Override
 	public void onStart() 
 	{
         // if we haven't calibrated yet, do so now
-        if (!calibrated)
+        if (!zeroed)
         {
             state = CargoDeployStateEnum.ZEROING;
 
-            // disable soft limits during zeroing
-            deployMotorMaster.configReverseSoftLimitEnable(false, Constants.kTalonTimeoutMs);
-            deployMotorMaster.configForwardSoftLimitEnable(false, Constants.kTalonTimeoutMs);
-            deployMotorMaster.overrideLimitSwitchesEnable(false);	// disable soft limit switches during zeroing
-
+            turnOffSoftLimits();
         }
-	}
+    }
 
+    
 	@Override
 	public void onStop() 
 	{
@@ -198,17 +202,18 @@ public class CargoBallIntake implements Loop
         deployMotorMaster.set(ControlMode.PercentOutput, 0.0);
         intakeMotor.set(ControlMode.PercentOutput, 0.0);
     }
-
+    
 	@Override
 	public void onLoop()
     {
         // update joystick class, in case it was changed in teleopInit
         driverJoystick = Robot.getInstance().getJoystick();
-
+        
+        getLimitSwitches();
         runDeploy();
         runIntake();
     }
-
+    
     public void runIntake()
     {
         // if (onIntakeButtonPress.update(driverJoystick.getButton(Constants.kCargoIntakeButton)) 
@@ -216,19 +221,19 @@ public class CargoBallIntake implements Loop
         //     // toggle intake every time intake button is pressed
         //     intakeActive = !intakeActive;
         // }
-
+        
         // if (intakeActive)
         if (driverJoystick.getButton(Constants.kCargoIntakeButton))
         {
             intakeMotor.set(ControlMode.Current, kIntakeCurrent);
         }
-
+        
         if (driverJoystick.getButton(Constants.kCargoOuttakeButton)) 
         {
             intakeMotor.set(ControlMode.PercentOutput, kOuttakePercentOutput);
         }
     }
-
+    
     public void runDeploy()
     {
         boolean defenseButtonPress = onDefenseButtonPress.update(buttonBoard.getButton(Constants.kDefenseButton));
@@ -236,144 +241,196 @@ public class CargoBallIntake implements Loop
         
         switch (state) 
         {
-            case ZEROING:
+        case ZEROING:
             // on first activation after power-cycling, start moving arm backwards until limit switch is reached
-            // deployMotorMaster.set(ControlMode.PercentOutput, zeroingPercentOutput);
+            deployMotorMaster.set(ControlMode.PercentOutput, zeroingPercentOutput);
+            
+            if (getReverseLimitSwitch()) 
+            {
+                zeroed = true;  // set so we don't have to zero again
+                
+                // the motor controller position will automatically be set to 0 when we hit the reverse limit switch
+                
+                turnOnSoftLimits();
 
-            // if (getReverseLimitSwitch()) 
-            // {
-
-            //     calibrated = true;  // set so we don't have to zero again
-
-            //     // set the current sensor position to our retracted position
-            //     deployMotorMaster.setSelectedSensorPosition( kDeployMotorReverseSoftLimit, Constants.kTalonPidIdx, Constants.kTalonTimeoutMs);
-
-            //     // enable soft limits after zeroing
-			// 	deployMotorMaster.configReverseSoftLimitEnable(true, Constants.kTalonTimeoutMs);
-			// 	deployMotorMaster.configForwardSoftLimitEnable(true, Constants.kTalonTimeoutMs);
-			// 	deployMotorMaster.overrideLimitSwitchesEnable(true);	// disable soft limit switches during zeroing
-
-            //     state = CargoDeployStateEnum.OPERATIONAL;
-            //     position = CargoDeployPositionEnum.RETRACTED;
-            // }
+                state = CargoDeployStateEnum.OPERATIONAL;
+                setTarget(CargoDeployPositionEnum.RETRACTED);
+            }
             break;
- 
+
         case OPERATIONAL:
             // already calibrated, not in defense mode
             // button board controls are enabled
             runOperational();
 
-            if (defenseButtonPress)
-            {
+            if (defenseButtonPress) {
                 state = CargoDeployStateEnum.DEFENSE;
             }
-            
-            if (climbingButtonPress)   // TODO: add code to only allow in last 30 seconds???
+
+            // if (climbingButtonPress && (Timer.getMatchTime() < 30))
+            if (climbingButtonPress) // TODO: add code to only allow in last 30 seconds???
             {
                 state = CargoDeployStateEnum.CLIMBING;
             }
             break;
 
         case DEFENSE:
-            setPosition(CargoDeployPositionEnum.RETRACTED);
-            if (defenseButtonPress) 
+            setTarget(CargoDeployPositionEnum.RETRACTED);
+            if (defenseButtonPress)
             {
                 state = CargoDeployStateEnum.OPERATIONAL;
                 // will go back to position prior to defense button being pressed the first time
             }
             break;
-            
+
         case CLIMBING:
             // Do nothing in this file -- see Climber.java
 
-            if (climbingButtonPress)  // TODO: only allow to back out of this during first step of climb???
+            if (climbingButtonPress) // TODO: only allow to back out of this during first step of climb???
             {
                 state = CargoDeployStateEnum.OPERATIONAL;
                 // will go back to position prior to climbing button being pressed the first time
             }
             break;
-            
-        }
-    }
 
+        }   // end switch
+    }   // end runDeploy()
 
-
+    
+    
     public void runOperational()
     {
         // Only called during OPERATIONAL state
-
-        // get current target angle from driver & operator
-        if (driverJoystick.getButton(Constants.kCargoIntakeButton))         { position = CargoDeployPositionEnum.GROUND; }      // go to ground on driver button, not operator's button board
-        if (buttonBoard.getButton(Constants.kCargoIntakeRetractButton))     { position = CargoDeployPositionEnum.RETRACTED; }
-        if (buttonBoard.getButton(Constants.kCargoIntakeRocketButton))      { position = CargoDeployPositionEnum.ROCKET; }      // TODO: only allow if ball is detected?
-        if (buttonBoard.getButton(Constants.kCargoIntakeCargoShipButton))   { position = CargoDeployPositionEnum.CARGO_SHIP; }  // TODO: only allow if ball is detected?
         
-        if ((position == CargoDeployPositionEnum.GROUND) && ballDetectSensor.get())
-        {
-            // Successful ball intake.  Return to retracted position.  Driver can continue to center ball by holding down intake button.
-            position = CargoDeployPositionEnum.RETRACTED;
-        }
-
-        setPosition(position);
-    }
-
-     public boolean getReverseLimitSwitch()
-    {
-        Faults faults = new Faults();
-        deployMotorMaster.getFaults(faults);
-        return faults.ReverseLimitSwitch;
-    }
-
-    public boolean getForwardSoftLimit()
-    {
-        Faults faults = new Faults();
-        deployMotorMaster.getFaults(faults);
-        return faults.ForwardSoftLimit;  
-    }
-
-    public boolean getForwardLimitSwitch()
-    {
-        Faults faults = new Faults();
-        deployMotorMaster.getFaults(faults);
-        return faults.ForwardLimitSwitch;
-    }
-
-    public void turnOffSoftLimits()
-    {
-        // turn off soft limits so we can do a pushup during climb
-        deployMotorMaster.overrideLimitSwitchesEnable(false);    
-    }
-
-    public void setPosition(CargoDeployPositionEnum _position)
-    {
+        // get current target angle from driver & operator
+        if (driverJoystick.getButton(Constants.kCargoIntakeButton))         { setTarget(CargoDeployPositionEnum.GROUND); }      // go to ground on driver button, not operator's button board
+        if (buttonBoard.getButton(Constants.kCargoIntakeRetractButton))     { setTarget(CargoDeployPositionEnum.RETRACTED); }
+        if (buttonBoard.getButton(Constants.kCargoIntakeRocketButton))      { setTarget(CargoDeployPositionEnum.ROCKET); }      // TODO: only allow if ball is detected?
+        if (buttonBoard.getButton(Constants.kCargoIntakeCargoShipButton))   { setTarget(CargoDeployPositionEnum.CARGO_SHIP); }  // TODO: only allow if ball is detected?
+        
+        // if ((position == CargoDeployPositionEnum.GROUND) && ballDetectSensor.get())
+        // {
+        //     // Successful ball intake.  Return to retracted position.  Driver can continue to center ball by holding down intake button.
+        //     setTarget(CargoDeployPositionEnum.RETRACTED);
+        // }
+        
         // if in the ground state, turn off motor while riding on wheels
-        if ((position == CargoDeployPositionEnum.GROUND) && (getArmAngleDeg() < kAllowableGroundAngle))
+        if ((targetPosition == CargoDeployPositionEnum.GROUND) && (getArmAngleDeg() < kAllowableGroundAngleDeg))
         {
             deployMotorMaster.set(ControlMode.PercentOutput, 0.0);
             deployMotorMaster.setNeutralMode(NeutralMode.Coast);
         }
-        else
-        {
-            deployMotorMaster.set(ControlMode.MotionMagic, angleDegToEncoderUnits(_position.angleDeg));
-            deployMotorMaster.setNeutralMode(NeutralMode.Brake);
-        }
-   }
+    }
+    
+    
+    public void setTarget(CargoDeployPositionEnum _targetPosition)
+    {
+        targetPosition = _targetPosition;
+        setTargetAngleDeg(targetPosition.angleDeg);
+    }
+    
+    public void setTargetAngleDeg(double _angleDeg)
+    {
+        targetAngleDeg = _angleDeg;
+        deployMotorMaster.set(ControlMode.MotionMagic, angleDegToEncoderUnits(targetAngleDeg));
+        deployMotorMaster.setNeutralMode(NeutralMode.Brake);
+    }
+    
+    public double getTargetAngleDeg()
+    {
+        return targetAngleDeg;
+    }
+    
+    public void setPercentOutput(double _out)
+    {
+        double out = Util.limit(_out,  1.0);
+        deployMotorMaster.set(ControlMode.PercentOutput, out);
+        deployMotorMaster.setNeutralMode(NeutralMode.Brake);
+    }
 
+    private void turnOnSoftLimits() {
+        // enable soft limits after zeroing (to keep us from doing a pushup before climbing)
+        deployMotorMaster.configReverseSoftLimitEnable(true, Constants.kTalonTimeoutMs);
+        deployMotorMaster.configForwardSoftLimitEnable(true, Constants.kTalonTimeoutMs);
+        deployMotorMaster.overrideLimitSwitchesEnable(true); // disable soft limit switches during zeroing
+    }
+    
+    public void turnOffSoftLimits() {
+        // disable soft limits during zeroing and when doing a pushup during climb
+        deployMotorMaster.configReverseSoftLimitEnable(false, Constants.kTalonTimeoutMs);
+        deployMotorMaster.configForwardSoftLimitEnable(false, Constants.kTalonTimeoutMs);
+        deployMotorMaster.overrideLimitSwitchesEnable(false); // disable soft limit switches during zeroing
+    }
+    
+    Faults faults = new Faults();
+    public void getLimitSwitches()
+    {
+        // called once per loop iteration
+        deployMotorMaster.getFaults(faults);
+    }
+
+    public boolean getForwardLimitSwitch()
+    {
+        return faults.ForwardLimitSwitch;
+    }
+    
+    public boolean getReverseLimitSwitch()
+    {
+        return faults.ReverseLimitSwitch;
+    }    
+    
+    public boolean getForwardSoftLimit()
+    {
+        return faults.ForwardSoftLimit;  
+    }    
+    
+    public boolean getReverseSoftLimit()
+    {
+        return faults.ReverseSoftLimit;  
+    }    
+    
     public double getArmAngleDeg()
     {
         return encoderUnitsToAngleDeg( deployMotorMaster.getSelectedSensorPosition(Constants.kTalonPidIdx) );
     }
-
-    public int angleDegToEncoderUnits(double _angleDeg) 
+    
+    public int angleDegToEncoderUnits(double _desiredAngleDeg) 
     {
-        return (int)(_angleDeg * kEncoderUnitsPerDeg);
+        // The RETRACTED position is where the encoder is zeroed.  Everything is referenced to it.
+        return (int)((CargoDeployPositionEnum.RETRACTED.angleDeg - _desiredAngleDeg) * kEncoderUnitsPerDeg);
     }
-
+    
     public double encoderUnitsToAngleDeg(int _encoderUnits) 
     {
-        return _encoderUnits / kEncoderUnitsPerDeg;
+        // The RETRACTED position is where the encoder is zeroed.  Everything is referenced to it.
+        return (CargoDeployPositionEnum.RETRACTED.angleDeg - (_encoderUnits / kEncoderUnitsPerDeg));
     }
+    
 
-    // TODO: add log/toString
-
+    
+	private final DataLogger logger = new DataLogger()
+	{
+		@Override
+		public void log()
+		{
+            put("CargoIntake/Deploy/targetPosition", targetPosition.toString());
+            put("CargoIntake/Deploy/targetAngleDeg", targetAngleDeg);
+            put("CargoIntake/Deploy/armAngleDeg", getArmAngleDeg());
+            put("CargoIntake/Deploy/state", state.toString());
+            put("CargoIntake/Deploy/zeroed", zeroed);
+            put("CargoIntake/Deploy/fwdLimitSwitch", getForwardLimitSwitch());
+            put("CargoIntake/Deploy/revLimitSwitch", getReverseLimitSwitch());
+            put("CargoIntake/Deploy/fwdSoftLimit", getForwardSoftLimit());
+            put("CargoIntake/Deploy/revSoftLimit", getReverseSoftLimit());
+            put("CargoIntake/Deploy/motorCurrent", deployMotorMaster.getOutputCurrent());
+            put("CargoIntake/Deploy/pidError", deployMotorMaster.getClosedLoopError(kSlotIdx));
+            put("CargoIntake/Intake/voltage", intakeMotor.getMotorOutputPercent());
+            put("CargoIntake/Intake/ballDetect", ballDetectSensor.get());
+		}
+	};
+    
+	public DataLogger getLogger()
+	{
+		return logger;
+	}    
 }

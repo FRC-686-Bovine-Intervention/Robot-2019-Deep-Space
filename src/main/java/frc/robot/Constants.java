@@ -52,30 +52,6 @@ public class Constants extends ConstantsBase {
     public static int kHatchEjectChannel =          4;
 
 
-
-
-
-
-    // Motor Controllers
-
-    public static boolean kLeftMotorInverted = false;
-    public static boolean kRightMotorInverted = true;
-    public static boolean kLeftMotorSensorPhase = false;
-    public static boolean kRightMotorSensorPhase = false;
-
-    public static int kDriveTrainCurrentLimit = 25;
-
-    // Wheel Encoder
-    public static int    kQuadEncoderCodesPerRev = 256;
-    public static int    kQuadEncoderUnitsPerRev = 4*kQuadEncoderCodesPerRev;
-    public static double kQuadEncoderStatusFramePeriod = 0.100;	// 100ms
-    public static double kDriveSecondsFromNeutralToFull = 0.375;
-    
-    // CONTROL LOOP GAINS
-    public static double kFullThrottleRPM = 520;	// measured max RPM using NI web interface
-    public static double kFullThrottleEncoderPulsePer100ms = kFullThrottleRPM / 60.0 * kQuadEncoderStatusFramePeriod * kQuadEncoderUnitsPerRev; 
-    
-
     // Joystick Control Constants
     public static int kXboxButtonA = 1;
     public static int kXboxButtonB = 2;
@@ -119,6 +95,9 @@ public class Constants extends ConstantsBase {
     // public static GyroSelectionEnum GyroSelection = GyroSelectionEnum.NAVX;
     public static GyroSelectionEnum GyroSelection = GyroSelectionEnum.PIGEON;
     
+
+
+
     // Bumpers
     public static double kCenterToFrontBumper = 18.0; // position of front bumper with respect to robot center of
     // rotation
@@ -126,8 +105,10 @@ public class Constants extends ConstantsBase {
                                                          // robot center of rotation
     public static double kCenterToRearBumper = 18.0; // position of rear bumper with respect to robot center of rotation
     public static double kCenterToSideBumper = 18.0; // position of side bumper with respect to robot center of rotation
-    public static double kCenterToCornerBumper = Math
-            .sqrt(kCenterToRearBumper * kCenterToRearBumper + kCenterToSideBumper * kCenterToSideBumper);
+    public static double kCenterToCornerBumper = Math.sqrt(kCenterToRearBumper * kCenterToRearBumper + kCenterToSideBumper * kCenterToSideBumper);
+
+
+
 
     // Vision constants
     public static double kCameraFrameRate = 90.0;		// frames per second
@@ -150,11 +131,6 @@ public class Constants extends ConstantsBase {
     public static double kVisionMaxDistanceInches = 240;		// ignore targets greater than this distance
     public static double kVisionLookaheadDist = 24.0;	// inches
     
-
-    // math for limit switch
-    public static double kHatchQuadEncoderUnitsPerRev = 4096;
-    public static double kHatchQuadEncoderDegsPerRev = 360;
-    public static double kHatchEncoderUnitsPerDegs = kHatchQuadEncoderUnitsPerRev/kHatchQuadEncoderDegsPerRev;
     // Shooter Constants
     public static double kShooterPoseX        =     0;	// shooter location with respect to robot center of rotation, X axis is in direction of travel
     public static double kShooterPoseY        =     0;	// shooter location with respect to robot center of rotation, Y axis is positive to the left
