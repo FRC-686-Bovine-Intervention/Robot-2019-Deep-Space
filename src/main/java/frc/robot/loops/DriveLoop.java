@@ -20,6 +20,7 @@ import frc.robot.command_status.DriveState;
 import frc.robot.lib.sensors.BNO055;
 import frc.robot.lib.sensors.GyroBase;
 import frc.robot.lib.sensors.NavX;
+import frc.robot.lib.sensors.Pigeon;
 import frc.robot.subsystems.Drive;
 
 /*
@@ -221,6 +222,7 @@ public class DriveLoop implements Loop
 		/*****************************************************************
 		 * Select which Gyro is installed
 		 *****************************************************************/
+		// select which gyro is installed
 		switch (Constants.GyroSelection)
 		{
 		case BNO055:
@@ -228,9 +230,13 @@ public class DriveLoop implements Loop
 			gyro = BNO055.getInstance();
 			break;
 		case NAVX:
-		default:
 			System.out.println("Selected gyro = NavX");
 			gyro = NavX.getInstance();
+			break;
+		case PIGEON:
+		default:
+			System.out.println("Selected gyro = Pigeon");
+			gyro = Pigeon.getInstance();
 			break;
 		}
 

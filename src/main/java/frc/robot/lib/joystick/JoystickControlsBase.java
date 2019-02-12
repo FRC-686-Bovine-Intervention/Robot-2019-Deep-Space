@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.Joystick;
 public abstract class JoystickControlsBase 
 {
     protected final Joystick mStick;
-
+    protected boolean drivingForward = true;
     public static double kJoystickDeadzone = 0.2;   // deadzone at center of joystick extends from +/-kJoystickDeadzone
 
     protected JoystickControlsBase() 
@@ -22,5 +22,7 @@ public abstract class JoystickControlsBase
     public abstract DriveCommand getDriveCommand();	// mapping from joystick controls to DriveSignal
     
     public boolean getButton(int _num) { return mStick.getRawButton(_num); }
+
+    public boolean getDrivingForward() { return drivingForward; }
     
 }

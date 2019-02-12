@@ -17,10 +17,14 @@ import java.util.Map;
  */
 public class Limelight
 {
-    private static Limelight frontInstance = new Limelight("limelight-front");
-    private static Limelight  backInstance = new Limelight("limelight-back");
-    public static Limelight getFrontInstance() { return frontInstance; }
-    public static Limelight getbackInstance()  { return  backInstance; }
+    // Limelight versions
+    static final int V1 = 0;
+    static final int V2 = 1;
+
+    private static Limelight cargoInstance = new Limelight("limelight-front", V1);
+    private static Limelight hatchInstance = new Limelight("limelight-back", V2);
+    public static Limelight getCargoInstance() { return cargoInstance; }
+    public static Limelight getHatchInstance()  { return  hatchInstance; }
 
     public final double kImageHeightPixels = 240;
     public final double kImageWidthPixels  = 320;
@@ -28,47 +32,47 @@ public class Limelight
     public final double kImageVertCenterPixels  = (kImageHeightPixels-1.0)/2.0;
     public final double kImageHorizCenterPixels = (kImageWidthPixels-1.0)/2.0;
 
-    // Limelight 1 Horizontal and Vertical Field of View in Radians
-    public final double kCameraVertFOVRad  = 41.0 * Vector2d.degreesToRadians;
-    public final double kCameraHorizFOVRad = 54.0 * Vector2d.degreesToRadians;
-    // Limelight 2 Horizontal and Vertical Field of View in Radians
-    //public final double kCameraVertFOVRad  = 49.7 * Vector2d.degreesToRadians;
-    //public final double kCameraHorizFOVRad = 59.6 * Vector2d.degreesToRadians;
-
+    // Limelight v1/v2 Horizontal and Vertical Field of View in Radians
+    public final double kCameraVertFOVRad[]  = {41.0 * Vector2d.degreesToRadians, 49.7 * Vector2d.degreesToRadians};
+    public final double kCameraHorizFOVRad[] = {54.0 * Vector2d.degreesToRadians, 59.6 * Vector2d.degreesToRadians};
+ 
     public final double kImageCaptureLatencyMs = 11.0;
 
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
-    private NetworkTable m_table;
-    private String m_tableName;
+    private NetworkTable table;
+    private String tableName;
+    private int version;
 
     /**
      * Using the Default Limelight NT table
      */
     public Limelight()
     {
-        m_tableName = "limelight";
-        m_table = NetworkTableInstance.getDefault().getTable(m_tableName);
+        tableName = "limelight";
+        table = NetworkTableInstance.getDefault().getTable(tableName);
+        version = V2;
     }
 
     /**
      * If you changed the name of your Limelight tell me the new name
      */
-    public Limelight(String tableName)
+    public Limelight(String _tableName, int _version)
     {
-        m_tableName = tableName;
-        m_table = NetworkTableInstance.getDefault().getTable(m_tableName);
+        tableName = _tableName;
+        table = NetworkTableInstance.getDefault().getTable(tableName);
+        version = _version;
     }
 
     /**
      * Send an instance of the NetworkTabe
      */
-    public Limelight(NetworkTable table)
+    public Limelight(NetworkTable _table)
     {
-        m_table = table;
+        table = _table;
         // ToDo
-        // m_tableName = get the name of the NT key.
+        // tableName = get the name of the NT key.
     }
 
     /**
@@ -81,10 +85,10 @@ public class Limelight
     public void disabledPeriodic()
     {
         setPipeline(0);
-        setLEDMode(LedMode.kOff);
-        setCamMode(CamMode.kDriver);
+        setLEDMode(LedMode.kOn);
+        setCamMode(CamMode.kVision);
         setSnapshot(Snapshot.kOff);
-        setStream(StreamType.kPiPMain);
+        setStream(StreamType.kPiPSecondary);
     }
 
     /**
@@ -99,7 +103,7 @@ public class Limelight
         setLEDMode(LedMode.kOn);
         setCamMode(CamMode.kVision);
         setSnapshot(Snapshot.kOff);
-        setStream(StreamType.kPiPMain);
+        setStream(StreamType.kPiPSecondary);
     }
 
     /**
@@ -114,7 +118,7 @@ public class Limelight
         setLEDMode(LedMode.kOn);
         setCamMode(CamMode.kVision);
         setSnapshot(Snapshot.kOff);
-        setStream(StreamType.kPiPMain);
+        setStream(StreamType.kPiPSecondary);
     }
 
     public void LimelightInit()
@@ -149,7 +153,7 @@ public class Limelight
      */
     public boolean getIsTargetFound()
     {
-        NetworkTableEntry tv = m_table.getEntry("tv");
+        NetworkTableEntry tv = table.getEntry("tv");
         double v = tv.getDouble(0);
         if (v == 0.0f)
         {
@@ -168,7 +172,7 @@ public class Limelight
      */
     public double getTargetHorizontalAngleRad()
     {
-        NetworkTableEntry tx = m_table.getEntry("tx");
+        NetworkTableEntry tx = table.getEntry("tx");
         double x = -tx.getDouble(0.0);      // turns to left (negative x) result in positive theta
         return x * Vector2d.degreesToRadians;
     }
@@ -180,24 +184,24 @@ public class Limelight
      */
     public double getTargetVerticalAngleRad()
     {
-        NetworkTableEntry ty = m_table.getEntry("ty");
+        NetworkTableEntry ty = table.getEntry("ty");
         double y = ty.getDouble(0.0);
         return y * Vector2d.degreesToRadians;
     }
 
     public double getHorizontalWidthRad()
     {
-        NetworkTableEntry thor = m_table.getEntry("thor");
+        NetworkTableEntry thor = table.getEntry("thor");
         double targetWidthPixels = thor.getDouble(0.0);
-        double horizWidthRad = targetWidthPixels / kImageWidthPixels * kCameraHorizFOVRad;
+        double horizWidthRad = targetWidthPixels / kImageWidthPixels * kCameraHorizFOVRad[version];
         return horizWidthRad;
     }
 
     public double getVerticalWidthRad()
     {
-        NetworkTableEntry tvert = m_table.getEntry("tvert");
+        NetworkTableEntry tvert = table.getEntry("tvert");
         double targetHeightPixels = tvert.getDouble(0.0);
-        double vertWidthRad = targetHeightPixels / kImageHeightPixels * kCameraVertFOVRad;
+        double vertWidthRad = targetHeightPixels / kImageHeightPixels * kCameraVertFOVRad[version];
         return vertWidthRad;
 
     }
@@ -210,7 +214,7 @@ public class Limelight
      */
     public double getTargetAreaPercentage()
     {
-        NetworkTableEntry ta = m_table.getEntry("ta");
+        NetworkTableEntry ta = table.getEntry("ta");
         double a = ta.getDouble(0.0);
         return a;
     }
@@ -222,7 +226,7 @@ public class Limelight
      */
     public double getSkewRotation()
     {
-        NetworkTableEntry ts = m_table.getEntry("ts");
+        NetworkTableEntry ts = table.getEntry("ts");
         double s = ts.getDouble(0.0);
         return s;
     }
@@ -235,14 +239,14 @@ public class Limelight
      */
     public double getPipelineLatency()
     {
-        NetworkTableEntry tl = m_table.getEntry("tl");
+        NetworkTableEntry tl = table.getEntry("tl");
         double l = tl.getDouble(0.0);
         return l;
     }
 
     private void resetPipelineLatency()
     {
-        m_table.getEntry("tl").setValue(0.0);
+        table.getEntry("tl").setValue(0.0);
     }
 
     public double getTotalLatencyMs()
@@ -263,7 +267,7 @@ public class Limelight
      */
     public void setLEDMode(LedMode ledMode)
     {
-        m_table.getEntry("ledMode").setValue(ledMode.getValue());
+        table.getEntry("ledMode").setValue(ledMode.getValue());
     }
 
     /**
@@ -273,7 +277,7 @@ public class Limelight
      */
     public LedMode getLEDMode()
     {
-        NetworkTableEntry ledMode = m_table.getEntry("ledMode");
+        NetworkTableEntry ledMode = table.getEntry("ledMode");
         double led = ledMode.getDouble(0.0);
         LedMode mode = LedMode.getByValue(led);
         return mode;
@@ -289,7 +293,7 @@ public class Limelight
 
     public void setCamMode(CamMode camMode)
     {
-        m_table.getEntry("camMode").setValue(camMode.getValue());
+        table.getEntry("camMode").setValue(camMode.getValue());
     }
 
     /**
@@ -299,7 +303,7 @@ public class Limelight
      */
     public CamMode getCamMode()
     {
-        NetworkTableEntry camMode = m_table.getEntry("camMode");
+        NetworkTableEntry camMode = table.getEntry("camMode");
         double cam = camMode.getDouble(0.0);
         CamMode mode = CamMode.getByValue(cam);
         return mode;
@@ -339,7 +343,7 @@ public class Limelight
             pipeline = 9;
             throw new IllegalArgumentException("Pipeline can not be greater than nine");
         }
-        m_table.getEntry("pipeline").setValue(pipeline);
+        table.getEntry("pipeline").setValue(pipeline);
     }
 
     /**
@@ -349,7 +353,7 @@ public class Limelight
      */
     public double getPipeline()
     {
-        NetworkTableEntry pipeline = m_table.getEntry("pipeline");
+        NetworkTableEntry pipeline = table.getEntry("pipeline");
         double pipe = pipeline.getDouble(0.0);
         return pipe;
     }
@@ -361,7 +365,7 @@ public class Limelight
      */
     public Integer getPipelineInt()
     {
-        NetworkTableEntry pipeline = m_table.getEntry("pipeline");
+        NetworkTableEntry pipeline = table.getEntry("pipeline");
         Integer pipe = (int) pipeline.getDouble(0.0);
         return pipe;
     }
@@ -378,12 +382,12 @@ public class Limelight
      */
     public void setStream(StreamType stream)
     {
-        m_table.getEntry("stream").setValue(stream.getValue());
+        table.getEntry("stream").setValue(stream.getValue());
     }
 
     public StreamType getStream()
     {
-        NetworkTableEntry stream = m_table.getEntry("stream");
+        NetworkTableEntry stream = table.getEntry("stream");
         double st = stream.getDouble(0.0);
         StreamType mode = StreamType.getByValue(st);
         return mode;
@@ -398,12 +402,12 @@ public class Limelight
      */
     public void setSnapshot(Snapshot snapshot)
     {
-        m_table.getEntry("snapshot").setValue(snapshot.getValue());
+        table.getEntry("snapshot").setValue(snapshot.getValue());
     }
 
     public Snapshot getSnapshot()
     {
-        NetworkTableEntry snapshot = m_table.getEntry("snapshot");
+        NetworkTableEntry snapshot = table.getEntry("snapshot");
         double snshot = snapshot.getDouble(0.0);
         Snapshot mode = Snapshot.getByValue(snshot);
         return mode;
@@ -420,28 +424,28 @@ public class Limelight
 
     public double getAdvancedRotationToTarget(AdvancedTarget raw)
     {
-        NetworkTableEntry txRaw = m_table.getEntry("tx" + Integer.toString(raw.getValue()));
+        NetworkTableEntry txRaw = table.getEntry("tx" + Integer.toString(raw.getValue()));
         double x = txRaw.getDouble(0.0);
         return x;
     }
 
     public double getAdvancedDegVerticalToTarget(AdvancedTarget raw)
     {
-        NetworkTableEntry tyRaw = m_table.getEntry("ty" + Integer.toString(raw.getValue()));
+        NetworkTableEntry tyRaw = table.getEntry("ty" + Integer.toString(raw.getValue()));
         double y = tyRaw.getDouble(0.0);
         return y;
     }
 
     public double getAdvancedTargetArea(AdvancedTarget raw)
     {
-        NetworkTableEntry taRaw = m_table.getEntry("ta" + Integer.toString(raw.getValue()));
+        NetworkTableEntry taRaw = table.getEntry("ta" + Integer.toString(raw.getValue()));
         double a = taRaw.getDouble(0.0);
         return a;
     }
 
     public double getAdvancedSkewRotation(AdvancedTarget raw)
     {
-        NetworkTableEntry tsRaw = m_table.getEntry("ts" + Integer.toString(raw.getValue()));
+        NetworkTableEntry tsRaw = table.getEntry("ts" + Integer.toString(raw.getValue()));
         double s = tsRaw.getDouble(0.0);
         return s;
     }
@@ -460,14 +464,14 @@ public class Limelight
 
     public double getAdvancedRawCrosshair_X(AdvancedCrosshair raw)
     {
-        NetworkTableEntry cxRaw = m_table.getEntry("cx" + Integer.toString(raw.getValue()));
+        NetworkTableEntry cxRaw = table.getEntry("cx" + Integer.toString(raw.getValue()));
         double x = cxRaw.getDouble(0.0);
         return x;
     }
 
     public double getAdvancedRawCrosshair_Y(AdvancedCrosshair raw)
     {
-        NetworkTableEntry cyRaw = m_table.getEntry("cy" + Integer.toString(raw.getValue()));
+        NetworkTableEntry cyRaw = table.getEntry("cy" + Integer.toString(raw.getValue()));
         double y = cyRaw.getDouble(0.0);
         return y;
     }

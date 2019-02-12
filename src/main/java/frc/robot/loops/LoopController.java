@@ -84,9 +84,26 @@ public class LoopController
                 }
                 running_ = true;
             }
+            // avoiding watchdog errors
             notifier_.startPeriodic(kPeriod);
         }
     }
+
+    public synchronized void run() 
+    {
+        // if (!running_) 
+        // {
+        // 	// lock during access to loop_ to avoid corruption from multiple threads
+        //     synchronized (taskRunningLock_) 
+        //     {
+        //         for (Loop loop : loops_) 
+        //         {
+        //             loop.onLoop();
+        //         }
+        //     }
+        // }
+    }
+
 
     public synchronized void stop() 
     {

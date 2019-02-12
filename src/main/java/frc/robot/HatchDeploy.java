@@ -17,16 +17,14 @@ public class HatchDeploy {
     }
 
     public TalonSRX dropMotor;
-    public Solenoid HatchSolenoid;
+    public Solenoid hatchSolenoid;
     public DigitalInput limitSwitch;
-    public final int dropPort = 8;
-    public final int hatchPort = 0;
     public final double zeroingSpeed = -0.1;
     public final double startingAngle = 1;
     public final double pickUpAngle = 0.75;
     public final double groundAngle = 0;
     public final double defenseAngle = 0.9;
-    public RisingEdgeDetector defenseBttnRisingEdgeDetector;
+    public RisingEdgeDetector defenseBttnRisingEdgeDetector = new RisingEdgeDetector();
     boolean on;
     boolean off;
 
@@ -37,8 +35,8 @@ public class HatchDeploy {
     public HatchDeployStateEnum state = HatchDeployStateEnum.INIT;
 
     public HatchDeploy() {
-        HatchSolenoid = new Solenoid(0, hatchPort);
-        dropMotor = new TalonSRX(dropPort);
+        hatchSolenoid = new Solenoid(0, Constants.kHatchEjectChannel);
+        dropMotor = new TalonSRX(Constants.kHatchDeployTalonId);
         limitSwitch = new DigitalInput(10);
         state = HatchDeployStateEnum.INIT;
     }
@@ -56,7 +54,8 @@ public class HatchDeploy {
             break;
             case TO_BUMPER:
             dropMotor.set(ControlMode.MotionMagic, degsToEncoderUnits(pickUpAngle));
-            if (controls.getButton(Constants.kGroundPickupButton)) {
+            if (controls.getButton(Constants.kHatchExtendRetractButton))  // TODO: rising edge of kHatchExtendRetractButton
+            {    
                 state = HatchDeployStateEnum.GROUND;
             }
             if (dBttnEdgeDetectorValue)
@@ -73,7 +72,8 @@ public class HatchDeploy {
             break;
         case GROUND:
             dropMotor.set(ControlMode.MotionMagic, degsToEncoderUnits(groundAngle));
-            if (controls.getButton(Constants.kBumperButton)) {
+            if (controls.getButton(Constants.kHatchExtendRetractButton))    // TODO: rising edge of kHatchExtendRetractButton
+             {
                 state = HatchDeployStateEnum.TO_BUMPER;
             }
             break;
@@ -81,7 +81,7 @@ public class HatchDeploy {
 
         //shoots both pistons from the solenoid 
         boolean ejectButton = controls.getButton(Constants.kHatchShootButton);
-        HatchSolenoid.set(ejectButton);
+        hatchSolenoid.set(ejectButton);
 
     }
 
@@ -105,10 +105,10 @@ public void drop() {
     dropMotor.set(ControlMode.MotionMagic, degsToEncoderUnits(groundAngle));
 }
 public void deploy(){
-    HatchSolenoid.set(on);
+    hatchSolenoid.set(on);
 }
 public void done() {
-    HatchSolenoid.set(off);
+    hatchSolenoid.set(off);
 }
 
 }

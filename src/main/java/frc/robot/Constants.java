@@ -1,5 +1,6 @@
 package frc.robot;
 
+import frc.robot.lib.joystick.ButtonBoard;
 import frc.robot.lib.util.ConstantsBase;
 
 /**
@@ -25,12 +26,102 @@ public class Constants extends ConstantsBase {
     public static double kDriveWatchdogTimerThreshold = 0.500;
     public static int kTalonTimeoutMs = 5; // ms
     public static int kTalonPidIdx = 0; // 0 for non-cascaded PIDs, 1 for cascaded PIDs
-
+    
     public static double kNominalBatteryVoltage = 12.0;
 
+
+    // Hardware Port Definitions
+    public static int kLeftMotorMasterTalonId =     1;
+    public static int kLeftMotorSlave1TalonId =     2;
+    public static int kRightMotorMasterTalonId =    3;
+    public static int kRightMotorSlave1TalonId =    4;
+    public static int kCargoDeployMasterTalonId =   5;   
+    public static int kCargoDeploySlaveTalonId =    6;   
+    public static int kCargoIntakeTalonId =         7;
+    public static int kHatchDeployTalonId =         8;
+    public static int kClimberDriveMotorTalonId =   12;
+
+    // RoboRIO DIO ports
+    public static int kBallDetectSensorPort = 0;  
+
+    // Pnuematic Control Channels
+    public static int kLeftClimberForwardChannel =  0;
+    public static int kLeftClimberReverseChannel =  1;
+    public static int kRightClimberForwardChannel = 2;
+    public static int kRightClimberReverseChannel = 3;
+    public static int kHatchEjectChannel =          4;
+
+
+
+
+
+
+    // Motor Controllers
+
+    public static boolean kLeftMotorInverted = false;
+    public static boolean kRightMotorInverted = true;
+    public static boolean kLeftMotorSensorPhase = false;
+    public static boolean kRightMotorSensorPhase = false;
+
+    public static int kDriveTrainCurrentLimit = 25;
+
+    // Wheel Encoder
+    public static int    kQuadEncoderCodesPerRev = 256;
+    public static int    kQuadEncoderUnitsPerRev = 4*kQuadEncoderCodesPerRev;
+    public static double kQuadEncoderStatusFramePeriod = 0.100;	// 100ms
+    public static double kDriveSecondsFromNeutralToFull = 0.375;
+    
+    // CONTROL LOOP GAINS
+    public static double kFullThrottleRPM = 520;	// measured max RPM using NI web interface
+    public static double kFullThrottleEncoderPulsePer100ms = kFullThrottleRPM / 60.0 * kQuadEncoderStatusFramePeriod * kQuadEncoderUnitsPerRev; 
+    
+
+    // Joystick Control Constants
+    public static int kXboxButtonA = 1;
+    public static int kXboxButtonB = 2;
+    public static int kXboxButtonX = 3;
+    public static int kXboxButtonY = 4;
+    public static int kXboxButtonLB = 5;
+    public static int kXboxButtonRB = 6;
+
+    public static int kXboxLStickXAxis = 0;
+    public static int kXboxLStickYAxis = 1;
+    public static int kXboxLTriggerAxis = 2;
+    public static int kXboxRTriggerAxis = 3;
+    public static int kXboxRStickXAxis = 4;
+    public static int kXboxRStickYAxis = 5;
+
+    // Driver Joystick Configuration
+    public static int kHatchExtendRetractButton =   kXboxButtonRB;
+    public static int kHatchShootButton =           kXboxRTriggerAxis;  // TODO: shoot hatch when trigger > 0.5
+    public static int kCargoIntakeButton =          kXboxButtonLB;
+    public static int kCargoOuttakeButton =         kXboxLTriggerAxis;
+    public static int kVisionAssistanceButton =     kXboxButtonA;
+    public static int kControlsReverseButton =      kXboxButtonB;
+    public static int kQuickTurnButton =            kXboxButtonY; // bogus setting to make TriggerDrive Joysticks happy
+
+    // Operator Button Board Configuration
+    public static int kCargoIntakeRetractButton =   kXboxButtonX;           // TODO: ask which button drive team wants
+    public static int kCargoIntakeRocketButton =    ButtonBoard.kButtonBoardB;
+    public static int kCargoIntakeCargoShipButton = ButtonBoard.kButtonBoardA;
+    public static int kDefenseButton =              ButtonBoard.kButtonBoardRB;
+    public static int kClimbingStartButton =        ButtonBoard.kButtonBoardLB;
+    public static int kClimbingExtendButton =       ButtonBoard.kButtonBoardX;
+    public static int kClimbingRetractButton =      ButtonBoard.kButtonBoardY;
+
+  
+    
+
+
+    // Gyro
+    public enum GyroSelectionEnum { BNO055, NAVX, PIGEON; }
+    //public static GyroSelectionEnum GyroSelection = GyroSelectionEnum.BNO055;
+    // public static GyroSelectionEnum GyroSelection = GyroSelectionEnum.NAVX;
+    public static GyroSelectionEnum GyroSelection = GyroSelectionEnum.PIGEON;
+    
     // Bumpers
     public static double kCenterToFrontBumper = 18.0; // position of front bumper with respect to robot center of
-                                                      // rotation
+    // rotation
     public static double kCenterToExtendedIntake = 18.0; // position of intake sweetspot when extended with respect to
                                                          // robot center of rotation
     public static double kCenterToRearBumper = 18.0; // position of rear bumper with respect to robot center of rotation
@@ -72,67 +163,5 @@ public class Constants extends ConstantsBase {
     public static double kAutoAimPredictionTime =   0;	// set to 0 since we don't have a turret and need to point the entire robot
 
 
-    // Motor Controllers
-    // (Note that if multiple Talons are dedicated to a mechanism, any sensors are attached to the master)
-    public static int kLeftMotorMasterTalonId = 1;
-    public static int kLeftMotorSlave1TalonId = 2;
-    public static int kRightMotorMasterTalonId = 3;
-    public static int kRightMotorSlave1TalonId = 4;
-
-    // motors inversions
-    public static boolean kLeftMotorInverted = false;
-    public static boolean kRightMotorInverted = true;
-    public static boolean kLeftMotorSensorPhase = false;
-    public static boolean kRightMotorSensorPhase = false;
-
-	public static int kDriveTrainCurrentLimit = 25;
-
-    // Wheel Encoder
-    public static int    kQuadEncoderCodesPerRev = 256;
-    public static int    kQuadEncoderUnitsPerRev = 4*kQuadEncoderCodesPerRev;
-    public static double kQuadEncoderStatusFramePeriod = 0.100;	// 100ms
-    public static double kDriveSecondsFromNeutralToFull = 0.375;
-    
-    // CONTROL LOOP GAINS
-    public static double kFullThrottleRPM = 520;	// measured max RPM using NI web interface
-    public static double kFullThrottleEncoderPulsePer100ms = kFullThrottleRPM / 60.0 * kQuadEncoderStatusFramePeriod * kQuadEncoderUnitsPerRev; 
-    
-
-    // Joystick Controls
-    public static int kXboxButtonA = 1;
-    public static int kXboxButtonB = 2;
-    public static int kXboxButtonX = 3;
-    public static int kXboxButtonY = 4;
-    public static int kXboxButtonLB = 5;
-    public static int kXboxButtonRB = 6;
-
-    public static int kXboxLStickXAxis = 0;
-    public static int kXboxLStickYAxis = 1;
-    public static int kXboxLTriggerAxis = 2;
-    public static int kXboxRTriggerAxis = 3;
-    public static int kXboxRStickXAxis = 4;
-    public static int kXboxRStickYAxis = 5;
-
-  //  Button Board Controls
-	public static int kBumperButton 	= 1;
-	public static int kRocketButton 	= 2;
-    public static int kDefenseButton 	= 3;
-    
-
-    public static int kIntakeButton =           kXboxButtonRB;
-    public static int kOuttakeButton =          kXboxButtonLB;
-    public static int kGroundPickupButton =     kXboxButtonY;
-    public static int kHatchShootButton =       kXboxButtonA;
-    public static int kQuickTurnButton =        99;
-    public static int kControlsReverseButton =  kXboxButtonB;
-    public static int kVisionAssistanceButton = kXboxButtonX;
-    
-
-
-    // Gyro
-    public enum GyroSelectionEnum { BNO055, NAVX, PIGEON; }
-    //public static GyroSelectionEnum GyroSelection = GyroSelectionEnum.BNO055;
-    // public static GyroSelectionEnum GyroSelection = GyroSelectionEnum.NAVX;
-    public static GyroSelectionEnum GyroSelection = GyroSelectionEnum.PIGEON;
 
 };

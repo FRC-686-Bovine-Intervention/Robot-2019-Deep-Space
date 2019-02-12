@@ -12,6 +12,7 @@ import java.util.TimeZone;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import frc.robot.auto.AutoModeExecuter;
 import frc.robot.command_status.DriveCommand;
 import frc.robot.command_status.DriveState;
@@ -37,6 +38,15 @@ import frc.robot.vision.VisionTargetList;
 
 public class Robot extends TimedRobot {
 
+	private static Robot instance = null;
+
+	public static Robot getInstance() {
+		if (instance == null) {
+			instance = new Robot();
+		}
+		return instance;
+	}
+
 	PowerDistributionPanel pdp = new PowerDistributionPanel();
 
 	JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
@@ -55,11 +65,11 @@ public class Robot extends TimedRobot {
 	SmartDashboardInteractions smartDashboardInteractions;
 	DataLogController robotLogger;
 
-	Limelight frontCamera = Limelight.getFrontInstance();
+	Limelight cargoCamera = Limelight.getCargoInstance();
+	Limelight hatchCamera = Limelight.getHatchInstance();
 
 	HatchDeploy hatchDeploy;
-	CargoBallIntake cargoBallIntake;
-	ControlsReverse controlsReverse;
+	ControlsReverse controlsReverse = ControlsReverse.getInstance();
 
 	enum OperationalMode 
     {
@@ -84,11 +94,9 @@ public class Robot extends TimedRobot {
     	{
     		CrashTracker.logRobotInit();
 
+			LiveWindow.disableTelemetry(pdp);	// stops CAN error
+
 			hatchDeploy = HatchDeploy.getInstance();
-			cargoBallIntake = CargoBallIntake.getInstance();
-			controlsReverse = ControlsReverse.getInstance();
-    		// view camera at http://10.6.86.2:1181?action=stream
-    		// use Ctrl-+ to increase size to full screen
     		
     		loopController = new LoopController();
     		loopController.register(drive.getVelocityPIDLoop());
@@ -96,6 +104,8 @@ public class Robot extends TimedRobot {
        		loopController.register(RobotStateLoop.getInstance());
     		loopController.register(VisionLoop.getInstance());
 			loopController.register(GoalStateLoop.getInstance());
+			loopController.register(CargoBallIntake.getInstance());
+			loopController.register(Climber.getInstance());
 
     		smartDashboardInteractions = new SmartDashboardInteractions();
     		smartDashboardInteractions.initWithDefaults();
@@ -185,7 +195,10 @@ public class Robot extends TimedRobot {
 		{
 			stopAll(); // stop all actuators
 
-			System.gc(); // runs garbage collector
+			cargoCamera.disabledPeriodic();
+			hatchCamera.disabledPeriodic();
+			   
+			// System.gc(); // runs garbage collector
 		}
 		catch (Throwable t)
 		{
@@ -207,7 +220,8 @@ public class Robot extends TimedRobot {
     	boolean logToSmartDashboard = true;
     	robotLogger.setOutputMode(logToFile, logToSmartDashboard);
 
-		frontCamera.autoInit();
+		cargoCamera.autoInit();
+		hatchCamera.autoInit();
 
     	try
     	{
@@ -215,17 +229,18 @@ public class Robot extends TimedRobot {
 
 			CrashTracker.logAutoInit();
 
-			if(autoModeExecuter != null){
-    			autoModeExecuter.stop();
-    		}
-    		autoModeExecuter = null;
+			// if (autoModeExecuter != null)
+			// {
+    			// autoModeExecuter.stop();
+    		// }
+    		// autoModeExecuter = null;
     		
-			autoModeExecuter = new AutoModeExecuter();
-			autoModeExecuter.setAutoMode( smartDashboardInteractions.getAutoModeSelection() );
+			// autoModeExecuter = new AutoModeExecuter();
+			// autoModeExecuter.setAutoMode( smartDashboardInteractions.getAutoModeSelection() );
 
-			setInitialPose( autoModeExecuter.getAutoMode().getInitialPose() );
+			setInitialPose( smartDashboardInteractions.getStartPosition() );
  
-			autoModeExecuter.start();
+			// autoModeExecuter.start();
     	}
     	catch(Throwable t)
     	{
@@ -236,16 +251,9 @@ public class Robot extends TimedRobot {
 	}
 
 	@Override
-	public void autonomousPeriodic() {
-    	try
-    	{
-    		
-    	}
-    	catch (Throwable t)
-    	{
-    		CrashTracker.logThrowableCrash(t);
-    		throw t;
-    	}
+	public void autonomousPeriodic() 
+	{
+		autoTeleopPeriodic();
 	}
 	
 	
@@ -260,7 +268,8 @@ public class Robot extends TimedRobot {
 		boolean logToSmartDashboard = true;
 		robotLogger.setOutputMode(logToFile, logToSmartDashboard); 
 
-		frontCamera.teleopInit();
+		cargoCamera.teleopInit();
+		hatchCamera.teleopInit();
 
 		try 
 		{
@@ -286,15 +295,18 @@ public class Robot extends TimedRobot {
 		}
 	}
 	
-	int prevButtonBoardDirection = -1;
-	
 	@Override
 	public void teleopPeriodic() 
+	{
+		autoTeleopPeriodic();
+	}
+
+	public void autoTeleopPeriodic() 
 	{
 		try
 		{
 			hatchDeploy.run();
-			cargoBallIntake.run();
+			
 			DriveCommand driveCmd = controls.getDriveCommand();
 			driveCmd = visionDriveAssistant.assist(driveCmd, controls.getButton(Constants.kVisionAssistanceButton));
 			DriveCommand driveCmdReverse = controls.getDriveCommand();
@@ -312,7 +324,7 @@ public class Robot extends TimedRobot {
 	}
 
 
-
+	
 	/****************************************************************
 	 * TEST MODE
 	 ****************************************************************/
@@ -334,6 +346,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotPeriodic()
 	{
+		loopController.run();		
 		robotLogger.log();
 	}
 
@@ -350,5 +363,14 @@ public class Robot extends TimedRobot {
     };
     
     public DataLogger getLogger() { return logger; }
+
+	
+
+	public JoystickControlsBase getJoystick()
+	{
+		// get joystick driving forward based on current choice of joystick
+		return controls;
+	}
 }
+
 

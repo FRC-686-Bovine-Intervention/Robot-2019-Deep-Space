@@ -150,7 +150,17 @@ public class Vector2d implements Interpolable<Vector2d>
     }
     
     
-	// Rotates Vector by the given angle
+	// Rotates Vector about a specified point by the given angle
+	public Vector2d rotateAboutPoint(double _angle, Vector2d _centerOfRotation)
+	{
+		Vector2d rv = new Vector2d(this);
+		rv.sub(_centerOfRotation);		// move center of rotation to origin
+		rv.rotate(_angle);				// rotate about origin
+		rv.add(_centerOfRotation);		// move center of rotation back
+		return rv;
+	}
+    
+	// Rotates Vector about the origin by the given angle
 	public Vector2d rotate(double _angle)
 	{
 		double cos = Math.cos(_angle);
