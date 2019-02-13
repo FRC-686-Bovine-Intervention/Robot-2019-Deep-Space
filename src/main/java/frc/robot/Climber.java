@@ -34,8 +34,8 @@ public class Climber implements Loop
     public enum ClimberStateEnum {ARMS_ON_PLATFORM, CLIMB, DRIVE_ONTO_PLATFORM, RETRACT, LAST_NUDGE, FINISHED};
     ClimberStateEnum climberState = ClimberStateEnum.ARMS_ON_PLATFORM;
 
-    public final double kClimberMotorPercentOutput = 4/12;
-    public final double kDriveMotorPercentOutput = 4/12;
+    public final double kClimberMotorPercentOutput = 0.4;
+    public final double kDriveMotorPercentOutput = 0.2;
 
     public double startRetractTime;
     public final double kRetractTimePeriod = 2.0;
@@ -46,9 +46,8 @@ public class Climber implements Loop
     public double tiltAngleDeg = 0.0;
 
     // PID Loop
-    final double tiltForFullMotorPower = 10.0;  
-    double Kp = 1.0 / tiltForFullMotorPower;  // when tilt = tiltForFullMotorPower, apply full power
-    double Kd = 0.1;
+    double Kp = 0.01;
+    double Kd = 0.0;
     double Ki = 0.0;
 
     double error = 0.0;
@@ -73,6 +72,7 @@ public class Climber implements Loop
     public void onStart()
     {
         cylinders.retract();
+        climberState = ClimberStateEnum.ARMS_ON_PLATFORM;
         climberDriveMotor.set(ControlMode.PercentOutput, 0.0);
     }
 
@@ -86,6 +86,8 @@ public class Climber implements Loop
     @Override
     public void onLoop()
     {
+        tiltAngleDeg = pigeon.getPitchDeg();
+
         // do nothing unless Climber mode is enabled
         if (arm.state == CargoDeployStateEnum.CLIMBING)
         {
@@ -95,8 +97,8 @@ public class Climber implements Loop
             {
             case ARMS_ON_PLATFORM:
                 // slowly spin wheels forward
-                Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
-                climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorPercentOutput);
+                // Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
+                // climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorPercentOutput);
 
                 // set arm at height for platform
                 arm.setTarget(CargoDeployPositionEnum.PLATFORM);
@@ -108,26 +110,24 @@ public class Climber implements Loop
                 break;
                 
             case CLIMB:
-                // slowly spin wheels forward
-                Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
-                climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorPercentOutput);
+                // // slowly spin wheels forward
+                // Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
+                // climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorPercentOutput);
 
                 cylinders.extend();
 
-                tiltAngleDeg = pigeon.getPitchDeg();
-
                 // PID loop
-                error = tiltAngleDeg;
+                error = -tiltAngleDeg;
                 dError = (error - lastError) / Constants.kLoopDt;
                 iError += (error * Constants.kLoopDt);
                 lastError = error;
                 pidOutput = Kp * error + Kd * dError + Ki * iError;
                 arm.setPercentOutput(pidOutput);
         
-                if (arm.getForwardSoftLimit())
-                {
-                    climberState = ClimberStateEnum.DRIVE_ONTO_PLATFORM;
-                }
+                // if (arm.getForwardSoftLimit())
+                // {
+                //     climberState = ClimberStateEnum.DRIVE_ONTO_PLATFORM;
+                // }
                 break;
                 
             case DRIVE_ONTO_PLATFORM:

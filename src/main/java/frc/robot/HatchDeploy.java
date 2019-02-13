@@ -87,7 +87,7 @@ public class HatchDeploy {
         }
 
         //shoots both pistons from the solenoid 
-        boolean ejectButton = controls.getButton(Constants.kHatchShootButton);
+        boolean ejectButton = controls.getAxisAsButton(Constants.kHatchShootAxis);
         hatchSolenoid.set(ejectButton);
 
     }

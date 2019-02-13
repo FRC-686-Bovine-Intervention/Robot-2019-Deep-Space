@@ -24,6 +24,10 @@ public class Pigeon extends GyroBase
         final int kROLL = 2;
         final int kYPR_SIZE = kROLL + 1;
 
+        // calibration values
+        double calPitch = 0.0;
+        double calRoll = 0.0;
+
         // constructors
         public Pigeon() 
         {
@@ -47,7 +51,7 @@ public class Pigeon extends GyroBase
                 double[] ypr = new double[kYPR_SIZE]; // yaw/pitch/roll array
                 pigeon.getYawPitchRoll(ypr); // fill array
                 double pitch = ypr[kPITCH];
-                return pitch;
+                return pitch - calPitch;
         }
 
         public double getRollDeg()
@@ -55,13 +59,18 @@ public class Pigeon extends GyroBase
                 double[] ypr = new double[kYPR_SIZE]; // yaw/pitch/roll array
                 pigeon.getYawPitchRoll(ypr); // fill array
                 double roll = ypr[kROLL];
-                return roll;
+                return roll - calRoll;
         }
 
         @Override
         public void zeroSensor() 
         {
                 pigeon.setYaw(0.0, Constants.kTalonTimeoutMs);
+
+                double[] ypr = new double[kYPR_SIZE]; // yaw/pitch/roll array
+                pigeon.getYawPitchRoll(ypr); // fill array
+                calPitch = ypr[kPITCH];
+                calRoll = ypr[kROLL];
         }
 
 }

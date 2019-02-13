@@ -45,10 +45,10 @@ public class Constants extends ConstantsBase {
     public static int kBallDetectSensorPort = 0;  
 
     // Pnuematic Control Channels
-    public static int kLeftClimberForwardChannel =  0;
-    public static int kLeftClimberReverseChannel =  1;
-    public static int kRightClimberForwardChannel = 2;
-    public static int kRightClimberReverseChannel = 3;
+    public static int kLeftClimberReverseChannel =  0;
+    public static int kLeftClimberForwardChannel =  1;
+    public static int kRightClimberReverseChannel = 2;
+    public static int kRightClimberForwardChannel = 3;
     public static int kHatchEjectChannel =          4;
 
 
@@ -69,9 +69,9 @@ public class Constants extends ConstantsBase {
 
     // Driver Joystick Configuration
     public static int kHatchExtendRetractButton =   kXboxButtonRB;
-    public static int kHatchShootButton =           kXboxRTriggerAxis;  // TODO: shoot hatch when trigger > 0.5
+    public static int kHatchShootAxis =             kXboxRTriggerAxis;  
     public static int kCargoIntakeButton =          kXboxButtonLB;
-    public static int kCargoOuttakeButton =         kXboxLTriggerAxis;
+    public static int kCargoOuttakeAxis =           kXboxLTriggerAxis;
     public static int kVisionAssistanceButton =     kXboxButtonA;
     public static int kControlsReverseButton =      kXboxButtonB;
     public static int kQuickTurnButton =            kXboxButtonY; // bogus setting to make TriggerDrive Joysticks happy
@@ -101,9 +101,9 @@ public class Constants extends ConstantsBase {
     // Bumpers
     public static double kCenterToFrontBumper = 18.0; // position of front bumper with respect to robot center of
     // rotation
-    public static double kCenterToExtendedIntake = 18.0; // position of intake sweetspot when extended with respect to
+    public static double kCenterToExtendedIntake = 29.0; // position of intake sweetspot when extended with respect to
                                                          // robot center of rotation
-    public static double kCenterToRearBumper = 18.0; // position of rear bumper with respect to robot center of rotation
+    public static double kCenterToRearBumper = 17.0; // position of rear bumper with respect to robot center of rotation
     public static double kCenterToSideBumper = 18.0; // position of side bumper with respect to robot center of rotation
     public static double kCenterToCornerBumper = Math.sqrt(kCenterToRearBumper * kCenterToRearBumper + kCenterToSideBumper * kCenterToSideBumper);
 
@@ -121,9 +121,9 @@ public class Constants extends ConstantsBase {
     
     public static double kVisionMaxVel    = 20.0; // inches/sec  		
     public static double kVisionMaxAccel  = 20.0; // inches/sec^2		
-    public static double kTargetWidthInches = 10.25;
-    public static double kTargetHeightInches = 14.00;
-    public static double kCenterOfTargetHeightInches = 13.25;
+    public static double kTargetWidthInches = 15.0;    
+    public static double kTargetHeightInches = 6.00;
+    public static double kCenterOfTargetHeightInches = 27.75;
     public static double kTargetDistanceThresholdFromBumperInches = 18;		// inches to stop from target, measured from front bumper
     public static double kTargetDistanceThresholdFromCameraInches = kCenterToFrontBumper - kCameraPoseX + kTargetDistanceThresholdFromBumperInches;
     

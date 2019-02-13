@@ -459,7 +459,7 @@ public class DriveLoop implements Loop
 			collection = rMotorMaster.getSensorCollection();
 			collection.setQuadraturePosition(0, Constants.kTalonTimeoutMs);
 			
-			// cannot reset gyro heading in hardware.  
+			gyro.zeroSensor();  
 			// calibration to desired initial pose is done in RobotState.reset() called from Robot.autonomousInit()  
 		}
 	}	

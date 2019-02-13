@@ -42,12 +42,12 @@ public class CargoIntake implements Loop
     public JoystickControlsBase driverJoystick = ArcadeDriveJoystick.getInstance(); // this control is user-selectable at teleopInit, so we need to update
     public ButtonBoard buttonBoard = ButtonBoard.getInstance();
 
-    public RisingEdgeDetector onIntakeButtonPress;
+    public RisingEdgeDetector onIntakeButtonPress = new RisingEdgeDetector();
     public RisingEdgeDetector onDefenseButtonPress = new RisingEdgeDetector();
     public RisingEdgeDetector onClimbingButtonPress = new RisingEdgeDetector();
     public boolean intakeActive = false;
 
-    public enum CargoDeployStateEnum { ZEROING, OPERATIONAL, DEFENSE, CLIMBING; }
+    public enum CargoDeployStateEnum { ZEROING, OPERATIONAL, CLIMBING; }
     public CargoDeployStateEnum state = CargoDeployStateEnum.ZEROING;
 
     public enum CargoDeployPositionEnum
@@ -74,7 +74,7 @@ public class CargoIntake implements Loop
     
     public final double zeroingPercentOutput = -0.1;
 
-    public final double kIntakeCurrent = 20.0;          // limit intake by current
+    public final double kIntakePercentOutput  = +0.6;          
     public final double kOuttakePercentOutput = -1.0;   // full power outtake
 
     public final double kMinFwdOutput = +0;
@@ -92,7 +92,7 @@ public class CargoIntake implements Loop
     public final double kAccel = kCruiseVelocity / kTimeToCruiseVelocity; 
     
 	public final double kKf = kCalMaxPercentOutput * 1023.0 / kCalMaxEncoderPulsePer100ms;
-	public final double kKp = 0.4;	   
+	public final double kKp = 8.0;	   
 	public final double kKd = 0.0;	// to resolve any overshoot, start at 10*Kp 
 	public final double kKi = 0.0;    
 
@@ -177,6 +177,9 @@ public class CargoIntake implements Loop
         deployMotorMaster.setNeutralMode(NeutralMode.Brake);
         
         
+
+        intakeMotor.setInverted(true);
+
     
         zeroed = false;     // calibrate only once per RoboRIO power cycle
     }
@@ -224,71 +227,61 @@ public class CargoIntake implements Loop
         // if (intakeActive)
         if (driverJoystick.getButton(Constants.kCargoIntakeButton))
         {
-            intakeMotor.set(ControlMode.Current, kIntakeCurrent);
-        }
-        
-        if (driverJoystick.getButton(Constants.kCargoOuttakeButton)) 
+            intakeMotor.set(ControlMode.PercentOutput, kIntakePercentOutput);
+        } 
+        else if (driverJoystick.getAxisAsButton(Constants.kCargoOuttakeAxis)) 
         {
             intakeMotor.set(ControlMode.PercentOutput, kOuttakePercentOutput);
+        }
+        else
+        {
+            intakeMotor.set(ControlMode.PercentOutput, 0.0);
         }
     }
     
     public void runDeploy()
     {
-        boolean defenseButtonPress = onDefenseButtonPress.update(buttonBoard.getButton(Constants.kDefenseButton));
-        boolean climbingButtonPress = onClimbingButtonPress.update(buttonBoard.getButton(Constants.kClimbingStartButton));
-        
         switch (state) 
         {
         case ZEROING:
-            // on first activation after power-cycling, start moving arm backwards until limit switch is reached
-            deployMotorMaster.set(ControlMode.PercentOutput, zeroingPercentOutput);
+            // // on first activation after power-cycling, start moving arm backwards until limit switch is reached
+            // deployMotorMaster.set(ControlMode.PercentOutput, zeroingPercentOutput);
             
-            if (getReverseLimitSwitch()) 
-            {
-                zeroed = true;  // set so we don't have to zero again
+            // if (getReverseLimitSwitch()) 
+            // {
+            //     zeroed = true;  // set so we don't have to zero again
                 
-                // the motor controller position will automatically be set to 0 when we hit the reverse limit switch
+            //     // the motor controller position will automatically be set to 0 when we hit the reverse limit switch
                 
-                turnOnSoftLimits();
+            //     turnOnSoftLimits();
 
-                state = CargoDeployStateEnum.OPERATIONAL;
-                setTarget(CargoDeployPositionEnum.RETRACTED);
-            }
+            //     state = CargoDeployStateEnum.OPERATIONAL;
+            //     setTarget(CargoDeployPositionEnum.RETRACTED);
+            // }
+turnOnSoftLimits();            
+state = CargoDeployStateEnum.OPERATIONAL;
             break;
 
         case OPERATIONAL:
-            // already calibrated, not in defense mode
+            // already calibrated, not in climbing mode
             // button board controls are enabled
             runOperational();
 
-            if (defenseButtonPress) {
-                state = CargoDeployStateEnum.DEFENSE;
-            }
-
-            // if (climbingButtonPress && (Timer.getMatchTime() < 30))
-            if (climbingButtonPress) // TODO: add code to only allow in last 30 seconds???
+            // if (buttonBoard.getButton(Constants.kClimbingStartButton) && (Timer.getMatchTime() < 30))
+            if (buttonBoard.getButton(Constants.kClimbingStartButton)) // TODO: add code to only allow in last 30 seconds???
             {
                 state = CargoDeployStateEnum.CLIMBING;
-            }
-            break;
-
-        case DEFENSE:
-            setTarget(CargoDeployPositionEnum.RETRACTED);
-            if (defenseButtonPress)
-            {
-                state = CargoDeployStateEnum.OPERATIONAL;
-                // will go back to position prior to defense button being pressed the first time
             }
             break;
 
         case CLIMBING:
             // Do nothing in this file -- see Climber.java
 
-            if (climbingButtonPress) // TODO: only allow to back out of this during first step of climb???
+            // can get out of climbing mode only by hitting retract button
+            if (buttonBoard.getButton(Constants.kDefenseButton))
             {
                 state = CargoDeployStateEnum.OPERATIONAL;
-                // will go back to position prior to climbing button being pressed the first time
+                // will go to retracted posistion on next cycle
             }
             break;
 
@@ -306,7 +299,8 @@ public class CargoIntake implements Loop
         if (buttonBoard.getButton(Constants.kCargoIntakeRetractButton))     { setTarget(CargoDeployPositionEnum.RETRACTED); }
         if (buttonBoard.getButton(Constants.kCargoIntakeRocketButton))      { setTarget(CargoDeployPositionEnum.ROCKET); }      // TODO: only allow if ball is detected?
         if (buttonBoard.getButton(Constants.kCargoIntakeCargoShipButton))   { setTarget(CargoDeployPositionEnum.CARGO_SHIP); }  // TODO: only allow if ball is detected?
-        
+        if (buttonBoard.getButton(Constants.kDefenseButton))                { setTarget(CargoDeployPositionEnum.RETRACTED); }
+
         // if ((position == CargoDeployPositionEnum.GROUND) && ballDetectSensor.get())
         // {
         //     // Successful ball intake.  Return to retracted position.  Driver can continue to center ball by holding down intake button.
