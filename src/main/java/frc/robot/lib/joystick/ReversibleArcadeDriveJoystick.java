@@ -18,7 +18,7 @@ public class ReversibleArcadeDriveJoystick extends JoystickControlsBase
     }
 
 		boolean drivingForward = true;
-		double kDeadband = 0.2;
+		double kCrossoverThreshold = 0.2;
 
 		public DriveCommand getDriveCommand()
 		{
@@ -35,14 +35,14 @@ public class ReversibleArcadeDriveJoystick extends JoystickControlsBase
 			// check to see if we are switching sticks
 			if (drivingForward)
 			{
-				if ((Math.abs(lThrottle) <  kDeadband) && (Math.abs(lTurn) <  kDeadband) && 
-				    (Math.abs(rThrottle) >= kDeadband) || (Math.abs(rTurn) >= kDeadband))
+				if ((Math.abs(lThrottle) <  kCrossoverThreshold) && (Math.abs(lTurn) <  kCrossoverThreshold) && 
+				    (Math.abs(rThrottle) >= kCrossoverThreshold) || (Math.abs(rTurn) >= kCrossoverThreshold))
 					drivingForward = false;
 			}
 			else
 			{
-				if ((Math.abs(rThrottle) <  kDeadband) && (Math.abs(rTurn) <  kDeadband) && 
-				    (Math.abs(lThrottle) >= kDeadband) || (Math.abs(lTurn) >= kDeadband))
+				if ((Math.abs(rThrottle) <  kCrossoverThreshold) && (Math.abs(rTurn) <  kCrossoverThreshold) && 
+				    (Math.abs(lThrottle) >= kCrossoverThreshold) || (Math.abs(lTurn) >= kCrossoverThreshold))
 					drivingForward = true;
 				}
 
