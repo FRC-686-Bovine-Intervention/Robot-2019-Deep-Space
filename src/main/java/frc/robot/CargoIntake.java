@@ -53,9 +53,10 @@ public class CargoIntake implements Loop
     public enum CargoDeployPositionEnum
     {
         RETRACTED(109.5), 
-        PLATFORM(63.5),
+        HAB_LEVEL3(63.5),
         CARGO_SHIP(56.0), 
         ROCKET(36.0), 
+        HAB_LEVEL2(20.0),
         GROUND(-8.7), 
         PUSHUP(-14.3); 
     
@@ -318,6 +319,7 @@ state = CargoDeployStateEnum.OPERATIONAL;
     
     public void setTarget(CargoDeployPositionEnum _targetPosition)
     {
+        state = CargoDeployStateEnum.OPERATIONAL;   // this is needed when returning from CLIMBING mode
         targetPosition = _targetPosition;
         setTargetAngleDeg(targetPosition.angleDeg);
     }
@@ -334,6 +336,11 @@ state = CargoDeployStateEnum.OPERATIONAL;
         return targetAngleDeg;
     }
     
+    public void retract()
+    {
+        setTarget(CargoDeployPositionEnum.RETRACTED);
+    }
+
     public void setPercentOutput(double _out)
     {
         double out = Util.limit(_out,  1.0);
