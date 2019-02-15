@@ -56,7 +56,7 @@ public class CargoIntake implements Loop
         PLATFORM(63.5),
         CARGO_SHIP(56.0), 
         ROCKET(36.0), 
-        GROUND(-8.7), 
+        GROUND(-8.0), //-8.7
         PUSHUP(-14.3); 
     
         public final double angleDeg;
@@ -67,15 +67,18 @@ public class CargoIntake implements Loop
     public double targetAngleDeg = targetPosition.angleDeg;
 
     public boolean zeroed = false;
-
+    
     //====================================================
     // Constants
     //====================================================
     
-    public final double zeroingPercentOutput = -0.1;
-
     public final double kIntakePercentOutput  = +0.6;          
     public final double kOuttakePercentOutput = -1.0;   // full power outtake
+  
+  
+  
+    public final double zeroingPercentOutput = -0.1;
+
 
     public final double kMinFwdOutput = +0;
     public final double kMinRevOutput = -0;
@@ -244,7 +247,7 @@ public class CargoIntake implements Loop
         switch (state) 
         {
         case ZEROING:
-            // // on first activation after power-cycling, start moving arm backwards until limit switch is reached
+            // on first activation after power-cycling, start moving arm backwards until limit switch is reached
             // deployMotorMaster.set(ControlMode.PercentOutput, zeroingPercentOutput);
             
             // if (getReverseLimitSwitch()) 
