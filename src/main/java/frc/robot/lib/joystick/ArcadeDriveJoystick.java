@@ -19,6 +19,8 @@ public class ArcadeDriveJoystick extends JoystickControlsBase {
 		return instance;
 	}
 
+	static double kDeadband = 0.1;
+
 	public DriveCommand getDriveCommand() {
 		double throttle = -mStick.getY(); // TODO: figure out why Y-axis is negated
 		double turn = -mStick.getX(); // TODO: figure out why X-axis is negated
@@ -40,8 +42,8 @@ public class ArcadeDriveJoystick extends JoystickControlsBase {
 			turn = 0;
 		}
 
-		double moveValue = Util.limit(throttle, 1.0);
-		double rotateValue = Util.limit(turn, 1.0);
+		double moveValue = applyDeadband(throttle);
+		double rotateValue = applyDeadband(turn);
 		double lMotorSpeed, rMotorSpeed;
 
 		if (squaredInputs) {
@@ -80,5 +82,15 @@ public class ArcadeDriveJoystick extends JoystickControlsBase {
 		DriveCommand signal = new DriveCommand(lMotorSpeed, rMotorSpeed);
 
 		return signal;
+	}
+
+	static double applyDeadband(double _in)
+	{
+		double sign = Math.signum(_in);							// get sign
+		double mag = Math.abs(_in);								// get magnitude
+		double out = 1.0/(1.0-kDeadband) * mag - kDeadband;		// inputs from kDeadband to 1.0 are scaled to outputs from 0 to 1
+		out = sign * out;										// reapply the sign
+		out = Util.limit(out, 1.0);								// limit to maximum of +/-1
+		return out;
 	}
 }
