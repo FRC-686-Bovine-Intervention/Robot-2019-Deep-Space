@@ -56,7 +56,7 @@ public class CargoIntake implements Loop
         PLATFORM(63.5),
         CARGO_SHIP(56.0), 
         ROCKET(36.0), 
-        GROUND(-8.0), //-8.7
+        GROUND(-8.7), 
         PUSHUP(-14.3); 
     
         public final double angleDeg;
