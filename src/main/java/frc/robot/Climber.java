@@ -46,7 +46,7 @@ public class Climber implements Loop
 
     public final double kDriveMotorPercentOutput = 0.3;
     public final double kClimberMotorWhenExtendingPercentOutput = 0.2;
-    public final double kClimberMotorAtTopPercentOutput = 0.4;
+    public final double kClimberMotorAtTopPercentOutput = 0.5;
 
     public double startRetractTime;
     public final double kRetractTimePeriod = 2.0;
@@ -69,8 +69,8 @@ public class Climber implements Loop
     double pidOutput = 0.0;
 
     double level2LastTimer;
-    double level2InitialWait = 0.5;
-    double level2ToggleWait = 0.1;
+    double level2InitialWait = 2.25;
+    double level2ToggleWait = 0.25;
     int toggleCount = 0;
     int level2NumToggles = 16;
 

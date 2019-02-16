@@ -60,7 +60,7 @@ public class CargoIntake implements Loop
         HAB_LEVEL2(14.0),
         GROUND(-8.7), 
         PUSHUP(-14.3),
-        LEVEL2_APPROACH(20.0);
+        LEVEL2_APPROACH(10.0);
     
         public final double angleDeg;
 
