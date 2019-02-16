@@ -118,7 +118,7 @@ public class CargoIntake implements Loop
     public double ballDetectStartTime;
     public final double kBallDetectTimeout = 0.5;
     
-    public RisingEdgeDetector climbingStartEdgeDetector = new RisingEdgeDetector();
+    public static RisingEdgeDetector climbingStartEdgeDetector = new RisingEdgeDetector();
 
     public CargoIntake() 
     {
@@ -251,7 +251,7 @@ public class CargoIntake implements Loop
     
     public void runDeploy()
     {
-        boolean climbingStartPressed = climbingStartEdgeDetector.update(buttonBoard.getButton(Constants.kClimbingStartButton));
+        climbingStartEdgeDetector.update(buttonBoard.getButton(Constants.kClimbingStartButton));
 
         switch (state) 
         {
@@ -278,7 +278,7 @@ public class CargoIntake implements Loop
             runOperational();
 
             // if (buttonBoard.getButton(Constants.kClimbingStartButton) && (Timer.getMatchTime() < 30))
-            if (climbingStartPressed) // TODO: add code to only allow in last 30 seconds???
+            if (climbingStartEdgeDetector.get()) // TODO: add code to only allow in last 30 seconds???
             {
                 state = CargoDeployStateEnum.CLIMBING;
                 Climber.startOver();
@@ -422,7 +422,6 @@ public class CargoIntake implements Loop
         }
         return rv;
     }
-
 
     public int angleDegToEncoderUnits(double _desiredAngleDeg) 
     {

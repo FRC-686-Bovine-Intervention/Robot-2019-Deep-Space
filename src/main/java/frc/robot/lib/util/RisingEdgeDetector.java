@@ -8,11 +8,17 @@ package frc.robot.lib.util;
 public class RisingEdgeDetector
 {
     private boolean lastValue = false;
+    private boolean edge = false;
 
     public boolean update(boolean newValue) 
     {
-        boolean rv = (newValue && !lastValue);
+        edge = (newValue && !lastValue);
         lastValue = newValue;
-        return rv;
+        return edge;
+    }
+
+    public boolean get()
+    {
+        return edge;
     }
 }

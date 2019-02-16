@@ -32,8 +32,6 @@ public class Climber implements Loop
     public VictorSPX climberDriveMotor = new VictorSPX(Constants.kClimberDriveMotorTalonId);
     public ButtonBoard buttonBoard = ButtonBoard.getInstance();
 
-    public RisingEdgeDetector climbingStartEdgeDetector = new RisingEdgeDetector();
-
     public enum ClimberStateEnum {LEVEL3_ARMS_ON_PLATFORM, LEVEL3_CLIMB, 
                                   LEVEL2_ARMS_ON_PLATFORM, LEVEL2_CLIMB, DRIVE_ONTO_PLATFORM, RETRACT_CYLINDERS, LAST_NUDGE, FINISHED};
     static ClimberStateEnum climberState = ClimberStateEnum.LEVEL3_ARMS_ON_PLATFORM;
@@ -98,8 +96,6 @@ public class Climber implements Loop
     {
         tiltAngleDeg = pigeon.getPitchDeg();
         
-        boolean climbingStartPressed = climbingStartEdgeDetector.update(buttonBoard.getButton(Constants.kClimbingStartButton));
-
         // do nothing unless Climber mode is enabled
         if (arm.state == CargoDeployStateEnum.CLIMBING)
         {
@@ -115,7 +111,7 @@ public class Climber implements Loop
                 // set arm at height for platform
                 arm.setTarget(CargoDeployPositionEnum.HAB_LEVEL3);
                 
-                if (climbingStartPressed)
+                if (CargoIntake.climbingStartEdgeDetector.get())
                 {
                     // if climb button is pressed a 2nd time, move on to Level2
                     climberState = ClimberStateEnum.LEVEL2_ARMS_ON_PLATFORM;
@@ -134,7 +130,7 @@ public class Climber implements Loop
                 // set arm at height for platform
                 arm.setTarget(CargoDeployPositionEnum.HAB_LEVEL2);
                 
-                if (climbingStartPressed)
+                if (CargoIntake.climbingStartEdgeDetector.get())
                 {
                     // if button is pressed a 3rd time, go back to retracted state
                     arm.setTarget(CargoDeployPositionEnum.RETRACTED);
