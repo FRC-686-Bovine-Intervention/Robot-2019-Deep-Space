@@ -32,7 +32,7 @@ public class Climber implements Loop
     public ButtonBoard buttonBoard = ButtonBoard.getInstance();
 
     public enum ClimberStateEnum {LEVEL3_ARMS_ON_PLATFORM, LEVEL3_CLIMB, LEVEL3_DRIVE_ONTO_PLATFORM, 
-                                  LEVEL2_ARMS_ON_PLATFORM, LEVEL2_CLIMB, LEVEL3_DRIVE_ONTO_PLATFORM, RETRACT_CYLINDERS, LAST_NUDGE, FINISHED};
+                                  LEVEL2_ARMS_ON_PLATFORM, LEVEL2_CLIMB, LEVEL2_DRIVE_ONTO_PLATFORM, RETRACT_CYLINDERS, LAST_NUDGE, FINISHED};
     ClimberStateEnum climberState = ClimberStateEnum.LEVEL3_ARMS_ON_PLATFORM;
 
     public final double kClimberMotorPercentOutput = 0.4;
@@ -135,7 +135,7 @@ public class Climber implements Loop
                     // }
                     break;
                     
-                    case LEVEL3_DRIVE_ONTO_PLATFORM:
+                case LEVEL3_DRIVE_ONTO_PLATFORM:
                     // slowly spin wheels forward
                     Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
                     climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorPercentOutput);
