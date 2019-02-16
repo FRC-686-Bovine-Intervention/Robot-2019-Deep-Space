@@ -32,7 +32,7 @@ public class Climber implements Loop
     public VictorSPX climberDriveMotor = new VictorSPX(Constants.kClimberDriveMotorTalonId);
     public ButtonBoard buttonBoard = ButtonBoard.getInstance();
 
-    public enum ClimberStateEnum {LEVEL3_ARMS_ON_PLATFORM, LEVEL3_CLIMB, 
+    public enum ClimberStateEnum {INIT, LEVEL3_ARMS_ON_PLATFORM, LEVEL3_CLIMB, 
                                   LEVEL2_ARMS_ON_PLATFORM, LEVEL2_CLIMB, DRIVE_ONTO_PLATFORM, RETRACT_CYLINDERS, LAST_NUDGE, FINISHED};
     static ClimberStateEnum climberState = ClimberStateEnum.LEVEL3_ARMS_ON_PLATFORM;
 
@@ -88,7 +88,7 @@ public class Climber implements Loop
     
     public static void startOver()
     {
-        climberState = ClimberStateEnum.LEVEL3_ARMS_ON_PLATFORM;
+        climberState = ClimberStateEnum.INIT;
     }
 
     @Override
@@ -103,7 +103,11 @@ public class Climber implements Loop
             
             switch (climberState)
             {
-                case LEVEL3_ARMS_ON_PLATFORM:
+            case INIT:
+                climberState = ClimberStateEnum.LEVEL3_ARMS_ON_PLATFORM;
+                break;
+
+            case LEVEL3_ARMS_ON_PLATFORM:
                 // slowly spin wheels forward
                 Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
                 // climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorPercentOutput);
@@ -122,7 +126,7 @@ public class Climber implements Loop
                 }
                 break;
                 
-                case LEVEL2_ARMS_ON_PLATFORM:
+            case LEVEL2_ARMS_ON_PLATFORM:
                 // slowly spin wheels forward
                 // Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
                 // climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorPercentOutput);
@@ -134,7 +138,7 @@ public class Climber implements Loop
                 {
                     // if button is pressed a 3rd time, go back to retracted state
                     arm.setTarget(CargoDeployPositionEnum.RETRACTED);
-                    climberState = ClimberStateEnum.LEVEL3_ARMS_ON_PLATFORM;   
+                    startOver();   
                 }
                 if (buttonBoard.getButton(Constants.kClimbingExtendButton))
                 {
@@ -143,7 +147,7 @@ public class Climber implements Loop
                 }
                 break;
                 
-                case LEVEL3_CLIMB:
+            case LEVEL3_CLIMB:
                 // // slowly spin wheels forward
                 // Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
                 climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorWhenExtendingPercentOutput);
