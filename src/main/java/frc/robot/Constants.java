@@ -73,7 +73,7 @@ public class Constants extends ConstantsBase {
     public static int kCargoIntakeButton =          kXboxButtonLB;
     public static int kCargoOuttakeAxis =           kXboxLTriggerAxis;
     public static int kVisionAssistanceButton =     kXboxButtonA;
-    public static int kControlsReverseButton =      kXboxButtonB;
+    public static int kControlsReverseButton =      kXboxButtonX;
     public static int kQuickTurnButton =            kXboxButtonY; // bogus setting to make TriggerDrive Joysticks happy
 
     // Operator Button Board Configuration

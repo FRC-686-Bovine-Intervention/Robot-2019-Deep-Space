@@ -128,8 +128,7 @@ public class Robot extends TimedRobot {
     		
     		setInitialPose(new Pose());
 
-
-    		
+   		
     	}
     	catch(Throwable t)
     	{

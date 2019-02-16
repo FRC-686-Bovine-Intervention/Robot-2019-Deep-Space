@@ -1,5 +1,7 @@
 package frc.robot;
 
+import javax.lang.model.util.ElementScanner6;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
@@ -31,12 +33,17 @@ public class Climber implements Loop
     public ClimberCylinders cylinders = ClimberCylinders.getInstance();
     public VictorSPX climberDriveMotor = new VictorSPX(Constants.kClimberDriveMotorTalonId);
     public ButtonBoard buttonBoard = ButtonBoard.getInstance();
-
-    public enum ClimberStateEnum {INIT, LEVEL3_ARMS_ON_PLATFORM, LEVEL3_CLIMB, 
-                                  LEVEL2_ARMS_ON_PLATFORM, LEVEL2_CLIMB, DRIVE_ONTO_PLATFORM, RETRACT_CYLINDERS, LAST_NUDGE, FINISHED};
+    public double pushUpThresholdLevel2 = -5;
+    public double pushUpThresholdLevel3 = 5;
+    public double level2ChangeAngleStartTime;
+    
+    public enum ClimberStateEnum {INIT, LEVEL3_ARMS_ON_PLATFORM, LEVEL2_ARMS_ON_PLATFORM, CLIMB, 
+                                  LEVEL3_DRIVE_ONTO_PLATFORM, LEVEL2_DRIVE_ONTO_PLATFORM,
+                                  RETRACT_CYLINDERS, LAST_NUDGE, FINISHED};
     static ClimberStateEnum climberState = ClimberStateEnum.LEVEL3_ARMS_ON_PLATFORM;
+    public int platformLevel = 3;
 
-    public final double kDriveMotorPercentOutput = 0.2;
+    public final double kDriveMotorPercentOutput = 0.3;
     public final double kClimberMotorWhenExtendingPercentOutput = 0.2;
     public final double kClimberMotorAtTopPercentOutput = 0.4;
 
@@ -108,9 +115,9 @@ public class Climber implements Loop
                 break;
 
             case LEVEL3_ARMS_ON_PLATFORM:
-                // slowly spin wheels forward
+                platformLevel = 3;
+                // slowly spin wheels forward to square with platform
                 Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
-                // climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorPercentOutput);
                 
                 // set arm at height for platform
                 arm.setTarget(CargoDeployPositionEnum.HAB_LEVEL3);
@@ -122,14 +129,12 @@ public class Climber implements Loop
                 }
                 if (buttonBoard.getButton(Constants.kClimbingExtendButton))
                 {
-                    climberState = ClimberStateEnum.LEVEL3_CLIMB;
+                    climberState = ClimberStateEnum.CLIMB;
                 }
                 break;
                 
             case LEVEL2_ARMS_ON_PLATFORM:
-                // slowly spin wheels forward
-                // Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
-                // climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorPercentOutput);
+                platformLevel = 2;
                 
                 // set arm at height for platform
                 arm.setTarget(CargoDeployPositionEnum.HAB_LEVEL2);
@@ -144,15 +149,11 @@ public class Climber implements Loop
                 if (buttonBoard.getButton(Constants.kClimbingExtendButton))
                 {
                     // climberState = ClimberStateEnum.LEVEL2_CLIMB;
-                    climberState = ClimberStateEnum.LEVEL3_CLIMB;
+                    climberState = ClimberStateEnum.CLIMB;
                 }
                 break;
                 
-            case LEVEL3_CLIMB:
-                // // slowly spin wheels forward
-                // Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
-                climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorWhenExtendingPercentOutput);
-                
+            case CLIMB:
                 cylinders.extend();
                 
                 // PID loop
@@ -163,43 +164,52 @@ public class Climber implements Loop
                 pidOutput = Kp * error + Kd * dError + Ki * iError;
                 arm.setPercentOutput(pidOutput);
                 
-                // once arms are down, move on
-                if (arm.getArmAngleDeg() <= CargoDeployPositionEnum.GROUND.angleDeg)
+                if (platformLevel == 2)
                 {
-                    arm.setPercentOutput(0.0);
-                    climberState = ClimberStateEnum.DRIVE_ONTO_PLATFORM;
+                    // once arms are down, move on
+                    if (arm.getArmAngleDeg() <= pushUpThresholdLevel2)
+                    {
+                        arm.setPercentOutput(0.0);
+                        climberState = ClimberStateEnum.LEVEL2_DRIVE_ONTO_PLATFORM;
+                        level2ChangeAngleStartTime = Timer.getFPGATimestamp();
+                    }
+                }
+                else
+                {
+                    // once arms are down, move on
+                    if (arm.getArmAngleDeg() <= pushUpThresholdLevel3)
+                    {
+                        arm.setPercentOutput(0.0);
+                        climberState = ClimberStateEnum.LEVEL3_DRIVE_ONTO_PLATFORM;
+                    }
                 }
                 break;
                 
-                // case LEVEL2_CLIMB:
-                //     // // slowly spin wheels forward
-                //     Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
-                //     climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorPercentOutput);
-                
-                //     cylinders.extend();
-                
-                //     // PID loop
-                //     error = -tiltAngleDeg;
-            //     dError = (error - lastError) / Constants.kLoopDt;
-            //     iError += (error * Constants.kLoopDt);
-            //     lastError = error;
-            //     pidOutput = Kp * error + Kd * dError + Ki * iError;
-            //     arm.setPercentOutput(pidOutput);
-                
-            //     // once arms are down, move on
-            //     if (arm.getArmAngleDeg() <= CargoDeployPositionEnum.GROUND.angleDeg)
-            //     {
-            //         arm.setPercentOutput(0.0);
-            //         climberState = ClimberStateEnum.DRIVE_ONTO_PLATFORM;
-            //     }
-            //     break;
-                
-            case DRIVE_ONTO_PLATFORM:
+            case LEVEL2_DRIVE_ONTO_PLATFORM:
                 // slowly spin wheels forward
                 Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
                 climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorAtTopPercentOutput);
                 
-                arm.turnOffSoftLimits();                            // turn of soft limits so we can do a pushup
+                arm.turnOffSoftLimits(); // turn of soft limits so we can do a pushup
+
+                if (Timer.getFPGATimestamp() - level2ChangeAngleStartTime > 3.0)
+                {
+                    arm.setTarget(CargoDeployPositionEnum.LEVEL2_APPROACH);    // push arm until level with frame
+                }
+
+                if (buttonBoard.getButton(Constants.kClimbingRetractButton))
+                {
+                    startRetractTime = currentTime;
+                    climberState = ClimberStateEnum.RETRACT_CYLINDERS;
+                }
+                break;
+
+            case LEVEL3_DRIVE_ONTO_PLATFORM:
+                // slowly spin wheels forward
+                Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
+                climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorAtTopPercentOutput);
+                
+                arm.turnOffSoftLimits(); // turn of soft limits so we can do a pushup
                 arm.setTarget(CargoDeployPositionEnum.PUSHUP);    // push arm past soft limit to hard limit
                 
                 if (buttonBoard.getButton(Constants.kClimbingRetractButton))
