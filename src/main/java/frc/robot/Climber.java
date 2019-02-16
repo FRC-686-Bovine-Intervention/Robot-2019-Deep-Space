@@ -14,6 +14,7 @@ import frc.robot.lib.joystick.ButtonBoard;
 import frc.robot.lib.sensors.Pigeon;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.RisingEdgeDetector;
+import frc.robot.lib.util.Util;
 import frc.robot.loops.Loop;
 import frc.robot.subsystems.Drive;
 
@@ -169,6 +170,7 @@ public class Climber implements Loop
                 iError += (error * Constants.kLoopDt);
                 lastError = error;
                 pidOutput = Kp * error + Kd * dError + Ki * iError;
+                pidOutput = Util.limit(pidOutput, 0, 1);
                 arm.setPercentOutput(pidOutput);
                 
                 // once arms are down, move on
@@ -188,6 +190,8 @@ public class Climber implements Loop
                 iError += (error * Constants.kLoopDt);
                 lastError = error;
                 pidOutput = Kp * error + Kd * dError + Ki * iError;
+                pidOutput = Util.limit(pidOutput, 0, 1);
+
                 arm.setPercentOutput(pidOutput);
                 
                 // once arms are down, move on
