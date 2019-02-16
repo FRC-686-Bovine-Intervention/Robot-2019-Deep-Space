@@ -73,7 +73,7 @@ public class CargoIntake implements Loop
     // Constants
     //====================================================
     
-    public final double zeroingPercentOutput = -0.1;
+    public final double zeroingPercentOutput = -0.2;
 
     public final double kIntakePercentOutput  = +0.6;          
     public final double kOuttakePercentOutput = -1.0;   // full power outtake
@@ -193,7 +193,7 @@ public class CargoIntake implements Loop
         {
             state = CargoDeployStateEnum.ZEROING;
 
-            turnOffSoftLimits();
+            //turnOffSoftLimits();
         }
     }
 
@@ -245,22 +245,20 @@ public class CargoIntake implements Loop
         switch (state) 
         {
         case ZEROING:
-            // // on first activation after power-cycling, start moving arm backwards until limit switch is reached
-            // deployMotorMaster.set(ControlMode.PercentOutput, zeroingPercentOutput);
+            // on first activation after power-cycling, start moving arm backwards until limit switch is reached
+            deployMotorMaster.set(ControlMode.PercentOutput, zeroingPercentOutput);
             
-            // if (getReverseLimitSwitch()) 
-            // {
-            //     zeroed = true;  // set so we don't have to zero again
+            if (zeroed || getReverseLimitSwitch()) 
+            {
+                zeroed = true;  // set so we don't have to zero again
                 
-            //     // the motor controller position will automatically be set to 0 when we hit the reverse limit switch
+                // the motor controller position will automatically be set to 0 when we hit the reverse limit switch
                 
-            //     turnOnSoftLimits();
+                turnOnSoftLimits();
 
-            //     state = CargoDeployStateEnum.OPERATIONAL;
-            //     setTarget(CargoDeployPositionEnum.RETRACTED);
-            // }
-turnOnSoftLimits();            
-state = CargoDeployStateEnum.OPERATIONAL;
+                state = CargoDeployStateEnum.OPERATIONAL;
+                setTarget(CargoDeployPositionEnum.RETRACTED);
+            }
             break;
 
         case OPERATIONAL:

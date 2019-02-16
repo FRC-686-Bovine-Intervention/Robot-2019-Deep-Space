@@ -66,34 +66,33 @@ public class DriveLoop implements Loop
 
 	// Wheels
 	public static double kDriveWheelCircumInches    = 18.800;
-	public static double kDriveWheelDiameterInches  = 11.500;
-	public static double kTrackLengthInches         = 21.500;
-	public static double kTrackWidthInches          = kDriveWheelCircumInches / Math.PI;
+	public static double kTrackLengthInches         = 17.500;
+	public static double kTrackWidthInches          = 26.000;
 	public static double kTrackEffectiveDiameter    = (kTrackWidthInches * kTrackWidthInches + kTrackLengthInches * kTrackLengthInches) / kTrackWidthInches;;
 	public static double kTrackScrubFactor          = 0.5;
 
 	// Wheel Encoder
 	public static double kQuadEncoderGain  = 1.0;	// number of drive shaft rotations per encoder shaft rotation
 													// 1.0 if encoder is directly coupled to the drive shaft
-	public static int    kQuadEncoderCodesPerRev    = 64;
+	public static int    kQuadEncoderCodesPerRev    = 1024;
 	public static int    kQuadEncoderUnitsPerRev    = (int)(4*kQuadEncoderCodesPerRev / kQuadEncoderGain);  ;
 	public static double kQuadEncoderStatusFramePeriod = 0.100;	// 100 ms
 
 	// CONTROL LOOP GAINS   
 	public static double kDriveSecondsFromNeutralToFull = 0.375;		// decrease acceleration (reduces current, robot tipping)
-	public static double kNominalEncoderPulsePer100ms = 85;		// velocity at a nominal throttle (measured using NI web interface)
-	public static double kNominalPercentOutput 		 = 0.4447;	// percent output of motor at above throttle (using NI web interface)
+	public static double kCalEncoderPulsePer100ms = 1400;		// velocity at a nominal throttle (measured using NI web interface)
+	public static double kCalPercentOutput 		 = 0.49;	// percent output of motor at above throttle (using NI web interface)
    
    // CONTROL LOOP GAINS
-   public static double kFullThrottleRPM = 520;	// measured max RPM using NI web interface
-   public static double kFullThrottleEncoderPulsePer100ms = kFullThrottleRPM / 60.0 * kQuadEncoderStatusFramePeriod * kQuadEncoderUnitsPerRev; 
+   public static double kFullThrottlePercentOutput = 1.0;	
+   public static double kFullThrottleEncoderPulsePer100ms = 2900; 
 
     // PID gains for drive velocity loop (sent to Talon)
     // Units: error is 4*256 counts/rev. Max output is +/- 1023 units.
     public static double kDriveVelocityKp = 20.0;
     public static double kDriveVelocityKi = 0.01;
     public static double kDriveVelocityKd = 70.0;
-    public static double kDriveVelocityKf = kNominalPercentOutput * 1023.0 / kNominalEncoderPulsePer100ms;
+    public static double kDriveVelocityKf = kCalPercentOutput * 1023.0 / kCalEncoderPulsePer100ms;
     public static int    kDriveVelocityIZone = 0;
     public static double kDriveVelocityRampRate = 0.375;
     public static int    kDriveVelocityAllowableError = 0;
@@ -156,8 +155,8 @@ public class DriveLoop implements Loop
 		rMotorMaster.configOpenloopRamp(kDriveSecondsFromNeutralToFull, Constants.kTalonTimeoutMs);		
 		
 		// Set up the encoders
-		lMotorMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, Constants.kTalonPidIdx, Constants.kTalonTimeoutMs);	// configure for closed-loop PID
-		rMotorMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, Constants.kTalonPidIdx, Constants.kTalonTimeoutMs);
+		lMotorMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.kTalonPidIdx, Constants.kTalonTimeoutMs);	// configure for closed-loop PID
+		rMotorMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, Constants.kTalonPidIdx, Constants.kTalonTimeoutMs);
 		lMotorMaster.setSensorPhase(kLeftMotorSensorPhase);
 		rMotorMaster.setSensorPhase(kRightMotorSensorPhase);
 		lMotorMaster.setInverted(kLeftMotorInverted);
