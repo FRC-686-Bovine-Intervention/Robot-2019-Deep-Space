@@ -67,7 +67,7 @@ public class Constants extends ConstantsBase {
     public static int kXboxRStickXAxis = 4;
     public static int kXboxRStickYAxis = 5;
 
-    // Driver Joystick Configuration
+    // Driver Joystick Configuration    
     public static int kHatchExtendRetractButton =   kXboxButtonRB;
     public static int kHatchShootAxis =             kXboxRTriggerAxis;  
     public static int kCargoIntakeButton =          kXboxButtonLB;
@@ -77,7 +77,7 @@ public class Constants extends ConstantsBase {
     public static int kQuickTurnButton =            kXboxButtonY; // bogus setting to make TriggerDrive Joysticks happy
 
     // Operator Button Board Configuration
-    public static int kCargoIntakeRetractButton =   kXboxButtonX;           // TODO: ask which button drive team wants
+    public static int kCargoIntakeRetractButton =   kXboxButtonX;          
     public static int kCargoIntakeRocketButton =    ButtonBoard.kButtonBoardB;
     public static int kCargoIntakeCargoShipButton = ButtonBoard.kButtonBoardA;
     public static int kDefenseButton =              ButtonBoard.kButtonBoardRB;

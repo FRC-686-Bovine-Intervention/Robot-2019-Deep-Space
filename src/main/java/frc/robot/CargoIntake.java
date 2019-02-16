@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.lib.joystick.ArcadeDriveJoystick;
 import frc.robot.lib.joystick.ButtonBoard;
 import frc.robot.lib.joystick.JoystickControlsBase;
@@ -68,15 +69,17 @@ public class CargoIntake implements Loop
     public double targetAngleDeg = targetPosition.angleDeg;
 
     public boolean zeroed = false;
-
+    
     //====================================================
     // Constants
     //====================================================
     
-    public final double zeroingPercentOutput = -0.2;
-
     public final double kIntakePercentOutput  = +0.6;          
     public final double kOuttakePercentOutput = -1.0;   // full power outtake
+  
+  
+  
+    public final double zeroingPercentOutput = -0.2;
 
     public final double kMinFwdOutput = +0;
     public final double kMinRevOutput = -0;
@@ -111,6 +114,9 @@ public class CargoIntake implements Loop
     public final int kDeployMotorForwardSoftLimit = angleDegToEncoderUnits(CargoDeployPositionEnum.GROUND.angleDeg);
     public final int kDeployMotorReverseSoftLimit = angleDegToEncoderUnits(CargoDeployPositionEnum.RETRACTED.angleDeg);
     
+    public RisingEdgeDetector ballDetectRisingEdge = new RisingEdgeDetector();
+    public double ballDetectStartTime;
+    public final double kBallDetectTimeout = 0.5;
     
     public CargoIntake() 
     {
@@ -219,14 +225,14 @@ public class CargoIntake implements Loop
     
     public void runIntake()
     {
-        // if (onIntakeButtonPress.update(driverJoystick.getButton(Constants.kCargoIntakeButton)) 
-        // {
-        //     // toggle intake every time intake button is pressed
-        //     intakeActive = !intakeActive;
-        // }
+        if (onIntakeButtonPress.update(driverJoystick.getButton(Constants.kCargoIntakeButton)))
+        {
+            // toggle intake every time intake button is pressed
+            intakeActive = !intakeActive;
+        }
         
-        // if (intakeActive)
-        if (driverJoystick.getButton(Constants.kCargoIntakeButton))
+        // if (driverJoystick.getButton(Constants.kCargoIntakeButton))
+        if (intakeActive)
         {
             intakeMotor.set(ControlMode.PercentOutput, kIntakePercentOutput);
         } 
@@ -300,11 +306,11 @@ public class CargoIntake implements Loop
         if (buttonBoard.getButton(Constants.kCargoIntakeCargoShipButton))   { setTarget(CargoDeployPositionEnum.CARGO_SHIP); }  // TODO: only allow if ball is detected?
         if (buttonBoard.getButton(Constants.kDefenseButton))                { setTarget(CargoDeployPositionEnum.RETRACTED); }
 
-        // if ((position == CargoDeployPositionEnum.GROUND) && ballDetectSensor.get())
-        // {
-        //     // Successful ball intake.  Return to retracted position.  Driver can continue to center ball by holding down intake button.
-        //     setTarget(CargoDeployPositionEnum.RETRACTED);
-        // }
+        if ((targetPosition == CargoDeployPositionEnum.GROUND) && detectBall())
+        {
+            // Successful ball intake.  Return to retracted position.  Driver can continue to center ball by holding down intake button.
+            setTarget(CargoDeployPositionEnum.RETRACTED);
+        }
         
         // if in the ground state, turn off motor while riding on wheels
         if ((targetPosition == CargoDeployPositionEnum.GROUND) && (getArmAngleDeg() < kAllowableGroundAngleDeg))
@@ -392,6 +398,26 @@ public class CargoIntake implements Loop
         return encoderUnitsToAngleDeg( deployMotorMaster.getSelectedSensorPosition(Constants.kTalonPidIdx) );
     }
     
+    public boolean detectBall()
+    {
+        boolean rv = false;
+
+        boolean ballDetect = !ballDetectSensor.get();
+        boolean firstBallDetect = ballDetectRisingEdge.update(ballDetect);
+        if (firstBallDetect)
+        {
+            ballDetectStartTime = Timer.getFPGATimestamp();
+        }
+        if (ballDetect && (Timer.getFPGATimestamp() - ballDetectStartTime >= kBallDetectTimeout))
+        {
+            // if ball is still detected, and it has been a certain period of time since it was first seen
+            // declare it detected
+            rv = true;
+        }
+        return false;
+    }
+
+
     public int angleDegToEncoderUnits(double _desiredAngleDeg) 
     {
         // The RETRACTED position is where the encoder is zeroed.  Everything is referenced to it.
