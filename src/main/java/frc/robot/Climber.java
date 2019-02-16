@@ -35,8 +35,9 @@ public class Climber implements Loop
                                   LEVEL2_ARMS_ON_PLATFORM, LEVEL2_CLIMB, DRIVE_ONTO_PLATFORM, RETRACT_CYLINDERS, LAST_NUDGE, FINISHED};
     ClimberStateEnum climberState = ClimberStateEnum.LEVEL3_ARMS_ON_PLATFORM;
 
-    public final double kClimberMotorPercentOutput = 0.4;
     public final double kDriveMotorPercentOutput = 0.2;
+    public final double kClimberMotorWhenExtendingPercentOutput = 0.2;
+    public final double kClimberMotorAtTopPercentOutput = 0.4;
 
     public double startRetractTime;
     public final double kRetractTimePeriod = 2.0;
@@ -98,7 +99,7 @@ public class Climber implements Loop
             {
                 case LEVEL3_ARMS_ON_PLATFORM:
                 // slowly spin wheels forward
-                // Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
+                Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
                 // climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorPercentOutput);
                 
                 // set arm at height for platform
@@ -117,8 +118,8 @@ public class Climber implements Loop
                 
                 case LEVEL2_ARMS_ON_PLATFORM:
                 // slowly spin wheels forward
-                Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
-                climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorPercentOutput);
+                // Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
+                // climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorPercentOutput);
                 
                 // set arm at height for platform
                 arm.setTarget(CargoDeployPositionEnum.HAB_LEVEL2);
@@ -138,8 +139,8 @@ public class Climber implements Loop
                 
                 case LEVEL3_CLIMB:
                 // // slowly spin wheels forward
-                Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
-                climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorPercentOutput);
+                // Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
+                climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorWhenExtendingPercentOutput);
                 
                 cylinders.extend();
                 
@@ -185,7 +186,7 @@ public class Climber implements Loop
             case DRIVE_ONTO_PLATFORM:
                 // slowly spin wheels forward
                 Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
-                climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorPercentOutput);
+                climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorAtTopPercentOutput);
                 
                 arm.turnOffSoftLimits();                            // turn of soft limits so we can do a pushup
                 arm.setTarget(CargoDeployPositionEnum.PUSHUP);    // push arm past soft limit to hard limit
