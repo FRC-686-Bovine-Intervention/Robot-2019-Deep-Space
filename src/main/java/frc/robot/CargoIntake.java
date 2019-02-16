@@ -236,8 +236,9 @@ public class CargoIntake implements Loop
         {
             intakeMotor.set(ControlMode.PercentOutput, kIntakePercentOutput);
         } 
-        else if (driverJoystick.getAxisAsButton(Constants.kCargoOuttakeAxis)) 
+        if (driverJoystick.getAxisAsButton(Constants.kCargoOuttakeAxis)) 
         {
+            intakeActive = false;
             intakeMotor.set(ControlMode.PercentOutput, kOuttakePercentOutput);
         }
         else
@@ -414,7 +415,7 @@ public class CargoIntake implements Loop
             // declare it detected
             rv = true;
         }
-        return false;
+        return rv;
     }
 
 
