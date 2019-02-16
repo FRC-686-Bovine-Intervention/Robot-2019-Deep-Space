@@ -37,7 +37,7 @@ public class Climber implements Loop
     public double pushUpThresholdLevel3 = 5;
     public double level2ChangeAngleStartTime;
     
-    public enum ClimberStateEnum {INIT, LEVEL3_ARMS_ON_PLATFORM, LEVEL2_ARMS_ON_PLATFORM, CLIMB, 
+    public enum ClimberStateEnum {INIT, LEVEL3_ARMS_ON_PLATFORM, LEVEL2_ARMS_ON_PLATFORM, LEVEL3_CLIMB, LEVEL2_CLIMB,
                                   LEVEL3_DRIVE_ONTO_PLATFORM, LEVEL2_DRIVE_ONTO_PLATFORM,
                                   RETRACT_CYLINDERS, LAST_NUDGE, FINISHED};
     static ClimberStateEnum climberState = ClimberStateEnum.LEVEL3_ARMS_ON_PLATFORM;
@@ -66,6 +66,12 @@ public class Climber implements Loop
     double lastError = 0.0;
 
     double pidOutput = 0.0;
+
+    double level2LastTimer;
+    double level2InitialWait = 0.5;
+    double level2ToggleWait = 0.1;
+    int toggleCount = 0;
+    int level2NumToggles = 16;
 
     public Climber()
     {
@@ -129,7 +135,7 @@ public class Climber implements Loop
                 }
                 if (buttonBoard.getButton(Constants.kClimbingExtendButton))
                 {
-                    climberState = ClimberStateEnum.CLIMB;
+                    climberState = ClimberStateEnum.LEVEL3_CLIMB;
                 }
                 break;
                 
@@ -148,12 +154,13 @@ public class Climber implements Loop
                 }
                 if (buttonBoard.getButton(Constants.kClimbingExtendButton))
                 {
-                    // climberState = ClimberStateEnum.LEVEL2_CLIMB;
-                    climberState = ClimberStateEnum.CLIMB;
+                    climberState = ClimberStateEnum.LEVEL2_CLIMB;
+                    level2LastTimer = Timer.getFPGATimestamp();
+                    toggleCount = 0;
                 }
                 break;
                 
-            case CLIMB:
+            case LEVEL3_CLIMB:
                 cylinders.extend();
                 
                 // PID loop
@@ -164,44 +171,85 @@ public class Climber implements Loop
                 pidOutput = Kp * error + Kd * dError + Ki * iError;
                 arm.setPercentOutput(pidOutput);
                 
-                if (platformLevel == 2)
+                // once arms are down, move on
+                if (arm.getArmAngleDeg() <= pushUpThresholdLevel3)
                 {
-                    // once arms are down, move on
-                    if (arm.getArmAngleDeg() <= pushUpThresholdLevel2)
-                    {
-                        arm.setPercentOutput(0.0);
-                        climberState = ClimberStateEnum.LEVEL2_DRIVE_ONTO_PLATFORM;
-                        level2ChangeAngleStartTime = Timer.getFPGATimestamp();
-                    }
-                }
-                else
-                {
-                    // once arms are down, move on
-                    if (arm.getArmAngleDeg() <= pushUpThresholdLevel3)
-                    {
-                        arm.setPercentOutput(0.0);
-                        climberState = ClimberStateEnum.LEVEL3_DRIVE_ONTO_PLATFORM;
-                    }
+                    arm.setPercentOutput(0.0);
+                    climberState = ClimberStateEnum.LEVEL3_DRIVE_ONTO_PLATFORM;
                 }
                 break;
                 
+            case LEVEL2_CLIMB:
+                cylinders.extend();
+                    
+                // PID loop
+                error = -tiltAngleDeg;
+                dError = (error - lastError) / Constants.kLoopDt;
+                iError += (error * Constants.kLoopDt);
+                lastError = error;
+                pidOutput = Kp * error + Kd * dError + Ki * iError;
+                arm.setPercentOutput(pidOutput);
+                
+                // once arms are down, move on
+                if (arm.getArmAngleDeg() <= pushUpThresholdLevel2)
+                {
+                    arm.setPercentOutput(0.0);
+                    climberState = ClimberStateEnum.LEVEL2_DRIVE_ONTO_PLATFORM;
+                    level2ChangeAngleStartTime = Timer.getFPGATimestamp();
+                }
+                break;
+
+                    
             case LEVEL2_DRIVE_ONTO_PLATFORM:
                 // slowly spin wheels forward
                 Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
                 climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorAtTopPercentOutput);
                 
                 arm.turnOffSoftLimits(); // turn of soft limits so we can do a pushup
-
-                if (Timer.getFPGATimestamp() - level2ChangeAngleStartTime > 3.0)
+                
+                
+                // the piston dance
+                if (toggleCount == 0)
                 {
-                    arm.setTarget(CargoDeployPositionEnum.LEVEL2_APPROACH);    // push arm until level with frame
+                    cylinders.extend();
+                    if (Timer.getFPGATimestamp() - level2LastTimer >= level2InitialWait)
+                    {
+                        level2LastTimer = Timer.getFPGATimestamp();
+                        toggleCount++;
+                    }
                 }
-
-                if (buttonBoard.getButton(Constants.kClimbingRetractButton))
+                else
                 {
-                    startRetractTime = currentTime;
-                    climberState = ClimberStateEnum.RETRACT_CYLINDERS;
-                }
+                    if (toggleCount % 2 == 1)
+                    {
+                        // toggleCount is odd
+                        cylinders.retract();
+                        if (Timer.getFPGATimestamp() - level2LastTimer >= level2ToggleWait)
+                        {
+                            level2LastTimer = Timer.getFPGATimestamp();
+                            toggleCount++;
+                        }
+                    }
+                    else
+                    {
+                        // toggleCount is even
+                        cylinders.extend();
+                        if (Timer.getFPGATimestamp() - level2LastTimer >= level2ToggleWait)
+                        {
+                            level2LastTimer = Timer.getFPGATimestamp();
+                            toggleCount++;
+                        }
+                    }
+                    if (toggleCount >= level2NumToggles)
+                    {
+                        // hopefully we're on the platform by now
+                        startRetractTime = currentTime;
+                        climberState = ClimberStateEnum.RETRACT_CYLINDERS;
+                    }
+                }   
+
+//              arm.setTarget(CargoDeployPositionEnum.LEVEL2_APPROACH);    // push arm until level with frame
+
                 break;
 
             case LEVEL3_DRIVE_ONTO_PLATFORM:
