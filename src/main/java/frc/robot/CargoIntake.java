@@ -118,6 +118,8 @@ public class CargoIntake implements Loop
     public double ballDetectStartTime;
     public final double kBallDetectTimeout = 0.5;
     
+    public RisingEdgeDetector climbingStartEdgeDetector = new RisingEdgeDetector();
+
     public CargoIntake() 
     {
         deployMotorMaster = new TalonSRX(Constants.kCargoDeployMasterTalonId);
@@ -249,6 +251,8 @@ public class CargoIntake implements Loop
     
     public void runDeploy()
     {
+        boolean climbingStartPressed = climbingStartEdgeDetector.update(buttonBoard.getButton(Constants.kClimbingStartButton));
+
         switch (state) 
         {
         case ZEROING:
@@ -274,9 +278,10 @@ public class CargoIntake implements Loop
             runOperational();
 
             // if (buttonBoard.getButton(Constants.kClimbingStartButton) && (Timer.getMatchTime() < 30))
-            if (buttonBoard.getButton(Constants.kClimbingStartButton)) // TODO: add code to only allow in last 30 seconds???
+            if (climbingStartPressed) // TODO: add code to only allow in last 30 seconds???
             {
                 state = CargoDeployStateEnum.CLIMBING;
+                Climber.startOver();
             }
             break;
 
