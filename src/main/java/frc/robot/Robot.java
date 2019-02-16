@@ -123,6 +123,7 @@ public class Robot extends TimedRobot {
 			robotLogger.register(GoalStateLoop.getInstance().getGoalTracker().getLogger());
 			robotLogger.register(GoalStates.getInstance().getLogger());
 			robotLogger.register(CargoIntake.getInstance().getLogger());
+			robotLogger.register(HatchDeploy.getInstance().getLogger());
 			robotLogger.register(Climber.getInstance().getLogger());
     		
     		setInitialPose(new Pose());

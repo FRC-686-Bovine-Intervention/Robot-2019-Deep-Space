@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
@@ -11,7 +12,9 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.lib.joystick.ArcadeDriveJoystick;
+import frc.robot.lib.joystick.ButtonBoard;
 import frc.robot.lib.joystick.JoystickControlsBase;
+import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.RisingEdgeDetector;
 
 public class HatchDeploy {
@@ -25,16 +28,18 @@ public class HatchDeploy {
     public Solenoid hatchSolenoid;
     public DigitalInput topLimitSwitch;
     public DigitalInput bttmLimitSwitch;
-    public final double zeroingSpeed = -0.1;
-    public final int pickUpAngle = 300;
+    public final double zeroingSpeed = -0.15;
+    public final int bumperAngle = 300;
     public final int groundAngle = 1249;
     public final int defenseAngle = 0;
-    public RisingEdgeDetector defenseBttnRisingEdgeDetector = new RisingEdgeDetector();
+    public RisingEdgeDetector hatchBttnRisingEdgeDetector = new RisingEdgeDetector();
     boolean on;
     boolean off;
+    public boolean zeroed  = false; 
     private double mTimeToWait = 2;
     private double mStartTime;
-
+    public double targetPosition;
+    public ButtonBoard buttonBoard = ButtonBoard.getInstance();
 
     // math for limit switch
     public static double kEncoderUnitsPerRev = 4096;
@@ -135,45 +140,57 @@ public class HatchDeploy {
            dropMotor.set(ControlMode.PercentOutput, 0.0);
            dropMotor.setNeutralMode(NeutralMode.Brake);
 
+           zeroed = false;
 
     }
 
     public void run() {
         JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
-        boolean dBtnIsPushed = controls.getButton(Constants.kDefenseButton);
-        boolean dBttnEdgeDetectorValue = defenseBttnRisingEdgeDetector.update(dBtnIsPushed);
+        boolean dBtnIsPushed = buttonBoard.getButton(Constants.kDefenseButton);
+        boolean hBtnIsPushed = controls.getButton(Constants.kHatchDeployButton);
+        boolean hBttnEdgeDetectorValue = hatchBttnRisingEdgeDetector.update(hBtnIsPushed);
+        getLimitSwitches();
+
+
+        
         switch (state) {
         case INIT:
             dropMotor.set(ControlMode.PercentOutput, zeroingSpeed);
-            if (topLimitSwitch.get()) {
+            if (zeroed || getReverseLimitSwitch()) {
+                zeroed = true;
                 state = HatchDeployStateEnum.TO_BUMPER;
             }
             break;
-            case TO_BUMPER:
-            dropMotor.set(ControlMode.MotionMagic, (pickUpAngle));
-            if (controls.getButton(Constants.kHatchExtendRetractButton))  // TODO: rising edge of kHatchExtendRetractButton
+
+
+        case TO_BUMPER:
+            setTarget(bumperAngle);
+            if (hBttnEdgeDetectorValue)  
             {    
                 mStartTime = Timer.getFPGATimestamp();
                  
                 state = HatchDeployStateEnum.GROUND;
             }
-            if (dBttnEdgeDetectorValue)
+            if (dBtnIsPushed)
             {
                 state = HatchDeployStateEnum.DEFENSE;
             }
             break;
+
+
         case DEFENSE:
-            dropMotor.set(ControlMode.MotionMagic, (defenseAngle));
-            if (dBttnEdgeDetectorValue)
+           setTarget(defenseAngle);
+            if (hBttnEdgeDetectorValue)
             {
                 state = HatchDeployStateEnum.TO_BUMPER;
             }
             break;
+
+            
         case GROUND:
-            dropMotor.set(ControlMode.MotionMagic, (groundAngle));
-            if (bttmLimitSwitch.get())    // TODO: rising edge of kHatchExtendRetractButton
-             {
-               // Timer.getFPGATimestamp() - mStartTime >= mTimeToWait;
+            setTarget(groundAngle);
+            if ( Timer.getFPGATimestamp() - mStartTime >= mTimeToWait)    
+            {
                 state = HatchDeployStateEnum.TO_BUMPER;
             }
             break;
@@ -212,5 +229,58 @@ public void deploy(){
 public void done() {
     hatchSolenoid.set(off);
 }
+
+public void setTarget(double _targetPosition){
+    dropMotor.set(ControlMode.MotionMagic, (_targetPosition));
+    targetPosition = _targetPosition;
+}
+Faults faults = new Faults();
+public void getLimitSwitches()
+{
+    // called once per loop iteration
+    dropMotor.getFaults(faults);
+}
+
+public boolean getForwardLimitSwitch()
+{
+    return faults.ForwardLimitSwitch;
+}
+
+public boolean getReverseLimitSwitch()
+{
+    return faults.ReverseLimitSwitch;
+}    
+
+public boolean getForwardSoftLimit()
+{
+    return faults.ForwardSoftLimit;  
+}    
+
+public boolean getReverseSoftLimit()
+{
+    return faults.ReverseSoftLimit;  
+}    
+
+private final DataLogger logger = new DataLogger()
+	{
+		@Override
+		public void log()
+		{
+            put("HatchDeploy/targetPosition", targetPosition);
+            put("HatchDeploy/state", state.toString());
+            put("HatchDeploy/zeroed", zeroed);
+            put("HatchDeploy/fwdLimitSwitch", getForwardLimitSwitch());
+            put("HatchDeploy/revLimitSwitch", getReverseLimitSwitch());
+            put("HatchDeploy/fwdSoftLimit", getForwardSoftLimit());
+            put("HatchDeploy/revSoftLimit", getReverseSoftLimit());
+            put("HatchDeploy/motorCurrent", dropMotor.getOutputCurrent());
+            put("HatchDeploy/pidError", dropMotor.getClosedLoopError(kSlotIdx));
+		}
+	};
+    
+	public DataLogger getLogger()
+	{
+		return logger;
+	}    
 
 }
