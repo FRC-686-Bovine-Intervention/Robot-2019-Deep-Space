@@ -137,6 +137,7 @@ public class Climber implements Loop
                 if (CargoIntake.climbingStartEdgeDetector.get())
                 {
                     // if button is pressed a 3rd time, go back to retracted state
+                    arm.setState(CargoDeployStateEnum.OPERATIONAL);
                     arm.setTarget(CargoDeployPositionEnum.RETRACTED);
                     startOver();   
                 }
@@ -230,6 +231,9 @@ public class Climber implements Loop
                 if ((currentTime - startRetractTime) > (kRetractTimePeriod + kFinishTimePeriod))
                 {
                     climberState = ClimberStateEnum.FINISHED;
+                    arm.setState(CargoDeployStateEnum.OPERATIONAL);
+                    arm.setTarget(CargoDeployPositionEnum.RETRACTED);
+                    startOver();                       
                 }
                 break;
 

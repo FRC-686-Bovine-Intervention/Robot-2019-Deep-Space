@@ -326,10 +326,13 @@ public class CargoIntake implements Loop
         }
     }
     
-    
+    public void setState(CargoDeployStateEnum _state)
+    {   
+        state = _state;   
+    }
+
     public void setTarget(CargoDeployPositionEnum _targetPosition)
     {
-        state = CargoDeployStateEnum.OPERATIONAL;   // this is needed when returning from CLIMBING mode
         targetPosition = _targetPosition;
         setTargetAngleDeg(targetPosition.angleDeg);
     }
