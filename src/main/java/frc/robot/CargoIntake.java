@@ -219,7 +219,7 @@ public class CargoIntake implements Loop
 	public void onLoop()
     {
         // update joystick class, in case it was changed in teleopInit
-        driverJoystick = Robot.getInstance().getJoystick();
+        driverJoystick = SmartDashboardInteractions.getInstance().getJoystickControlsMode();
         
         getLimitSwitches();
         runDeploy();

@@ -4,7 +4,10 @@ import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Robot;
+import frc.robot.SmartDashboardInteractions;
+import frc.robot.lib.joystick.JoystickControlsBase;
 import frc.robot.lib.sensors.Limelight;
+import frc.robot.lib.util.DataLogger;
 import frc.robot.loops.Loop;
 
 
@@ -20,7 +23,6 @@ public class VisionLoop implements Loop
 	// camera selection
 	public Limelight cargoCamera = Limelight.getCargoInstance();
 	public Limelight hatchCamera = Limelight.getHatchInstance();
-	public Robot robot = Robot.getInstance();
 
 	public VisionTargetList visionTargetList = VisionTargetList.getInstance();
 
@@ -42,15 +44,18 @@ public class VisionLoop implements Loop
 		// nothing
 	}
 
+
+	Limelight cameraSelection;
 	public void getTargets(double currentTime)
 	{
-		double cameraLatency = cargoCamera.getTotalLatencyMs() / 1000.0;
+		JoystickControlsBase controls = SmartDashboardInteractions.getInstance().getJoystickControlsMode();
+		cameraSelection = controls.getDrivingForward() ? cargoCamera : hatchCamera;
+
+		double cameraLatency = cameraSelection.getTotalLatencyMs() / 1000.0;
 		double imageCaptureTimestamp = currentTime - cameraLatency;		// assumes transport time from phone to this code is instantaneous
 
 		int numTargets = 1;	// for Limelight
 		ArrayList<VisionTargetList.Target> targets = new ArrayList<>(numTargets);
-
-		Limelight cameraSelection = robot.getJoystick().getDrivingForward() ? cargoCamera : hatchCamera;
 
 		if (cameraSelection.getIsTargetFound())
 		{
@@ -66,4 +71,17 @@ public class VisionLoop implements Loop
 		visionTargetList.set( imageCaptureTimestamp, targets );
 	}
 	
+
+	private final DataLogger logger = new DataLogger()
+    {
+        @Override
+        public void log()
+        {
+			put("Camera Selection", cameraSelection.toString());
+        }
+    };
+    
+    public DataLogger getLogger() { return logger; }
+
+
 }

@@ -21,6 +21,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class SmartDashboardInteractions 
 {
+	private static SmartDashboardInteractions instance = null;
+
+	public static SmartDashboardInteractions getInstance() {
+		if (instance == null) {
+			instance = new SmartDashboardInteractions();
+		}
+		return instance;
+    }
+        
     static SendableChooser<StartPositionOption> startChooser;
 
     public enum StartPositionOption

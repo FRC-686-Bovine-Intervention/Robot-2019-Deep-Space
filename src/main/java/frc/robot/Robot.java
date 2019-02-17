@@ -38,15 +38,6 @@ import frc.robot.vision.VisionTargetList;
 
 public class Robot extends TimedRobot {
 
-	private static Robot instance = null;
-
-	public static Robot getInstance() {
-		if (instance == null) {
-			instance = new Robot();
-		}
-		return instance;
-	}
-
 	PowerDistributionPanel pdp = new PowerDistributionPanel();
 
 	JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
@@ -62,7 +53,7 @@ public class Robot extends TimedRobot {
 
 	LoopController loopController;
 
-	SmartDashboardInteractions smartDashboardInteractions;
+	SmartDashboardInteractions smartDashboardInteractions = SmartDashboardInteractions.getInstance();
 	DataLogController robotLogger;
 
 	Limelight cargoCamera = Limelight.getCargoInstance();
@@ -380,11 +371,6 @@ public class Robot extends TimedRobot {
 
 	
 
-	public JoystickControlsBase getJoystick()
-	{
-		// get joystick driving forward based on current choice of joystick
-		return controls;
-	}
 }
 
 
