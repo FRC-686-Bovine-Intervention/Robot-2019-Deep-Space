@@ -1,7 +1,5 @@
 package frc.robot;
 
-import javax.lang.model.util.ElementScanner6;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
@@ -13,7 +11,6 @@ import frc.robot.command_status.DriveCommand;
 import frc.robot.lib.joystick.ButtonBoard;
 import frc.robot.lib.sensors.Pigeon;
 import frc.robot.lib.util.DataLogger;
-import frc.robot.lib.util.RisingEdgeDetector;
 import frc.robot.lib.util.Util;
 import frc.robot.loops.Loop;
 import frc.robot.subsystems.Drive;
@@ -284,7 +281,7 @@ public class Climber implements Loop
                 }
                 break;
                 
-                case LAST_NUDGE:
+            case LAST_NUDGE:
                 // drive forward a little bit more
                 Drive.getInstance().setOpenLoop(new DriveCommand(kDriveMotorPercentOutput, kDriveMotorPercentOutput));
                 
@@ -299,6 +296,9 @@ public class Climber implements Loop
                 }
                 break;
 
+            case FINISHED:
+                // nothing to do
+                break;                
             }
         }
     }

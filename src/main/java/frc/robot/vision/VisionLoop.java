@@ -3,9 +3,7 @@ package frc.robot.vision;
 import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.Robot;
-import frc.robot.SmartDashboardInteractions;
-import frc.robot.lib.joystick.JoystickControlsBase;
+import frc.robot.lib.joystick.SelectedJoystick;
 import frc.robot.lib.sensors.Limelight;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.loops.Loop;
@@ -17,10 +15,13 @@ import frc.robot.loops.Loop;
  */
 public class VisionLoop implements Loop
 {
-    private static VisionLoop instance = new VisionLoop();
+	private static VisionLoop instance = new VisionLoop();
     public static VisionLoop getInstance() { return instance; }
 	
+	SelectedJoystick selectedJoystick = SelectedJoystick.getInstance();
+	
 	// camera selection
+	Limelight cameraSelection;
 	public Limelight cargoCamera = Limelight.getCargoInstance();
 	public Limelight hatchCamera = Limelight.getHatchInstance();
 
@@ -45,11 +46,9 @@ public class VisionLoop implements Loop
 	}
 
 
-	Limelight cameraSelection;
 	public void getTargets(double currentTime)
 	{
-		JoystickControlsBase controls = SmartDashboardInteractions.getInstance().getJoystickControlsMode();
-		cameraSelection = controls.getDrivingForward() ? cargoCamera : hatchCamera;
+		cameraSelection = selectedJoystick.getDrivingForward() ? cargoCamera : hatchCamera;
 
 		double cameraLatency = cameraSelection.getTotalLatencyMs() / 1000.0;
 		double imageCaptureTimestamp = currentTime - cameraLatency;		// assumes transport time from phone to this code is instantaneous
