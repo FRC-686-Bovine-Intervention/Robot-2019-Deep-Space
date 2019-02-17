@@ -85,7 +85,7 @@ public class Limelight
     public void disabledPeriodic()
     {
         setPipeline(0);
-        setLEDMode(LedMode.kOff);
+        setLEDMode(LedMode.kOn);
         setCamMode(CamMode.kVision);
         setSnapshot(Snapshot.kOff);
         setStream(StreamType.kPiPSecondary);
@@ -118,8 +118,8 @@ public class Limelight
         setLEDMode(LedMode.kOn);
         setCamMode(CamMode.kVision);
         setSnapshot(Snapshot.kOff);
-        // setStream(StreamType.kPiPSecondary);
-        setStream(StreamType.kStandard);
+        setStream(StreamType.kPiPSecondary);
+        // setStream(StreamType.kStandard);
     }
 
     public void LimelightInit()

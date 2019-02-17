@@ -27,7 +27,7 @@ public class GoalTracker
     // Goal Tracking constants
     public static double kMaxTrackerDistance = 18.0;	// inches
     public static double kGoalTrackAveragePeriod = 0.1;		// seconds (will average goal detections over this period)
-	public static double kMaxTargetAge = 2.0; // 0.4;			// seconds (will not consider targets that haven't been updated in this time)
+	public static double kMaxTargetAge = 5.0; //2.0 // 0.4;			// seconds (will not consider targets that haven't been updated in this time)
 	
     public static double kTrackReportComparatorStablityWeight = 1.0;
     public static double kTrackReportComparatorAgeWeight = 1.0;
