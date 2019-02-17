@@ -20,6 +20,7 @@ import frc.robot.command_status.GoalStates;
 import frc.robot.command_status.RobotState;
 import frc.robot.lib.joystick.ArcadeDriveJoystick;
 import frc.robot.lib.joystick.JoystickControlsBase;
+import frc.robot.lib.joystick.SelectedJoystick;
 import frc.robot.lib.sensors.Limelight;
 import frc.robot.lib.util.ControlsReverse;
 import frc.robot.lib.util.CrashTracker;
@@ -38,18 +39,11 @@ import frc.robot.vision.VisionTargetList;
 
 public class Robot extends TimedRobot {
 
-	private static Robot instance = null;
-
-	public static Robot getInstance() {
-		if (instance == null) {
-			instance = new Robot();
-		}
-		return instance;
-	}
-
 	PowerDistributionPanel pdp = new PowerDistributionPanel();
 
+	SmartDashboardInteractions smartDashboardInteractions = SmartDashboardInteractions.getInstance();
 	JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
+	SelectedJoystick selectedJoystick = SelectedJoystick.getInstance();
 
 	RobotState robotState = RobotState.getInstance();
 	Drive drive = Drive.getInstance();
@@ -62,7 +56,6 @@ public class Robot extends TimedRobot {
 
 	LoopController loopController;
 
-	SmartDashboardInteractions smartDashboardInteractions;
 	DataLogController robotLogger;
 
 	Limelight cargoCamera = Limelight.getCargoInstance();
@@ -107,8 +100,7 @@ public class Robot extends TimedRobot {
 			loopController.register(CargoIntake.getInstance());
 			loopController.register(Climber.getInstance());
 
-    		smartDashboardInteractions = new SmartDashboardInteractions();
-    		smartDashboardInteractions.initWithDefaults();
+			selectedJoystick.update();
     		
     		// set datalogger and time info
     		TimeZone.setDefault(TimeZone.getTimeZone("America/New_York"));
@@ -222,15 +214,17 @@ public class Robot extends TimedRobot {
     	boolean logToSmartDashboard = true;
     	robotLogger.setOutputMode(logToFile, logToSmartDashboard);
 
-		cargoCamera.autoInit();
-		hatchCamera.autoInit();
-
     	try
     	{
 			superStructure.enable();
-
+			
 			CrashTracker.logAutoInit();
-
+			
+			selectedJoystick.update();
+			cargoCamera.autoInit();
+			hatchCamera.autoInit();
+	
+			
 			// if (autoModeExecuter != null)
 			// {
     			// autoModeExecuter.stop();
@@ -270,16 +264,16 @@ public class Robot extends TimedRobot {
 		boolean logToSmartDashboard = true;
 		robotLogger.setOutputMode(logToFile, logToSmartDashboard); 
 
-		cargoCamera.teleopInit();
-		hatchCamera.teleopInit();
-
+		
 		try 
 		{
 			CrashTracker.logTeleopInit();
-
+			
 			// Select joystick control method
-			controls = smartDashboardInteractions.getJoystickControlsMode();
-
+			selectedJoystick.update();
+			cargoCamera.teleopInit();
+			hatchCamera.teleopInit();
+			
 			// Configure looper
 			loopController.start();
 			superStructure.enable();
@@ -309,17 +303,15 @@ public class Robot extends TimedRobot {
 		{
 			hatchDeploy.run();
 			
-			DriveCommand driveCmd = controls.getDriveCommand();
-			driveCmd = visionDriveAssistant.assist(driveCmd, controls.getButton(Constants.kVisionAssistanceButton));
-			DriveCommand driveCmdReverse = controls.getDriveCommand();
+			DriveCommand driveCmd = selectedJoystick.getDriveCommand();
+			driveCmd = visionDriveAssistant.assist(driveCmd, selectedJoystick.getButton(Constants.kVisionAssistanceButton));
 
 			//modify drive controls based on buttons
-			driveCmdReverse = controlsReverse.run( driveCmd, Constants.kControlsReverseButton);
+			DriveCommand driveCmdReverse = controlsReverse.run( driveCmd, Constants.kControlsReverseButton);
 			drive.setOpenLoop(driveCmdReverse);
-			drive.setOpenLoop(driveCmd);
 
 			// turn on LEDs in direction of forward travel
-			if (controls.getDrivingForward())
+			if (selectedJoystick.getDrivingForward())
 			{
 				cargoCamera.setLEDMode(Limelight.LedMode.kOn);
 				hatchCamera.setLEDMode(Limelight.LedMode.kOff);
@@ -380,11 +372,6 @@ public class Robot extends TimedRobot {
 
 	
 
-	public JoystickControlsBase getJoystick()
-	{
-		// get joystick driving forward based on current choice of joystick
-		return controls;
-	}
 }
 
 
