@@ -319,7 +319,7 @@ public class Robot extends TimedRobot {
 			drive.setOpenLoop(driveCmd);
 
 			// turn on LEDs in direction of forward travel
-			if (getJoystick().getDrivingForward())
+			if (controls.getDrivingForward())
 			{
 				cargoCamera.setLEDMode(Limelight.LedMode.kOn);
 				hatchCamera.setLEDMode(Limelight.LedMode.kOff);
