@@ -21,8 +21,8 @@ public class Limelight
     static final int V1 = 0;
     static final int V2 = 1;
 
-    private static Limelight cargoInstance = new Limelight("limelight-front", V1);
-    private static Limelight hatchInstance = new Limelight("limelight-back", V2);
+    private static Limelight cargoInstance = new Limelight("limelight-cargo", V1);
+    private static Limelight hatchInstance = new Limelight("limelight-hatch", V2);
     public static Limelight getCargoInstance() { return cargoInstance; }
     public static Limelight getHatchInstance()  { return  hatchInstance; }
 

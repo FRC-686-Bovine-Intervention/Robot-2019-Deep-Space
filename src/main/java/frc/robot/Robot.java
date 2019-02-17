@@ -317,6 +317,18 @@ public class Robot extends TimedRobot {
 			driveCmdReverse = controlsReverse.run( driveCmd, Constants.kControlsReverseButton);
 			drive.setOpenLoop(driveCmdReverse);
 			drive.setOpenLoop(driveCmd);
+
+			// turn on LEDs in direction of forward travel
+			if (getJoystick().getDrivingForward())
+			{
+				cargoCamera.setLEDMode(Limelight.LedMode.kOn);
+				hatchCamera.setLEDMode(Limelight.LedMode.kOff);
+			}
+			else
+			{
+				cargoCamera.setLEDMode(Limelight.LedMode.kOff);
+				hatchCamera.setLEDMode(Limelight.LedMode.kOn);
+			}
 		}
 		catch (Throwable t)
 		{
