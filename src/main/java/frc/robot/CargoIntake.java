@@ -11,11 +11,11 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Timer;
-import frc.robot.lib.joystick.ArcadeDriveJoystick;
 import frc.robot.lib.joystick.ButtonBoard;
-import frc.robot.lib.joystick.JoystickControlsBase;
+import frc.robot.lib.joystick.SelectedJoystick;
 import frc.robot.lib.util.DataLogger;
+import frc.robot.lib.util.FallingEdgeDetector;
+import frc.robot.lib.util.PulseTrain;
 import frc.robot.lib.util.RisingEdgeDetector;
 import frc.robot.lib.util.Util;
 import frc.robot.loops.Loop;
@@ -40,10 +40,11 @@ public class CargoIntake implements Loop
     public VictorSPX intakeMotor;
     public DigitalInput ballDetectSensor;
 
-    public JoystickControlsBase driverJoystick = ArcadeDriveJoystick.getInstance(); // this control is user-selectable at teleopInit, so we need to update
+    SelectedJoystick selectedJoystick = SelectedJoystick.getInstance();
     public ButtonBoard buttonBoard = ButtonBoard.getInstance();
 
-    public RisingEdgeDetector onIntakeButtonPress = new RisingEdgeDetector();
+    public RisingEdgeDetector  intakeButtonRisingEdgeDetector = new RisingEdgeDetector();
+    public FallingEdgeDetector intakeButtonFallingEdgeDetector = new FallingEdgeDetector();
     public RisingEdgeDetector onDefenseButtonPress = new RisingEdgeDetector();
     public RisingEdgeDetector onClimbingButtonPress = new RisingEdgeDetector();
     public boolean intakeActive = false;
@@ -61,14 +62,14 @@ public class CargoIntake implements Loop
         GROUND(-8.7), 
         PUSHUP(-14.3),
         LEVEL2_APPROACH(10.0);
-    
+        
         public final double angleDeg;
-
+        
         CargoDeployPositionEnum(double _angleDeg) { angleDeg = _angleDeg; }
     }
     public CargoDeployPositionEnum targetPosition = CargoDeployPositionEnum.RETRACTED;
     public double targetAngleDeg = targetPosition.angleDeg;
-
+    
     public boolean zeroed = false;
     
     //====================================================
@@ -77,8 +78,13 @@ public class CargoIntake implements Loop
     
     public final double kIntakePercentOutput  = +0.6;          
     public final double kOuttakePercentOutput = -1.0;   // full power outtake
-  
-  
+    
+    public RisingEdgeDetector ballDetectRisingEdge = new RisingEdgeDetector();
+    final int kIntakeNumPulses = 4;
+    final double kIntakePulseOnTime = 0.5;
+    final double kIntakePulseOffTime = 0.5;
+    PulseTrain intakePulseTrain = new PulseTrain(kIntakeNumPulses, kIntakePulseOnTime, kIntakePulseOffTime);
+    
   
     public final double zeroingPercentOutput = -0.2;
 
@@ -115,10 +121,7 @@ public class CargoIntake implements Loop
     public final int kDeployMotorForwardSoftLimit = angleDegToEncoderUnits(CargoDeployPositionEnum.GROUND.angleDeg);
     public final int kDeployMotorReverseSoftLimit = angleDegToEncoderUnits(CargoDeployPositionEnum.RETRACTED.angleDeg);
     
-    public RisingEdgeDetector ballDetectRisingEdge = new RisingEdgeDetector();
-    public double ballDetectStartTime;
-    public final double kBallDetectTimeout = 0.5;
-    
+
     public static RisingEdgeDetector climbingStartEdgeDetector = new RisingEdgeDetector();
 
     public CargoIntake() 
@@ -218,9 +221,6 @@ public class CargoIntake implements Loop
 	@Override
 	public void onLoop()
     {
-        // update joystick class, in case it was changed in teleopInit
-        driverJoystick = Robot.getInstance().getJoystick();
-        
         getLimitSwitches();
         runDeploy();
         runIntake();
@@ -228,26 +228,30 @@ public class CargoIntake implements Loop
     
     public void runIntake()
     {
-        if (onIntakeButtonPress.update(driverJoystick.getButton(Constants.kCargoIntakeButton)))
-        {
-            // toggle intake every time intake button is pressed
-            intakeActive = !intakeActive;
-        }
+        boolean intakeButton = selectedJoystick.getButton(Constants.kCargoIntakeButton);
+        boolean intakeButtonPress = intakeButtonRisingEdgeDetector.update(intakeButton);
+        boolean intakeButtonUnpress = intakeButtonFallingEdgeDetector.update(intakeButton);
+        boolean ballDetect = ballDetectRisingEdge.update(!ballDetectSensor.get());
+        boolean outtakeButton = selectedJoystick.getAxisAsButton(Constants.kCargoOuttakeAxis);
+
+        // start intake when button is pressed
+        if (intakeButtonPress) { 
+            intakeActive = true; }        
+        // stop intake when button is unpressed, outtake button is pressed or ball is detected
+        if (intakeButtonUnpress || outtakeButton || ballDetect)  { 
+            intakeActive = false; }       
+        // also start pulse train if ball is detected
+        if (ballDetect) {
+             intakePulseTrain.start(); }   
         
-        // if (driverJoystick.getButton(Constants.kCargoIntakeButton))
-        if (driverJoystick.getAxisAsButton(Constants.kCargoOuttakeAxis)) 
-        {
-            intakeActive = false;
-            intakeMotor.set(ControlMode.PercentOutput, kOuttakePercentOutput);
-        }
-        else if (intakeActive)
-        {
-            intakeMotor.set(ControlMode.PercentOutput, kIntakePercentOutput);
-        } 
-        else
-        {
-            intakeMotor.set(ControlMode.PercentOutput, 0.0);
-        }
+        boolean intakePulse = intakePulseTrain.update();
+
+        if (selectedJoystick.getAxisAsButton(Constants.kCargoOuttakeAxis)) {
+            intakeMotor.set(ControlMode.PercentOutput, kOuttakePercentOutput); }
+        else if (intakeActive || intakePulse) {
+            intakeMotor.set(ControlMode.PercentOutput, kIntakePercentOutput); } 
+        else {
+            intakeMotor.set(ControlMode.PercentOutput, 0.0); }
     }
     
     public void runDeploy()
@@ -307,13 +311,13 @@ public class CargoIntake implements Loop
         // Only called during OPERATIONAL state
         
         // get current target angle from driver & operator
-        if (driverJoystick.getButton(Constants.kCargoIntakeButton))         { setTarget(CargoDeployPositionEnum.GROUND); }      // go to ground on driver button, not operator's button board
+        if (selectedJoystick.getButton(Constants.kCargoIntakeButton))       { setTarget(CargoDeployPositionEnum.GROUND); }      // go to ground on driver button, not operator's button board
         if (buttonBoard.getButton(Constants.kCargoIntakeRetractButton))     { setTarget(CargoDeployPositionEnum.RETRACTED); }
         if (buttonBoard.getButton(Constants.kCargoIntakeRocketButton))      { setTarget(CargoDeployPositionEnum.ROCKET); }      // TODO: only allow if ball is detected?
         if (buttonBoard.getButton(Constants.kCargoIntakeCargoShipButton))   { setTarget(CargoDeployPositionEnum.CARGO_SHIP); }  // TODO: only allow if ball is detected?
         if (buttonBoard.getButton(Constants.kDefenseButton))                { setTarget(CargoDeployPositionEnum.RETRACTED); }
 
-        if ((targetPosition == CargoDeployPositionEnum.GROUND) && detectBall())
+        if ((targetPosition == CargoDeployPositionEnum.GROUND) && ballDetect())
         {
             // Successful ball intake.  Return to retracted position.  Driver can continue to center ball by holding down intake button.
             setTarget(CargoDeployPositionEnum.RETRACTED);
@@ -408,23 +412,9 @@ public class CargoIntake implements Loop
         return encoderUnitsToAngleDeg( deployMotorMaster.getSelectedSensorPosition(Constants.kTalonPidIdx) );
     }
     
-    public boolean detectBall()
+    public boolean ballDetect()
     {
-        boolean rv = false;
-
-        boolean ballDetect = !ballDetectSensor.get();
-        boolean firstBallDetect = ballDetectRisingEdge.update(ballDetect);
-        if (firstBallDetect)
-        {
-            ballDetectStartTime = Timer.getFPGATimestamp();
-        }
-        if (ballDetect && (Timer.getFPGATimestamp() - ballDetectStartTime >= kBallDetectTimeout))
-        {
-            // if ball is still detected, and it has been a certain period of time since it was first seen
-            // declare it detected
-            rv = true;
-        }
-        return rv;
+        return !ballDetectSensor.get();
     }
 
     public int angleDegToEncoderUnits(double _desiredAngleDeg) 
