@@ -41,6 +41,7 @@ public class Robot extends TimedRobot {
 
 	PowerDistributionPanel pdp = new PowerDistributionPanel();
 
+	SmartDashboardInteractions smartDashboardInteractions = SmartDashboardInteractions.getInstance();
 	JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
 	SelectedJoystick selectedJoystick = SelectedJoystick.getInstance();
 
@@ -55,7 +56,6 @@ public class Robot extends TimedRobot {
 
 	LoopController loopController;
 
-	SmartDashboardInteractions smartDashboardInteractions = SmartDashboardInteractions.getInstance();
 	DataLogController robotLogger;
 
 	Limelight cargoCamera = Limelight.getCargoInstance();
@@ -100,7 +100,6 @@ public class Robot extends TimedRobot {
 			loopController.register(CargoIntake.getInstance());
 			loopController.register(Climber.getInstance());
 
-			smartDashboardInteractions.initWithDefaults();
 			selectedJoystick.update();
     		
     		// set datalogger and time info

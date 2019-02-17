@@ -30,6 +30,11 @@ public class SmartDashboardInteractions
 		return instance;
     }
         
+    public SmartDashboardInteractions()
+    {
+        initWithDefaults();
+    }
+
     static SendableChooser<StartPositionOption> startChooser;
 
     public enum StartPositionOption

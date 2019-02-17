@@ -9,8 +9,14 @@ import frc.robot.command_status.DriveCommand;
  */
 public class SelectedJoystick
 {
-    private static SelectedJoystick instance = new SelectedJoystick();
-    public static SelectedJoystick getInstance() { return instance; }
+	private static SelectedJoystick instance = null;
+
+	public static SelectedJoystick getInstance() {
+		if (instance == null) {
+			instance = new SelectedJoystick();
+		}
+		return instance;
+    }    
 
     JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
 
