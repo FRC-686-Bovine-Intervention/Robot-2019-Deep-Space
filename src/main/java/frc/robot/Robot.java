@@ -310,6 +310,7 @@ public class Robot extends TimedRobot {
 			hatchDeploy.run();
 			
 			DriveCommand driveCmd = controls.getDriveCommand();
+			drive.setOpenLoop(driveCmd);
 			driveCmd = visionDriveAssistant.assist(driveCmd, controls.getButton(Constants.kVisionAssistanceButton));
 			DriveCommand driveCmdReverse = controls.getDriveCommand();
 

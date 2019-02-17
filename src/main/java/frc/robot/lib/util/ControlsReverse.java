@@ -21,17 +21,17 @@ public class ControlsReverse {
 
     public DriveCommand run(DriveCommand driveCmd, int ReverseButton) {
         JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
+        boolean btnIsPushed = controls.getButton(Constants.kControlsReverseButton);
+        boolean edgeDetectorValue = risingEdgeDetector.update(btnIsPushed);
 
         lSpeed = driveCmd.getLeftMotor(); // lSpeed overidden
         rSpeed = driveCmd.getRightMotor();
         newL = lSpeed;
         newR = rSpeed;
 
-        boolean btnIsPushed = controls.getButton(Constants.kControlsReverseButton);
-        boolean edgeDetectorValue = risingEdgeDetector.update(btnIsPushed);
         if (edgeDetectorValue) {
-            newL = 1;
-            newR = 1;
+            newL = -lSpeed;
+            newR = -rSpeed;
         }
 
         return new DriveCommand(newL, newR);
