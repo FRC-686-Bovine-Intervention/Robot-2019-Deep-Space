@@ -291,7 +291,7 @@ public class Climber implements Loop
 
                     climberState = ClimberStateEnum.FINISHED;
                     arm.setState(CargoDeployStateEnum.OPERATIONAL);
-                    arm.setTarget(CargoDeployPositionEnum.RETRACTED);
+                    // arm.setTarget(CargoDeployPositionEnum.RETRACTED);
                     startOver();                       
                 }
                 break;
