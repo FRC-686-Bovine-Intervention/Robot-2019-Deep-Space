@@ -75,8 +75,10 @@ public class VisionDriveAssistant
             if (allowSpeedControl)
             {
                 // automatically reduce speed to stop in front of target
-                // approachSpeed = Math.min(approachSpeed, maxSpeed);
-                approachSpeed = maxSpeed;
+                if (Math.abs(approachSpeed) > Math.abs(maxSpeed))
+                {
+                    approachSpeed = Math.signum(maxSpeed) * Math.abs(approachSpeed);
+                }
             }   
 
             // keep on target even when backing up
