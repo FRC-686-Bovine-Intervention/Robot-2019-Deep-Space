@@ -43,11 +43,11 @@ public class Climber implements Loop
 
     public final double kDriveMotorPercentOutput = 0.3;
     public final double kClimberMotorWhenExtendingPercentOutput = 0.2;
-    public final double kClimberMotorAtTopPercentOutput = 0.5;
+    public final double kClimberMotorAtTopPercentOutput = 0.5; 
 
     public double startRetractTime;
     public final double kRetractTimePeriod = 2.0;
-    public final double kFinishTimePeriod = 2.0;
+    public final double kFinishTimePeriod = .5;
 
     // gyro to get tilt of robot
     public Pigeon pigeon = (Pigeon)Pigeon.getInstance();
@@ -287,11 +287,9 @@ public class Climber implements Loop
                 
                 if ((currentTime - startRetractTime) > (kRetractTimePeriod + kFinishTimePeriod))
                 {
-                    arm.setTarget(CargoDeployPositionEnum.RETRACTED);    // retract cargo arm so we can fit on platform
 
                     climberState = ClimberStateEnum.FINISHED;
                     arm.setState(CargoDeployStateEnum.OPERATIONAL);
-                    arm.setTarget(CargoDeployPositionEnum.RETRACTED);
                     startOver();                       
                 }
                 break;
