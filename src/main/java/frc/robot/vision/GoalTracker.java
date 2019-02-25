@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 import frc.robot.lib.util.DataLogger;
+import frc.robot.lib.util.Pose;
 import frc.robot.lib.util.Vector2d;
+import frc.robot.command_status.RobotState;
 import frc.robot.command_status.GoalStates.GoalState;
 
 import edu.wpi.first.wpilibj.Timer;
@@ -31,8 +33,9 @@ public class GoalTracker
 	
     public static double kTrackReportComparatorStablityWeight = 1.0;
     public static double kTrackReportComparatorAgeWeight = 1.0;
-    public static double kTrackReportComparatorSwitchingWeight = 3.0;
-    public static double kTrackReportComparatorDistanceWeight = 2.0; // Unused
+    public static double kTrackReportComparatorSwitchingWeight = 0.0;
+    public static double kTrackReportComparatorDistanceWeight = 2.0;
+    public static double kTrackReportComparatorAngleWeight = 10.0; 
 
 
 	/**
@@ -81,14 +84,18 @@ public class GoalTracker
 		// Reward tracks for being continuations of tracks that we are already
 		// tracking
 		double switchingWeight;
+		double distanceWeight;
+		double angleWeight;
 		int currentBestTrackId;
 
 		public TrackReportComparator(double stability_weight, double age_weight, double switching_weight,
-				int current_best_track_id, double current_timestamp)
+			double distance_weight, double angle_weight, int current_best_track_id, double current_timestamp)
 		{
 			stabilityWeight = stability_weight;
 			ageWeight = age_weight;
 			switchingWeight = switching_weight;
+			distanceWeight = distance_weight;
+			angleWeight = angle_weight;
 			currentBestTrackId = current_best_track_id;
 			currentTimestamp = current_timestamp;
 		}
@@ -98,8 +105,20 @@ public class GoalTracker
 			double stabilityScore = stabilityWeight * report.stability;
 			double trackAge = (currentTimestamp - report.latestTimestamp);
 			double ageScore = ageWeight	* Math.max(0, 1 - trackAge / kGoalTrackAveragePeriod);
+
+			Pose fieldToVehicle = RobotState.getInstance().getLatestFieldToVehicle();
+
+			// find relative distance and bearing to goal
+			Vector2d shooterToGoal = report.fieldToGoal.sub(fieldToVehicle.getPosition());
+
+			double distanceToGoal = shooterToGoal.length();
+			double bearingToGoal = shooterToGoal.angle() - fieldToVehicle.getHeading(); 	// bearing relative to shooter's heading
+
+			double distanceScore = -distanceWeight * distanceToGoal;
+			double angleScore = -Math.abs(angleWeight) * bearingToGoal;
+
 			double switchingScore = (report.trackId == currentBestTrackId ? switchingWeight : 0);
-			return (stabilityScore + ageScore + switchingScore);
+			return (distanceScore + angleScore + stabilityScore + ageScore + switchingScore);
 		}
 
 		@Override
@@ -214,8 +233,8 @@ public class GoalTracker
 			
 		// define a comparator so that GoalTracks can be sorted by rank
 	    GoalTracker.TrackReportComparator goalTrackComparator = new GoalTracker.TrackReportComparator(
-	    		kTrackReportComparatorStablityWeight, kTrackReportComparatorAgeWeight, 
-	    		kTrackReportComparatorSwitchingWeight, currentBestTrackId, currentTime);
+				kTrackReportComparatorStablityWeight, kTrackReportComparatorAgeWeight, kTrackReportComparatorSwitchingWeight, 
+				kTrackReportComparatorDistanceWeight, kTrackReportComparatorAngleWeight, currentBestTrackId, currentTime);
 		
 		trackReports = getTrackReports();
 		Collections.sort(trackReports, goalTrackComparator);	// sort tracks by rank

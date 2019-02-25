@@ -19,11 +19,11 @@ public class ArcadeDriveJoystick extends JoystickControlsBase {
 		return instance;
 	}
 
-	static double kDeadband = 0.1;
+	static double kDeadband = 0.05;
 
 	public DriveCommand getDriveCommand() {
-		double throttle = -mStick.getY(); // TODO: figure out why Y-axis is negated
-		double turn = -mStick.getX(); // TODO: figure out why X-axis is negated
+		double throttle = -mStick.getY(); 
+		double turn = -mStick.getX(); 
 
 		DriveCommand signal = throttleTurnToDriveCommand(throttle, turn);
 
@@ -31,9 +31,7 @@ public class ArcadeDriveJoystick extends JoystickControlsBase {
 	}
 
 	public static DriveCommand throttleTurnToDriveCommand(double throttle, double turn) {
-		// boolean squaredInputs = true; // set to true to increase fine control while
-		// permitting full power
-		boolean squaredInputs = false; // set to true to increase fine control while permitting full power
+		boolean squaredInputs = true; // set to true to increase fine control while permitting full power
 
 		if (throttle < kJoystickDeadzone && throttle > -kJoystickDeadzone) {
 			throttle = 0;

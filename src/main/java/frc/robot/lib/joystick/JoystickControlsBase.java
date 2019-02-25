@@ -1,8 +1,8 @@
 package frc.robot.lib.joystick;
 
-import frc.robot.command_status.DriveCommand;
-
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.command_status.DriveCommand;
 
 /**
  * An abstract class that forms the base of joystick controls.
@@ -24,6 +24,8 @@ public abstract class JoystickControlsBase
     public boolean getButton(int _num) { return mStick.getRawButton(_num); }
     public boolean getAxisAsButton(int _num) { return (mStick.getRawAxis(_num) > 0.5); }
 
-    public boolean getDrivingForward() { return drivingForward; }
+    public boolean usingLeftStick() { return drivingForward; }
+
+    public void setRumble(GenericHID.RumbleType _rumbleType, double _value)       { mStick.setRumble(_rumbleType, _value); }    
     
 }

@@ -5,78 +5,96 @@ import java.util.ArrayList;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.lib.joystick.SelectedJoystick;
 import frc.robot.lib.sensors.Limelight;
+import frc.robot.lib.sensors.Limelight.BoundingAngles;
+import frc.robot.lib.sensors.Limelight.BoundingRectangle;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.loops.Loop;
-
 
 /**
  * VisionLoop contains the various attributes calculated by the vision system,
  * namely a list of targets and the timestamp at which it was captured.
  */
-public class VisionLoop implements Loop
-{
+public class VisionLoop implements Loop {
 	private static VisionLoop instance = new VisionLoop();
-    public static VisionLoop getInstance() { return instance; }
-	
+
+	public static VisionLoop getInstance() {
+		return instance;
+	}
+
 	SelectedJoystick selectedJoystick = SelectedJoystick.getInstance();
-	
+
 	// camera selection
-	Limelight cameraSelection;
 	public Limelight cargoCamera = Limelight.getCargoInstance();
 	public Limelight hatchCamera = Limelight.getHatchInstance();
+	Limelight cameraSelection = hatchCamera;
 
 	public VisionTargetList visionTargetList = VisionTargetList.getInstance();
 
-	@Override public void onStart()
-	{
+	BoundingRectangle boundingRectangle = cameraSelection.new BoundingRectangle();
+
+	@Override
+	public void onStart() {
 		// nothing
 	}
 
-	@Override public void onLoop()
-	{
-    	double currentTime = Timer.getFPGATimestamp();
+	@Override
+	public void onLoop() {
+		double currentTime = Timer.getFPGATimestamp();
 
 		// get target info from Limelight
 		getTargets(currentTime);
 	}
 
-	@Override public void onStop()
-	{
+	@Override
+	public void onStop() {
 		// nothing
 	}
 
-
-	public void getTargets(double currentTime)
-	{
-		cameraSelection = selectedJoystick.getDrivingForward() ? cargoCamera : hatchCamera;
+	public void getTargets(double currentTime) {
+		cameraSelection = selectedJoystick.getDrivingCargo() ? cargoCamera : hatchCamera;
 
 		double cameraLatency = cameraSelection.getTotalLatencyMs() / 1000.0;
-		double imageCaptureTimestamp = currentTime - cameraLatency;		// assumes transport time from phone to this code is instantaneous
+		double imageCaptureTimestamp = currentTime - cameraLatency; // assumes transport time from phone to this code is
+																	// instantaneous
 
-		int numTargets = 1;	// for Limelight
+		int numTargets = 1; // for Limelight
 		ArrayList<VisionTargetList.Target> targets = new ArrayList<>(numTargets);
 
-		if (cameraSelection.getIsTargetFound())
+		if (cameraSelection.getIsTargetFound()) 
 		{
-			double hAngle = cameraSelection.getTargetHorizontalAngleRad();
-			double vAngle = cameraSelection.getTargetVerticalAngleRad();
-			double hWidth = cameraSelection.getHorizontalWidthRad();
-			double vWidth = cameraSelection.getVerticalWidthRad();
-			
-			VisionTargetList.Target target = new VisionTargetList.Target(hAngle, vAngle, hWidth, vWidth);
-			targets.add(target);
+			boundingRectangle = cameraSelection.getBoundingRectangle();
+
+			if (boundingRectangle.xMin > 0 && boundingRectangle.xMax < (Limelight.kImageWidthPixels-1) && 
+			    boundingRectangle.yMin > 0 && boundingRectangle.yMax < (Limelight.kImageHeightPixels-1))
+			{
+				// no corners at limits (indicating we are too close, and should just use a previous value)					
+				BoundingAngles boundingAngles = cameraSelection.getBoundingAnglesRad(boundingRectangle);
+
+				double hAngle = cameraSelection.getTargetHorizontalAngleRad();
+				double vAngle = cameraSelection.getTargetVerticalAngleRad();
+				double hWidth = boundingAngles.hWidthRad;
+				double vWidth = boundingAngles.vWidthRad;
+
+				VisionTargetList.Target target = new VisionTargetList.Target(hAngle, vAngle, hWidth, vWidth);
+				targets.add(target);
+			}
 		}
 
-		visionTargetList.set( imageCaptureTimestamp, targets );
+		visionTargetList.set(imageCaptureTimestamp, targets);
 	}
-	
+
 
 	private final DataLogger logger = new DataLogger()
     {
         @Override
         public void log()
         {
-			put("Camera Selection", cameraSelection.toString());
+			put("VisionLoop/selectedCamera", cameraSelection.getTableName());
+			put("VisionLoop/isTargetFound", cameraSelection.getIsTargetFound());
+			put("VisionLoop/Corners.xMin", boundingRectangle.xMin);
+			put("VisionLoop/Corners.xMax", boundingRectangle.xMax);
+			put("VisionLoop/Corners.yMin", boundingRectangle.yMin);
+			put("VisionLoop/Corners.yMax", boundingRectangle.yMax);
         }
     };
     

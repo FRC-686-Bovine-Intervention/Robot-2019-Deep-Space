@@ -112,20 +112,32 @@ public class Constants extends ConstantsBase {
 
     // Vision constants
     public static double kCameraFrameRate = 90.0;		// frames per second
-    public static double kCameraPoseX        = +9.00;	// camera location with respect to robot center of rotation, X axis is in direction of travel
-    public static double kCameraPoseY        =     0;	// camera location with respect to robot center of rotation, Y axis is positive to the left
-    public static double kCameraPoseZ        =   9.0;	// camera location with respect to floor, Z axis is positive with increasing elevation
-    public static double kCameraPoseThetaRad =   0.0;	// camera angle with respect to robot heading, in radians
-    public static double kCameraPitchRad     =     0;   // camera vertical angle with respect to level ground, in radians
-    public static double kCameraDeadband = 0.0;
     
     public static double kVisionMaxVel    = 20.0; // inches/sec  		
     public static double kVisionMaxAccel  = 20.0; // inches/sec^2		
-    public static double kTargetWidthInches = 15.0;    
+    public static double kTargetWidthInches = 14.625;    
     public static double kTargetHeightInches = 6.00;
     public static double kCenterOfTargetHeightInches = 27.75;
-    public static double kTargetDistanceThresholdFromBumperInches = 18;		// inches to stop from target, measured from front bumper
-    public static double kTargetDistanceThresholdFromCameraInches = kCenterToFrontBumper - kCameraPoseX + kTargetDistanceThresholdFromBumperInches;
+
+    public static double kCargoCameraPoseX        = +5.00;	// camera location with respect to robot center of rotation, X axis is in direction of travel
+    public static double kCargoCameraPoseY        = -5.00;	// camera location with respect to robot center of rotation, Y axis is positive to the left
+    public static double kCargoCameraPoseZ        =  18.0;	// camera location with respect to floor, Z axis is positive with increasing elevation
+    public static double kCargoCameraPoseThetaRad =   0.0;	// camera angle with respect to robot heading, in radians
+    public static double kCargoCameraPitchRad     = 3.588;   // camera vertical angle with respect to level ground, in radians
+    public static double kCargoCameraDeadband = 0.0;
+
+    public static double kHatchCameraPoseX        = +11.5;	// camera location with respect to robot center of rotation, X axis is in direction of travel
+    public static double kHatchCameraPoseY        =     0;	// camera location with respect to robot center of rotation, Y axis is positive to the left
+    public static double kHatchCameraPoseZ        =  41.0;	// camera location with respect to floor, Z axis is positive with increasing elevation
+    public static double kHatchCameraPoseThetaRad =   0.0;	// camera angle with respect to robot heading, in radians
+    public static double kHatchCameraPitchRad     = -0.3665;   // camera vertical angle with respect to level ground, in radians
+    public static double kHatchCameraDeadband = 0.0;
+
+    public static double kCargoTargetDistanceThresholdFromBumperInches = 17.0;		// inches to stop from target, measured from front bumper
+    public static double kCargoTargetDistanceThresholdFromCenterInches = kCenterToFrontBumper + kCargoTargetDistanceThresholdFromBumperInches;
+    
+    public static double kHatchTargetDistanceThresholdFromBumperInches = 0.0;		// inches to stop from target, measured from front bumper
+    public static double kHatchTargetDistanceThresholdFromCenterInches = kCenterToRearBumper + kHatchTargetDistanceThresholdFromBumperInches;
     
     public static double kVisionCompletionTolerance = 1.0; 
     public static double kVisionMaxDistanceInches = 240;		// ignore targets greater than this distance

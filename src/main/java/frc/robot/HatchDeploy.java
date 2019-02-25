@@ -8,7 +8,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.lib.joystick.ArcadeDriveJoystick;
@@ -26,8 +25,6 @@ public class HatchDeploy {
 
     public TalonSRX dropMotor;
     public Solenoid hatchSolenoid;
-    public DigitalInput topLimitSwitch;
-    public DigitalInput bttmLimitSwitch;
     public final double zeroingSpeed = -0.15;
     public final int bumperAngle = 300;
     public final int groundAngle = 1249;
@@ -90,8 +87,6 @@ public class HatchDeploy {
         
         hatchSolenoid = new Solenoid(0, Constants.kHatchEjectChannel);
         dropMotor = new TalonSRX(Constants.kHatchDeployTalonId);
-        topLimitSwitch = new DigitalInput(10);
-        bttmLimitSwitch = new DigitalInput(11);
         state = HatchDeployStateEnum.INIT;
 
              // Factory default hardware to prevent unexpected behavior

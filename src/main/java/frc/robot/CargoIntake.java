@@ -80,9 +80,10 @@ public class CargoIntake implements Loop
     public final double kOuttakePercentOutput = -1.0;   // full power outtake
     
     public RisingEdgeDetector ballDetectRisingEdge = new RisingEdgeDetector();
+    boolean startCargoRetract = false;
     final int kIntakeNumPulses = 4;
-    final double kIntakePulseOnTime = 0.5;
-    final double kIntakePulseOffTime = 0.5;
+    final double kIntakePulseOnTime = 0.10;
+    final double kIntakePulseOffTime = 0.25;
     PulseTrain intakePulseTrain = new PulseTrain(kIntakeNumPulses, kIntakePulseOnTime, kIntakePulseOffTime);
     
   
@@ -218,42 +219,27 @@ public class CargoIntake implements Loop
         intakeMotor.set(ControlMode.PercentOutput, 0.0);
     }
     
+
+    boolean intakeButton = false;
+    boolean intakeButtonPress = false;
+    boolean intakeButtonUnpress = false;
+    boolean outtakeButton = false;
+
 	@Override
 	public void onLoop()
     {
         getLimitSwitches();
+
+        intakeButton = selectedJoystick.getButton(Constants.kCargoIntakeButton);
+        intakeButtonPress = intakeButtonRisingEdgeDetector.update(intakeButton);
+        intakeButtonUnpress = intakeButtonFallingEdgeDetector.update(intakeButton);
+        outtakeButton = selectedJoystick.getAxisAsButton(Constants.kCargoOuttakeAxis);
+
         runDeploy();
         runIntake();
     }
     
-    public void runIntake()
-    {
-        boolean intakeButton = selectedJoystick.getButton(Constants.kCargoIntakeButton);
-        boolean intakeButtonPress = intakeButtonRisingEdgeDetector.update(intakeButton);
-        boolean intakeButtonUnpress = intakeButtonFallingEdgeDetector.update(intakeButton);
-        boolean ballDetect = ballDetectRisingEdge.update(!ballDetectSensor.get());
-        boolean outtakeButton = selectedJoystick.getAxisAsButton(Constants.kCargoOuttakeAxis);
 
-        // start intake when button is pressed
-        if (intakeButtonPress) { 
-            intakeActive = true; }        
-        // stop intake when button is unpressed, outtake button is pressed or ball is detected
-        if (intakeButtonUnpress || outtakeButton || ballDetect)  { 
-            intakeActive = false; }       
-        // also start pulse train if ball is detected
-        if (ballDetect) {
-             intakePulseTrain.start(); }   
-        
-        boolean intakePulse = intakePulseTrain.update();
-
-        if (selectedJoystick.getAxisAsButton(Constants.kCargoOuttakeAxis)) {
-            intakeMotor.set(ControlMode.PercentOutput, kOuttakePercentOutput); }
-        else if (intakeActive || intakePulse) {
-            intakeMotor.set(ControlMode.PercentOutput, kIntakePercentOutput); } 
-        else {
-            intakeMotor.set(ControlMode.PercentOutput, 0.0); }
-    }
-    
     public void runDeploy()
     {
         climbingStartEdgeDetector.update(buttonBoard.getButton(Constants.kClimbingStartButton));
@@ -311,26 +297,51 @@ public class CargoIntake implements Loop
         // Only called during OPERATIONAL state
         
         // get current target angle from driver & operator
-        if (selectedJoystick.getButton(Constants.kCargoIntakeButton))       { setTarget(CargoDeployPositionEnum.GROUND); }      // go to ground on driver button, not operator's button board
+        if (intakeButtonPress)                                              { setTarget(CargoDeployPositionEnum.GROUND); }      // go to ground on driver button, not operator's button board
         if (buttonBoard.getButton(Constants.kCargoIntakeRetractButton))     { setTarget(CargoDeployPositionEnum.RETRACTED); }
         if (buttonBoard.getButton(Constants.kCargoIntakeRocketButton))      { setTarget(CargoDeployPositionEnum.ROCKET); }      // TODO: only allow if ball is detected?
         if (buttonBoard.getButton(Constants.kCargoIntakeCargoShipButton))   { setTarget(CargoDeployPositionEnum.CARGO_SHIP); }  // TODO: only allow if ball is detected?
         if (buttonBoard.getButton(Constants.kDefenseButton))                { setTarget(CargoDeployPositionEnum.RETRACTED); }
 
-        if ((targetPosition == CargoDeployPositionEnum.GROUND) && ballDetect())
-        {
-            // Successful ball intake.  Return to retracted position.  Driver can continue to center ball by holding down intake button.
-            setTarget(CargoDeployPositionEnum.RETRACTED);
-        }
-        
         // if in the ground state, turn off motor while riding on wheels
         if ((targetPosition == CargoDeployPositionEnum.GROUND) && (getArmAngleDeg() < kAllowableGroundAngleDeg))
         {
             deployMotorMaster.set(ControlMode.PercentOutput, 0.0);
             deployMotorMaster.setNeutralMode(NeutralMode.Coast);
         }
+        
+        startCargoRetract = ballDetect() && (getArmAngleDeg() < kAllowableGroundAngleDeg);
+        if (startCargoRetract)
+        {
+            // Successful ball intake.  Return to retracted position.  Driver can continue to center ball by holding down intake button.
+            setTarget(CargoDeployPositionEnum.RETRACTED);
+        }
     }
-    
+
+
+    public void runIntake()
+    {
+
+        // start intake when button is pressed
+        if (intakeButtonPress) { 
+            intakeActive = true; }        
+        // stop intake when button is unpressed, outtake button is pressed or ball is detected
+        if (intakeButtonUnpress || outtakeButton || startCargoRetract)  { 
+            intakeActive = false; }       
+        // also start pulse train if ball is detected
+        if (startCargoRetract) {
+             intakePulseTrain.start(); }   
+        
+        boolean intakePulse = intakePulseTrain.update();
+
+        if (selectedJoystick.getAxisAsButton(Constants.kCargoOuttakeAxis)) {
+            intakeMotor.set(ControlMode.PercentOutput, kOuttakePercentOutput); }
+        else if (intakeActive || intakePulse) {
+            intakeMotor.set(ControlMode.PercentOutput, kIntakePercentOutput); } 
+        else {
+            intakeMotor.set(ControlMode.PercentOutput, 0.0); }
+    }
+        
     public void setState(CargoDeployStateEnum _state)
     {   
         state = _state;   

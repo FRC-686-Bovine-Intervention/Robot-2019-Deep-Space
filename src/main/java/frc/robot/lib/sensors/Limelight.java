@@ -26,8 +26,8 @@ public class Limelight
     public static Limelight getCargoInstance() { return cargoInstance; }
     public static Limelight getHatchInstance()  { return  hatchInstance; }
 
-    public final double kImageHeightPixels = 240;
-    public final double kImageWidthPixels  = 320;
+    public static final double kImageHeightPixels = 240;
+    public static final double kImageWidthPixels  = 320;
 
     public final double kImageVertCenterPixels  = (kImageHeightPixels-1.0)/2.0;
     public final double kImageHorizCenterPixels = (kImageWidthPixels-1.0)/2.0;
@@ -35,7 +35,9 @@ public class Limelight
     // Limelight v1/v2 Horizontal and Vertical Field of View in Radians
     public final double kCameraVertFOVRad[]  = {41.0 * Vector2d.degreesToRadians, 49.7 * Vector2d.degreesToRadians};
     public final double kCameraHorizFOVRad[] = {54.0 * Vector2d.degreesToRadians, 59.6 * Vector2d.degreesToRadians};
- 
+    public final double kFOVError[] = {1.2, 1.6};   // empirically determined to give the correct range
+    public double kCameraFocalLengthInPixels[] = {0, 0};
+
     public final double kImageCaptureLatencyMs = 11.0;
 
     // Put methods for controlling this subsystem
@@ -50,9 +52,7 @@ public class Limelight
      */
     public Limelight()
     {
-        tableName = "limelight";
-        table = NetworkTableInstance.getDefault().getTable(tableName);
-        version = V2;
+        this("limelight", V2);
     }
 
     /**
@@ -63,16 +63,9 @@ public class Limelight
         tableName = _tableName;
         table = NetworkTableInstance.getDefault().getTable(tableName);
         version = _version;
-    }
 
-    /**
-     * Send an instance of the NetworkTabe
-     */
-    public Limelight(NetworkTable _table)
-    {
-        table = _table;
-        // ToDo
-        // tableName = get the name of the NT key.
+        kCameraFocalLengthInPixels[V1] = kImageHorizCenterPixels / Math.atan(kCameraHorizFOVRad[V1]/2.0 * kFOVError[V1]);
+        kCameraFocalLengthInPixels[V2] = kImageHorizCenterPixels / Math.atan(kCameraHorizFOVRad[V2]/2.0 * kFOVError[V2]);
     }
 
     /**
@@ -118,8 +111,8 @@ public class Limelight
         setLEDMode(LedMode.kOn);
         setCamMode(CamMode.kVision);
         setSnapshot(Snapshot.kOff);
-        setStream(StreamType.kPiPSecondary);
-        // setStream(StreamType.kStandard);
+        // setStream(StreamType.kPiPSecondary);
+        setStream(StreamType.kStandard);
     }
 
     public void LimelightInit()
@@ -145,6 +138,11 @@ public class Limelight
         {
             return true;
         }
+    }
+
+    public String getTableName()
+    {
+        return tableName;
     }
 
     /**
@@ -190,23 +188,79 @@ public class Limelight
         return y * Vector2d.degreesToRadians;
     }
 
-    public double getHorizontalWidthRad()
+    public double[] getXCorners()
     {
-        NetworkTableEntry thor = table.getEntry("thor");
-        double targetWidthPixels = thor.getDouble(0.0);
-        double horizWidthRad = targetWidthPixels / kImageWidthPixels * kCameraHorizFOVRad[version];
-        return horizWidthRad;
+        return table.getEntry("tcornx").getDoubleArray(new double[0]);
     }
 
-    public double getVerticalWidthRad()
+    public double[] getYCorners()
     {
-        NetworkTableEntry tvert = table.getEntry("tvert");
-        double targetHeightPixels = tvert.getDouble(0.0);
-        double vertWidthRad = targetHeightPixels / kImageHeightPixels * kCameraVertFOVRad[version];
-        return vertWidthRad;
-
+        return table.getEntry("tcorny").getDoubleArray(new double[0]);
     }
 
+
+
+    public class BoundingRectangle 
+    {
+		public double xMin, xMax, yMin, yMax;
+
+		public BoundingRectangle()
+		{
+			xMin = Double.POSITIVE_INFINITY;
+			xMax = Double.NEGATIVE_INFINITY;
+			yMin = Double.POSITIVE_INFINITY;
+			yMax = Double.NEGATIVE_INFINITY;
+		}
+	}
+
+	public BoundingRectangle getBoundingRectangle()
+	{
+		BoundingRectangle boundingRectangle = new BoundingRectangle();
+
+        double[] xCorn = getXCorners();
+        double[] yCorn = getYCorners();
+
+		for (int k=0; k<xCorn.length; k++)
+		{
+			boundingRectangle.xMin = Math.min(boundingRectangle.xMin, xCorn[k]);
+			boundingRectangle.xMax = Math.max(boundingRectangle.xMax, xCorn[k]);
+		}
+		for (int k=0; k<yCorn.length; k++)
+		{
+			boundingRectangle.yMin = Math.min(boundingRectangle.yMin, yCorn[k]);
+			boundingRectangle.yMax = Math.max(boundingRectangle.yMax, yCorn[k]);
+		}
+		return boundingRectangle;
+	}
+
+    public class BoundingAngles 
+    {
+		public double hWidthRad, vWidthRad;
+
+		public BoundingAngles()
+		{
+			hWidthRad = 0.0;
+			vWidthRad = 0.0;
+		}
+	}
+
+    public BoundingAngles getBoundingAnglesRad(BoundingRectangle _boundingRectangle)
+    {
+        BoundingAngles boundingAngles = new BoundingAngles();
+        boundingAngles.hWidthRad = horizPixelToAngleRad(_boundingRectangle.xMax) - horizPixelToAngleRad(_boundingRectangle.xMin);
+        boundingAngles.vWidthRad =  vertPixelToAngleRad(_boundingRectangle.yMax) -  vertPixelToAngleRad(_boundingRectangle.yMin);
+        return boundingAngles;
+    }
+
+    public double horizPixelToAngleRad(double _pixel)
+    {
+        return Math.atan( (_pixel-kImageHorizCenterPixels) / kCameraFocalLengthInPixels[version] );
+    }
+
+    public double vertPixelToAngleRad(double _pixel)
+    {
+        return Math.atan( (_pixel-kImageVertCenterPixels) / kCameraFocalLengthInPixels[version] );
+    }
 
     /**
      * ta Target Area (0% of image to 100% of image)

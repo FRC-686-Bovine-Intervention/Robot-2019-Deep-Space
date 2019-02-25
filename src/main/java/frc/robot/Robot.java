@@ -26,6 +26,7 @@ import frc.robot.lib.util.ControlsReverse;
 import frc.robot.lib.util.CrashTracker;
 import frc.robot.lib.util.DataLogController;
 import frc.robot.lib.util.DataLogger;
+import frc.robot.lib.util.PathFollower;
 import frc.robot.lib.util.Pose;
 import frc.robot.loops.DriveLoop;
 import frc.robot.loops.GoalStateLoop;
@@ -111,9 +112,12 @@ public class Robot extends TimedRobot {
 			robotLogger.register(drive.getCommand().getLogger());
 			robotLogger.register(DriveState.getInstance().getLogger());
 			robotLogger.register(RobotState.getInstance().getLogger());
+			robotLogger.register(VisionLoop.getInstance().getLogger());
 			robotLogger.register(VisionTargetList.getInstance().getLogger());
+			robotLogger.register(GoalStateLoop.getInstance().getLogger());
 			robotLogger.register(GoalStateLoop.getInstance().getGoalTracker().getLogger());
 			robotLogger.register(GoalStates.getInstance().getLogger());
+			robotLogger.register(VisionDriveAssistant.getInstance().getLogger());
 			robotLogger.register(CargoIntake.getInstance().getLogger());
 			robotLogger.register(HatchDeploy.getInstance().getLogger());
 			robotLogger.register(Climber.getInstance().getLogger());
@@ -158,7 +162,7 @@ public class Robot extends TimedRobot {
 	public void disabledInit()
 	{
 		operationalMode = OperationalMode.DISABLED;
-		boolean logToFile = true;
+		boolean logToFile = false;
 		boolean logToSmartDashboard = true;
 		robotLogger.setOutputMode(logToFile, logToSmartDashboard);
 		zeroAllSensors();
@@ -210,7 +214,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
     	operationalMode = OperationalMode.AUTONOMOUS;
-    	boolean logToFile = true;
+    	boolean logToFile = false;
     	boolean logToSmartDashboard = true;
     	robotLogger.setOutputMode(logToFile, logToSmartDashboard);
 
@@ -260,7 +264,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit(){
 		operationalMode = OperationalMode.TELEOP;
-		boolean logToFile = true;
+		boolean logToFile = false;
 		boolean logToSmartDashboard = true;
 		robotLogger.setOutputMode(logToFile, logToSmartDashboard); 
 
@@ -311,7 +315,7 @@ public class Robot extends TimedRobot {
 			drive.setOpenLoop(driveCmdReverse);
 
 			// turn on LEDs in direction of forward travel
-			if (selectedJoystick.getDrivingForward())
+			if (selectedJoystick.getDrivingCargo())
 			{
 				cargoCamera.setLEDMode(Limelight.LedMode.kOn);
 				hatchCamera.setLEDMode(Limelight.LedMode.kOff);

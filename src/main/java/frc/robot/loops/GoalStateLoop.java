@@ -9,6 +9,8 @@ import frc.robot.Constants;
 import frc.robot.command_status.GoalStates;
 import frc.robot.command_status.GoalStates.GoalState;
 import frc.robot.command_status.RobotState;
+import frc.robot.lib.joystick.SelectedJoystick;
+import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.Pose;
 import frc.robot.lib.util.Vector2d;
 import frc.robot.vision.GoalTracker;
@@ -37,7 +39,8 @@ public class GoalStateLoop implements Loop
 	int currentBestTrackId = -1;
 	
 	enum RangeMethod { DIFFERENTIAL_HEIGHT, TARGET_HEIGHT, TARGET_WIDTH };
-	final RangeMethod rangeMethod = RangeMethod.TARGET_HEIGHT; 
+	// RangeMethod rangeMethod = RangeMethod.TARGET_HEIGHT; 
+	RangeMethod rangeMethod = RangeMethod.TARGET_WIDTH; 
 	
 	public static GoalStateLoop getInstance()
 	{
@@ -63,6 +66,9 @@ public class GoalStateLoop implements Loop
 		// no-op
 	}
 
+	double hAngle, vAngle, hWidth, vWidth, range, horizontalDistance;
+	SelectedJoystick selectedJoystick = SelectedJoystick.getInstance();
+
 	private void updateGoalLocations()
 	{
 		// Step 1: Find location of goals in this image with respect to field
@@ -71,20 +77,32 @@ public class GoalStateLoop implements Loop
 		List<VisionTargetList.Target> visionTargets = visionTargetList.getTargets();
 		Pose fieldToCamera = robotState.getFieldToCamera(imageCaptureTimestamp);	// find position of camera back when image was taken (removes latency in processing)
 
+		double kCameraPoseThetaRad = Constants.kHatchCameraPoseThetaRad;
+		double kCameraPitchRad = Constants.kHatchCameraPitchRad;
+		double kCameraPoseZ = Constants.kHatchCameraPoseZ;
+		
+		if (selectedJoystick.getDrivingCargo())
+		{
+			kCameraPoseThetaRad = Constants.kCargoCameraPoseThetaRad;
+			kCameraPitchRad = Constants.kCargoCameraPitchRad;
+			kCameraPoseZ = Constants.kCargoCameraPoseZ;
+		}
+
+
 		List<Vector2d> fieldToGoals = new ArrayList<>();
 		
 		if (!(visionTargets == null || visionTargets.isEmpty()))
 		{
 			for (VisionTargetList.Target target : visionTargets)
 			{
-				double hAngle = target.getHorizontalAngle() - Constants.kCameraPoseThetaRad;	// compensate for camera yaw
-				double vAngle = target.getVerticalAngle()   - Constants.kCameraPitchRad;		// compensate for camera pitch
-				double hWidth = target.getHorizontalWidth();
-				double vWidth = target.getVerticalWidth();
+				hAngle = target.getHorizontalAngle() - kCameraPoseThetaRad;	// compensate for camera yaw
+				vAngle = target.getVerticalAngle()   - kCameraPitchRad;		// compensate for camera pitch
+				hWidth = target.getHorizontalWidth();
+				vWidth = target.getVerticalWidth();
 						
-		        double differentialHeight = Constants.kCenterOfTargetHeightInches - Constants.kCameraPoseZ;	
-				double horizontalDistance = 0;
-				double range = 0;
+		        double differentialHeight = Constants.kCenterOfTargetHeightInches - kCameraPoseZ;	
+				horizontalDistance = 0;
+				range = 0;
 				
 				switch (rangeMethod)
 				{
@@ -147,5 +165,24 @@ public class GoalStateLoop implements Loop
 
 
 	public GoalTracker getGoalTracker() { return goalTracker; }
+
+
+
+	private final DataLogger logger = new DataLogger()
+    {
+        @Override
+        public void log()
+        {
+			put("GoalStateLoop/rangeMethod", rangeMethod.toString());
+			put("GoalStateLoop/hAngle", hAngle);
+			put("GoalStateLoop/vAngle", vAngle);
+			put("GoalStateLoop/hWidth", hWidth);
+			put("GoalStateLoop/vWidth", vWidth);
+			put("GoalStateLoop/range", range);
+			put("GoalStateLoop/horizontalDistance", horizontalDistance);
+        }
+    };
+    
+    public DataLogger getLogger() { return logger; }
 
 }

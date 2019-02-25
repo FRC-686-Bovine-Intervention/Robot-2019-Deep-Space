@@ -1,7 +1,7 @@
 package frc.robot.command_status;
 
 import frc.robot.command_status.DriveState;
-
+import frc.robot.lib.joystick.SelectedJoystick;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.InterpolatingDouble;
 import frc.robot.lib.util.InterpolatingTreeMap;
@@ -144,16 +144,26 @@ public class RobotState
     
 	// Field to camera functions
 
-	public static final Pose robotToCamera = new Pose(Constants.kCameraPoseX, Constants.kCameraPoseY,
-			Constants.kCameraPoseThetaRad);
+	// public static final Pose robotToCamera = new Pose(Constants.kHatchCameraPoseX, Constants.kHatchCameraPoseY,
+	// 		Constants.kHatchCameraPoseThetaRad);
 
 	public synchronized Pose getFieldToCamera(double timestamp) {
+		Pose robotToCamera = new Pose(Constants.kHatchCameraPoseX, Constants.kHatchCameraPoseY, Constants.kHatchCameraPoseThetaRad);
+		if (SelectedJoystick.getInstance().getDrivingCargo())
+		{
+			robotToCamera = new Pose(Constants.kCargoCameraPoseX, Constants.kCargoCameraPoseY, Constants.kCargoCameraPoseThetaRad);
+		}
 		Pose fieldToRobot = getFieldToVehicle(timestamp);
 		Pose fieldToCamera = robotToCamera.changeCoordinateSystem(fieldToRobot);
 		return fieldToCamera;
 	}
 
 	public synchronized Pose getPredictedFieldToCamera(double _lookaheadTime) {
+		Pose robotToCamera = new Pose(Constants.kHatchCameraPoseX, Constants.kHatchCameraPoseY, Constants.kHatchCameraPoseThetaRad);
+		if (SelectedJoystick.getInstance().getDrivingCargo())
+		{
+			robotToCamera = new Pose(Constants.kCargoCameraPoseX, Constants.kCargoCameraPoseY, Constants.kCargoCameraPoseThetaRad);
+		}
 		Pose fieldToRobot = getPredictedFieldToVehicle(_lookaheadTime);
 		Pose fieldToCamera = robotToCamera.changeCoordinateSystem(fieldToRobot);
 		return fieldToCamera;

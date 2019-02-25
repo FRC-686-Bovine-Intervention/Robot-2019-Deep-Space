@@ -47,7 +47,7 @@ public class DataLogController
 
 	static File parentDirectory;
 	String fileBase;
-	long minimumInterval = 0; // 0: write as fast as possible
+	static long minimumInterval = 0; // 0: write as fast as possible
 
 	static public void findLogDirectory()
 	{
@@ -69,7 +69,6 @@ public class DataLogController
 			String logMessage = String.format("Log directory is %s\n", logDirectory);
 			System.out.print(logMessage);
 			setDirectory(logDirectory);
-			// setMinimumInterval(1000);
 		}
 	}
 
@@ -318,9 +317,9 @@ public class DataLogController
 
 	SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss.SS");
 
-	public void setMinimumInterval(long minimumInterval)
+	public static void setMinimumInterval(long _minimumInterval)
 	{
-		this.minimumInterval = minimumInterval;
+		minimumInterval = _minimumInterval;
 	}
 
 }

@@ -17,7 +17,7 @@ public class ReversibleArcadeDriveJoystick extends JoystickControlsBase
         return mInstance;
     }
 
-		boolean drivingForward = true;
+		boolean usingLeftStick = true;
 		double kCrossoverThreshold = 0.2;
 
 		public DriveCommand getDriveCommand()
@@ -33,21 +33,21 @@ public class ReversibleArcadeDriveJoystick extends JoystickControlsBase
 // System.out.printf("lThrottle: %5.3f, lTurn: %5.3f, rThrottle: %5.3f, rTurn: %5.3f\n", lThrottle, lTurn, rThrottle, rTurn);
 
 			// check to see if we are switching sticks
-			if (drivingForward)
+			if (usingLeftStick)
 			{
 				if ((Math.abs(lThrottle) <  kCrossoverThreshold) && (Math.abs(lTurn) <  kCrossoverThreshold) && 
 				    (Math.abs(rThrottle) >= kCrossoverThreshold) || (Math.abs(rTurn) >= kCrossoverThreshold))
-					drivingForward = false;
+					usingLeftStick = false;
 			}
 			else
 			{
 				if ((Math.abs(rThrottle) <  kCrossoverThreshold) && (Math.abs(rTurn) <  kCrossoverThreshold) && 
 				    (Math.abs(lThrottle) >= kCrossoverThreshold) || (Math.abs(lTurn) >= kCrossoverThreshold))
-					drivingForward = true;
+					usingLeftStick = true;
 				}
 
 			// if we are driving in reverse, flip stick controls
-			if (!drivingForward)
+			if (!usingLeftStick)
 			{
 				throttle = -rThrottle;
 				turn = +rTurn;
@@ -59,9 +59,9 @@ public class ReversibleArcadeDriveJoystick extends JoystickControlsBase
 		}       
 		
 		@Override
-		public boolean getDrivingForward()
+		public boolean usingLeftStick()
 		{
-			return drivingForward;
+			return usingLeftStick;
 		}
 
 }

@@ -5,6 +5,7 @@ import frc.robot.command_status.DriveCommand;
 import frc.robot.command_status.GoalStates;
 import frc.robot.command_status.RobotState;
 import frc.robot.command_status.GoalStates.GoalState;
+import frc.robot.lib.joystick.SelectedJoystick;
 import frc.robot.lib.util.Kinematics.WheelSpeed;
 import frc.robot.loops.DriveLoop;
 import frc.robot.subsystems.Drive;
@@ -50,7 +51,7 @@ public class PathFollower
 	public Pose previousPose = new Pose();
 	
 	// camera pose with respect to robot
-	public Pose cameraPose_Robot = new Pose(Constants.kCameraPoseX, Constants.kCameraPoseY, Constants.kCameraPoseThetaRad);
+	public Pose cameraPose_Robot = new Pose(Constants.kHatchCameraPoseX, Constants.kHatchCameraPoseY, Constants.kHatchCameraPoseThetaRad);
 	
 	public double prevDistanceToTargetInches;
 	public double prevHeadingToTarget;
@@ -132,7 +133,12 @@ public class PathFollower
 		}
 		else
 		{
-			remainingDistance = distanceToTargetInches - Constants.kTargetDistanceThresholdFromCameraInches;
+			double kTargetDistanceThresholdFromCameraInches = Constants.kHatchTargetDistanceThresholdFromCenterInches;
+			if (SelectedJoystick.getInstance().getDrivingCargo())
+			{
+				kTargetDistanceThresholdFromCameraInches = Constants.kCargoTargetDistanceThresholdFromCenterInches;
+			}
+			remainingDistance = distanceToTargetInches - kTargetDistanceThresholdFromCameraInches;
 			finalSpeed = path.getSegmentFinalSpeed();
 			maxSpeed = Constants.kVisionMaxVel;
 			maxAccel = Constants.kVisionMaxAccel;

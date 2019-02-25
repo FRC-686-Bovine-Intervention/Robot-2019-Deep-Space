@@ -7,9 +7,13 @@ import frc.robot.Constants;
 import frc.robot.command_status.DriveCommand;
 import frc.robot.command_status.GoalStates;
 import frc.robot.command_status.GoalStates.GoalState;
+import frc.robot.command_status.RobotState;
+import frc.robot.lib.joystick.SelectedJoystick;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.Kinematics;
 import frc.robot.lib.util.Kinematics.WheelSpeed;
+import frc.robot.lib.util.Pose;
+import frc.robot.lib.util.Vector2d;
 import frc.robot.loops.DriveLoop;
 
 public class VisionDriveAssistant
@@ -18,17 +22,16 @@ public class VisionDriveAssistant
 	public static VisionDriveAssistant getInstance() { return instance; }
 
     // configuration parameters
-    public static boolean allowSpeedControl = false;
+    public static boolean allowSpeedControl = true;
     public static double kLookaheadDist = 24.0;   // inches
     public static double kFullThrottleSpeed =      DriveLoop.encoderUnitsPerFrameToInchesPerSecond((int)DriveLoop.kFullThrottleEncoderPulsePer100ms); // inches/sec
     public static double kMaxSpeed =      100.0; // inches/sec
-    public static double kMaxAccel =      200.0; // inches/sec^2	
-    public static double kTargetStoppingDistanceFromBumper = 16.0; // inches to stop from target, measured from front bumper
+    public static double kMaxAccel =      50.0; // inches/sec^2	
 
     // members
     public GoalStates goalStates = GoalStates.getInstance();
     public boolean enabled;
-    public boolean foundTarget;
+    public boolean haveGoal;
     public double distanceToTargetInches;
 	public double bearingToTarget;
 	public double lookaheadDist;
@@ -38,7 +41,8 @@ public class VisionDriveAssistant
     public double maxSpeed;         // speed limit based on distance from target
     public WheelSpeed wheelSpeed = new WheelSpeed();
 
-
+    public Optional<Vector2d> currentFieldToGoal = Optional.empty();
+    double kTargetDistanceThresholdFromCenterInches;
 
     public VisionDriveAssistant() {}
 
@@ -46,25 +50,55 @@ public class VisionDriveAssistant
     {
         DriveCommand driveCmd = _driveCmd;
         enabled = _enable;
-        
-        Optional<GoalState> optGoalState = goalStates.getBestVisionTarget();
-        foundTarget = optGoalState.isPresent();
+        double currentTime = Timer.getFPGATimestamp();
+ 
+        // update currentGoalState based on whether target is currently seen, and if button is being pressed
+        Optional<GoalState> visionGoalState = goalStates.getBestVisionTarget();
+        if (visionGoalState.isPresent())
+        {
+            currentFieldToGoal = Optional.of( visionGoalState.get().getPosition() );
+        }
+        else
+        {
+            if (enabled)
+            {
+                // target not currently seen, but button is still pressed
+                // --> keep same currentFieldToGoal
+            }
+            else
+            {
+                // target not currently seen, button not pressed
+                currentFieldToGoal = Optional.empty();
+            }
+        }
+
+        haveGoal = currentFieldToGoal.isPresent();
 
         // if we don't see a target, continue under driver control
-        if (foundTarget)
+        if (haveGoal)
         {
+			kTargetDistanceThresholdFromCenterInches = Constants.kHatchTargetDistanceThresholdFromCenterInches;
+			if (SelectedJoystick.getInstance().getDrivingCargo())
+			{
+				kTargetDistanceThresholdFromCenterInches = Constants.kCargoTargetDistanceThresholdFromCenterInches;
+			}
+
             // Get range and angle to target
-            GoalState goalState = optGoalState.get();
-            distanceToTargetInches = goalState.getHorizontalDistance() - Constants.kCenterToFrontBumper;   // distance from front bumper
-            bearingToTarget = goalState.getRelativeBearing();
+            Vector2d fieldToGoal = currentFieldToGoal.get();
+            Pose fieldToShooter = RobotState.getInstance().getFieldToShooter(currentTime);
+		    Vector2d shooterToGoal = fieldToGoal.sub(fieldToShooter.getPosition());
+	    	double distanceToGoal = shooterToGoal.length();
+			double bearingToGoal = shooterToGoal.angle() - fieldToShooter.getHeading(); 	// bearing relative to shooter's heading
+
+            distanceToTargetInches = distanceToGoal - kTargetDistanceThresholdFromCenterInches;   // distance from camera
+            bearingToTarget = bearingToGoal;
 
             // Calculate motor settings to turn towards target
             lookaheadDist = Math.min(kLookaheadDist, distanceToTargetInches);	// length of chord <= kLookaheadDist
             curvature     = 2 * Math.sin(bearingToTarget) / lookaheadDist;		// curvature = 1/radius of circle (positive: turn left, negative: turn right)
 
             // get speed limit based on distance            
-            double currentTime = Timer.getFPGATimestamp();
-            double remainingDistance = distanceToTargetInches - kTargetStoppingDistanceFromBumper;
+            double remainingDistance = Math.max(distanceToTargetInches, 0.0);   // keep maxSpeed = 0 when we pass the target
             maxSpeed = calcSpeedLimit(currentTime, remainingDistance, kMaxSpeed, kMaxAccel);
             maxSpeed = maxSpeed / kFullThrottleSpeed;   // convert from inches/sec to percentage
 
@@ -75,8 +109,7 @@ public class VisionDriveAssistant
             if (allowSpeedControl)
             {
                 // automatically reduce speed to stop in front of target
-                // approachSpeed = Math.min(approachSpeed, maxSpeed);
-                approachSpeed = maxSpeed;
+                approachSpeed = Math.signum(approachSpeed)*Math.min(Math.abs(approachSpeed), maxSpeed);
             }   
 
             // keep on target even when backing up
@@ -157,17 +190,31 @@ public class VisionDriveAssistant
 		@Override
 		public void log()
 		{
-            put("DriveAssist/enabled", enabled);
-            put("DriveAssist/foundTarget", foundTarget);
-            put("DriveAssist/distanceToTargetInches", distanceToTargetInches);
-            put("DriveAssist/bearingToTarget", bearingToTarget);
-            put("DriveAssist/lookaheadDist", lookaheadDist);
-            put("DriveAssist/curvature", curvature);
-            put("DriveAssist/joystickSpeed", joystickSpeed);
-            put("DriveAssist/approachSpeed", approachSpeed);
-            put("DriveAssist/maxSpeed", maxSpeed);
-            put("DriveAssist/leftWheelSpeed", wheelSpeed.left);
-            put("DriveAssist/rightWheelSpeed", wheelSpeed.right);
+            put("VisionDriveAssist/enabled", enabled);
+            put("VisionDriveAssist/foundTarget", haveGoal);
+            put("VisionDriveAssist/kTargetDistanceThresholdFromCameraInches", kTargetDistanceThresholdFromCenterInches);
+            put("VisionDriveAssist/distanceToTargetInches", distanceToTargetInches);
+            put("VisionDriveAssist/bearingToTarget", bearingToTarget);
+            put("VisionDriveAssist/lookaheadDist", lookaheadDist);
+            put("VisionDriveAssist/curvature", curvature);
+            put("VisionDriveAssist/joystickSpeed", joystickSpeed);
+            put("VisionDriveAssist/approachSpeed", approachSpeed);
+            put("VisionDriveAssist/maxSpeed", maxSpeed);
+            put("VisionDriveAssist/leftWheelSpeed", wheelSpeed.left);
+            put("VisionDriveAssist/rightWheelSpeed", wheelSpeed.right);
+
+			if (currentFieldToGoal.isPresent())
+			{
+				Vector2d target = currentFieldToGoal.get();
+                put("VisionDriveAssist/currentGoal/X", target.getX());
+                put("VisionDriveAssist/currentGoal/Y", target.getY());
+            }
+			else
+			{
+                put("VisionDriveAssist/currentGoal/X", -999);
+                put("VisionDriveAssist/currentGoal/Y", -999);
+            }
+
         }
     };
 
