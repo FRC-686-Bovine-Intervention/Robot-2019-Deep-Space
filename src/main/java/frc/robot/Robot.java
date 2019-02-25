@@ -307,8 +307,10 @@ public class Robot extends TimedRobot {
 		{
 			hatchDeploy.run();
 			
-			DriveCommand driveCmd = selectedJoystick.getDriveCommand();
-			driveCmd = visionDriveAssistant.assist(driveCmd, selectedJoystick.getButton(Constants.kVisionAssistanceButton));
+			DriveCommand driveCmd = controls.getDriveCommand();
+			drive.setOpenLoop(driveCmd);
+			driveCmd = visionDriveAssistant.assist(driveCmd, controls.getButton(Constants.kVisionAssistanceButton));
+			DriveCommand driveCmdReverse = controls.getDriveCommand();
 
 			//modify drive controls based on buttons
 			DriveCommand driveCmdReverse = controlsReverse.run( driveCmd, Constants.kControlsReverseButton);
