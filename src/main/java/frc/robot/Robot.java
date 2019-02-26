@@ -310,7 +310,6 @@ public class Robot extends TimedRobot {
 			DriveCommand driveCmd = controls.getDriveCommand();
 			drive.setOpenLoop(driveCmd);
 			driveCmd = visionDriveAssistant.assist(driveCmd, controls.getButton(Constants.kVisionAssistanceButton));
-			DriveCommand driveCmdReverse = controls.getDriveCommand();
 
 			//modify drive controls based on buttons
 			DriveCommand driveCmdReverse = controlsReverse.run( driveCmd, Constants.kControlsReverseButton);
