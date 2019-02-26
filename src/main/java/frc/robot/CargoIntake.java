@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.lib.joystick.ButtonBoard;
 import frc.robot.lib.joystick.SelectedJoystick;
 import frc.robot.lib.util.DataLogger;
@@ -60,6 +61,7 @@ public class CargoIntake implements Loop
         ROCKET(36.0), 
         HAB_LEVEL2(14.0),
         GROUND(-8.7), 
+        DEPOT_LEVEL(-3),
         PUSHUP(-14.3),
         LEVEL2_APPROACH(10.0);
         
@@ -298,6 +300,7 @@ public class CargoIntake implements Loop
         
         // get current target angle from driver & operator
         if (intakeButtonPress)                                              { setTarget(CargoDeployPositionEnum.GROUND); }      // go to ground on driver button, not operator's button board
+        if (buttonBoard.getButton(Constants.kCargoIntakeDepotHeight))       { setTarget(CargoDeployPositionEnum.DEPOT_LEVEL); }      
         if (buttonBoard.getButton(Constants.kCargoIntakeRetractButton))     { setTarget(CargoDeployPositionEnum.RETRACTED); }
         if (buttonBoard.getButton(Constants.kCargoIntakeRocketButton))      { setTarget(CargoDeployPositionEnum.ROCKET); }      // TODO: only allow if ball is detected?
         if (buttonBoard.getButton(Constants.kCargoIntakeCargoShipButton))   { setTarget(CargoDeployPositionEnum.CARGO_SHIP); }  // TODO: only allow if ball is detected?
@@ -316,8 +319,23 @@ public class CargoIntake implements Loop
             // Successful ball intake.  Return to retracted position.  Driver can continue to center ball by holding down intake button.
             setTarget(CargoDeployPositionEnum.RETRACTED);
         }
+
+        
+        if ((targetPosition == CargoDeployPositionEnum.DEPOT_LEVEL)&& (getArmAngleDeg() < kAllowableGroundAngleDeg))
+        {
+            deployMotorMaster.set(ControlMode.PercentOutput, 0.0);
+            deployMotorMaster.setNeutralMode(NeutralMode.Coast);
+        }
+        
+        startCargoRetract = ballDetect() && (getArmAngleDeg() < kAllowableGroundAngleDeg);
+        if (startCargoRetract)
+        {
+            // Successful ball intake.  Return to retracted position.  Driver can continue to center ball by holding down intake button.
+            setTarget(CargoDeployPositionEnum.RETRACTED);
+        }
     }
 
+    
 
     public void runIntake()
     {
@@ -333,11 +351,15 @@ public class CargoIntake implements Loop
              intakePulseTrain.start(); }   
         
         boolean intakePulse = intakePulseTrain.update();
-
+        SelectedJoystick.getInstance().setRumble(RumbleType.kLeftRumble, 0);
+        SelectedJoystick.getInstance().setRumble(RumbleType.kRightRumble, 0);
         if (selectedJoystick.getAxisAsButton(Constants.kCargoOuttakeAxis)) {
             intakeMotor.set(ControlMode.PercentOutput, kOuttakePercentOutput); }
         else if (intakeActive || intakePulse) {
-            intakeMotor.set(ControlMode.PercentOutput, kIntakePercentOutput); } 
+            intakeMotor.set(ControlMode.PercentOutput, kIntakePercentOutput); 
+            SelectedJoystick.getInstance().setRumble(RumbleType.kLeftRumble, 1);
+            SelectedJoystick.getInstance().setRumble(RumbleType.kRightRumble, 1);
+        } 
         else {
             intakeMotor.set(ControlMode.PercentOutput, 0.0); }
     }
@@ -440,7 +462,9 @@ public class CargoIntake implements Loop
         return (CargoDeployPositionEnum.RETRACTED.angleDeg - (_encoderUnits / kEncoderUnitsPerDeg));
     }
     
-
+    public boolean shouldBlink(){
+        return intakePulseTrain.getEnabled();
+    }
     
 	private final DataLogger logger = new DataLogger()
 	{
