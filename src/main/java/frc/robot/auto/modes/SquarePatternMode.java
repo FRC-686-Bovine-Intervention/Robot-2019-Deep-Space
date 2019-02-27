@@ -3,9 +3,11 @@ package frc.robot.auto.modes;
 import frc.robot.auto.AutoModeBase;
 import frc.robot.auto.AutoModeEndedException;
 import frc.robot.auto.actions.PathFollowerAction;
+import frc.robot.command_status.RobotState;
 import frc.robot.lib.util.Path;
 import frc.robot.lib.util.Path.Waypoint;
 import frc.robot.lib.util.PathSegment;
+import frc.robot.lib.util.Pose;
 import frc.robot.lib.util.Vector2d;
 import frc.robot.loops.DriveLoop;
 
@@ -16,18 +18,12 @@ import frc.robot.loops.DriveLoop;
 public class SquarePatternMode extends AutoModeBase {
 
 	Path path;
-    public SquarePatternMode(int lane, boolean shouldDriveBack) 
+    public SquarePatternMode() 
     {
  
     }
     
     private void init(){
-    	
-    	PathSegment.Options options = new PathSegment.Options(DriveLoop.kPathFollowingMaxVel, DriveLoop.kPathFollowingMaxAccel, DriveLoop.kPathFollowingLookahead, false);
-    	
-    	path = new Path();
-    	path.add(new Waypoint(new Vector2d( 0, 0), options));
-        path.add(new Waypoint(new Vector2d( 240.0, 0), options));
     }
 
     @Override
@@ -36,19 +32,23 @@ public class SquarePatternMode extends AutoModeBase {
     	System.out.println("Starting Auto Mode: Square Pattern");
 
     	init();
-    	
-        //Path path = new Path();
-        //path.add(new Waypoint(new Vector2d( 0, 0), options));
-        //path.add(new Waypoint(new Vector2d( 240.0, 0), options));
-        //path.add(new Waypoint(new Vector2d( 96.0, 72.0), options));
-        //path.add(new Waypoint(new Vector2d( 0, 72.0), options));
-        //path.add(new Waypoint(new Vector2d( 0, 0), options));
+        
+        double maxVel = 24; //DriveLoop.kPathFollowingMaxVel;
+        double lookAhead = 30; // DriveLoop.kPathFollowingLookahead
+    	PathSegment.Options options = new PathSegment.Options(maxVel, DriveLoop.kPathFollowingMaxAccel, lookAhead, false);
+
+        Path path = new Path();
+        path.add(new Waypoint(new Vector2d( 0, 0), options));
+        path.add(new Waypoint(new Vector2d( 96.0, 0), options));
+        path.add(new Waypoint(new Vector2d( 96.0, 72.0), options));
+        path.add(new Waypoint(new Vector2d( 0, 72.0), options));
+        path.add(new Waypoint(new Vector2d( 0, 0), options));
   
-        //Path revPath = new Path(path);
-        //revPath.setReverseOrder();
-        //revPath.setReverseDirection();
+        Path revPath = new Path(path);
+        revPath.setReverseOrder();
+        revPath.setReverseDirection();
         
         runAction(new PathFollowerAction(path));			// drive forward
-        //runAction(new PathFollowerWithVisionAction(revPath));    	// drive reversed 
+        runAction(new PathFollowerAction(revPath));    	// drive reversed 
     }
 }

@@ -111,7 +111,7 @@ public class PathFollower
 		if (prevTime < 0)				// initial setting of prevTime is important to limit initial acceleration
 			prevTime = _currentTime;	// avoid calling Timer.getFPGATimestamp() in this function to allow off-robot testing
 		
-		//System.out.println("At " + _currentPose + "  Driving to " + path.getSegmentEnd());
+		System.out.println("At " + _currentPose + "  Driving to " + path.getSegmentEnd());
 		
 		remainingDistance = Double.MAX_VALUE;
 		double finalSpeed = 0;

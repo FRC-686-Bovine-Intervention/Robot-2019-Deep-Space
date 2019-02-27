@@ -14,8 +14,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import frc.robot.auto.AutoModeExecuter;
-import frc.robot.auto.modes.DriveStraightMode;
-import frc.robot.auto.modes.HatchAuto;
+import frc.robot.auto.modes.SquarePatternMode;
 import frc.robot.command_status.DriveCommand;
 import frc.robot.command_status.DriveState;
 import frc.robot.command_status.GoalStates;
@@ -241,11 +240,11 @@ public class Robot extends TimedRobot {
     		
 			autoModeExecuter = new AutoModeExecuter();
 			// autoModeExecuter.setAutoMode( smartDashboardInteractions.getAutoModeSelection() );
-			autoModeExecuter.setAutoMode(new DriveStraightMode());
+			autoModeExecuter.setAutoMode(new SquarePatternMode());
 
+			// setInitialPose( smartDashboardInteractions.getStartPosition() );
+			setInitialPose(new Pose());
 
-			setInitialPose( smartDashboardInteractions.getStartPosition() );
- 
 			autoModeExecuter.start();
     	}
     	catch(Throwable t)
