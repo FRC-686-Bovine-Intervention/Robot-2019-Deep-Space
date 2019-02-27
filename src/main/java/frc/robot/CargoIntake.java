@@ -61,7 +61,7 @@ public class CargoIntake implements Loop
         ROCKET(36.0), 
         HAB_LEVEL2(14.0),
         GROUND(-8.7), 
-        DEPOT_LEVEL(-3),
+        DEPOT_LEVEL(-2),
         PUSHUP(-14.3),
         LEVEL2_APPROACH(10.0);
         
@@ -106,7 +106,7 @@ public class CargoIntake implements Loop
     public final double kAccel = kCruiseVelocity / kTimeToCruiseVelocity; 
     
 	public final double kKf = kCalMaxPercentOutput * 1023.0 / kCalMaxEncoderPulsePer100ms;
-	public final double kKp = 8.0;	   
+	public final double kKp = 32.0;	   
 	public final double kKd = 0.0;	// to resolve any overshoot, start at 10*Kp 
 	public final double kKi = 0.0;    
 
@@ -114,8 +114,9 @@ public class CargoIntake implements Loop
 	public static double kQuadEncoderUnitsPerRev = 4*64;
 	public static double kEncoderUnitsPerDeg = kQuadEncoderUnitsPerRev * kQuadEncoderGain / 360.0; 
 
-    public final int    kAllowableError = (int)(1.0 * kEncoderUnitsPerDeg);
+    public final int    kAllowableError = (int)(0.25 * kEncoderUnitsPerDeg);
     public final double kAllowableGroundAngleDeg = CargoDeployPositionEnum.GROUND.angleDeg + 3.0;
+    public final double kspinIntakeAngleDeg = 0;
 
     public final int kPeakCurrentLimit = 50;
     public final int kPeakCurrentDuration = 200;
@@ -313,7 +314,7 @@ public class CargoIntake implements Loop
             deployMotorMaster.setNeutralMode(NeutralMode.Coast);
         }
         
-        startCargoRetract = ballDetect() && (getArmAngleDeg() < kAllowableGroundAngleDeg);
+        startCargoRetract = ballDetect() && (getArmAngleDeg() < kspinIntakeAngleDeg);
         if (startCargoRetract)
         {
             // Successful ball intake.  Return to retracted position.  Driver can continue to center ball by holding down intake button.
@@ -321,11 +322,7 @@ public class CargoIntake implements Loop
         }
 
         
-        if ((targetPosition == CargoDeployPositionEnum.DEPOT_LEVEL)&& (getArmAngleDeg() < kAllowableGroundAngleDeg))
-        {
-            deployMotorMaster.set(ControlMode.PercentOutput, 0.0);
-            deployMotorMaster.setNeutralMode(NeutralMode.Coast);
-        }
+       
         
         startCargoRetract = ballDetect() && (getArmAngleDeg() < kAllowableGroundAngleDeg);
         if (startCargoRetract)
@@ -355,15 +352,22 @@ public class CargoIntake implements Loop
         SelectedJoystick.getInstance().setRumble(RumbleType.kRightRumble, 0);
         if (selectedJoystick.getAxisAsButton(Constants.kCargoOuttakeAxis)) {
             intakeMotor.set(ControlMode.PercentOutput, kOuttakePercentOutput); }
-        else if (intakeActive || intakePulse) {
+        // else if (intakeActive || intakePulse) {
+        else if ((getArmAngleDeg() < kspinIntakeAngleDeg) || intakePulse) {
             intakeMotor.set(ControlMode.PercentOutput, kIntakePercentOutput); 
+        } 
+        else {
+            intakeMotor.set(ControlMode.PercentOutput, 0.0); 
+        }
+
+
+        if (intakePulse) {
             SelectedJoystick.getInstance().setRumble(RumbleType.kLeftRumble, 1);
             SelectedJoystick.getInstance().setRumble(RumbleType.kRightRumble, 1);
         } 
-        else {
-            intakeMotor.set(ControlMode.PercentOutput, 0.0); }
     }
-        
+
+
     public void setState(CargoDeployStateEnum _state)
     {   
         state = _state;   
