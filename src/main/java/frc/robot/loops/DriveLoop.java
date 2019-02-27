@@ -55,11 +55,12 @@ public class DriveLoop implements Loop
 	private static final int kVelocityControlSlot = 0;
 	private static final int kBaseLockControlSlot = 1;
 
-    // Motor Controller Inversions
+	// Motor Controller Inversions
+	
     public static boolean kLeftMotorInverted = false;
     public static boolean kRightMotorInverted = true;
-    public static boolean kLeftMotorSensorPhase = false;
-    public static boolean kRightMotorSensorPhase = false;
+    public static boolean kLeftMotorSensorPhase = true;
+    public static boolean kRightMotorSensorPhase = true;
 
     public static int kDriveTrainCurrentLimit = 25;
 
@@ -89,9 +90,9 @@ public class DriveLoop implements Loop
 
     // PID gains for drive velocity loop (sent to Talon)
     // Units: error is 4*256 counts/rev. Max output is +/- 1023 units.
-    public static double kDriveVelocityKp = 20.0;
-    public static double kDriveVelocityKi = 0.01;
-    public static double kDriveVelocityKd = 70.0;
+    public static double kDriveVelocityKp = 1.0;
+    public static double kDriveVelocityKi = 0.00;
+    public static double kDriveVelocityKd = 5.0;
     public static double kDriveVelocityKf = kCalPercentOutput * 1023.0 / kCalEncoderPulsePer100ms;
     public static int    kDriveVelocityIZone = 0;
     public static double kDriveVelocityRampRate = 0.375;

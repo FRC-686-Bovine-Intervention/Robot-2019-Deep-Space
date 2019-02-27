@@ -32,10 +32,7 @@ public class HatchResetAction implements Action {
     @Override
 	public void start() 
 	{
-System.out.println("Starting HatchResetAction");		
-		boolean extended = true;
-        hatchDeploy.done(); 
-        finished = true;
+		finished = false;
 	}
 
 	@Override
@@ -44,7 +41,11 @@ System.out.println("Starting HatchResetAction");
 	}
 
 	@Override
-	public void update() {}
+	public void update() {
+		System.out.println("Starting HatchResetAction");		
+        hatchDeploy.retract(); 
+        finished = true;
+	}
 
 	@Override
 	public void done() {

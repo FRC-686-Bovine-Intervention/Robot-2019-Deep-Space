@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import frc.robot.auto.AutoModeExecuter;
+import frc.robot.auto.modes.DriveStraightMode;
+import frc.robot.auto.modes.HatchAuto;
 import frc.robot.command_status.DriveCommand;
 import frc.robot.command_status.DriveState;
 import frc.robot.command_status.GoalStates;
@@ -98,6 +100,7 @@ public class Robot extends TimedRobot {
     		loopController.register(VisionLoop.getInstance());
 			loopController.register(GoalStateLoop.getInstance());
 			loopController.register(CargoIntake.getInstance());
+			loopController.register(HatchDeploy.getInstance());
 			loopController.register(Climber.getInstance());
 
 			selectedJoystick.update();
@@ -219,6 +222,8 @@ public class Robot extends TimedRobot {
 
     	try
     	{
+			zeroAllSensors();
+
 			superStructure.enable();
 			
 			CrashTracker.logAutoInit();
@@ -228,18 +233,20 @@ public class Robot extends TimedRobot {
 			hatchCamera.autoInit();
 	
 			
-			// if (autoModeExecuter != null)
-			// {
-    			// autoModeExecuter.stop();
-    		// }
-    		// autoModeExecuter = null;
+			if (autoModeExecuter != null)
+			{
+    			autoModeExecuter.stop();
+    		}
+    		autoModeExecuter = null;
     		
-			// autoModeExecuter = new AutoModeExecuter();
+			autoModeExecuter = new AutoModeExecuter();
 			// autoModeExecuter.setAutoMode( smartDashboardInteractions.getAutoModeSelection() );
+			autoModeExecuter.setAutoMode(new DriveStraightMode());
+
 
 			setInitialPose( smartDashboardInteractions.getStartPosition() );
  
-			// autoModeExecuter.start();
+			autoModeExecuter.start();
     	}
     	catch(Throwable t)
     	{
@@ -252,7 +259,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousPeriodic() 
 	{
-		autoTeleopPeriodic();
+		// autoTeleopPeriodic();
 	}
 	
 	
@@ -304,8 +311,6 @@ public class Robot extends TimedRobot {
 	{
 		try
 		{
-			hatchDeploy.run();
-			
 			DriveCommand driveCmd = controls.getDriveCommand();
 			drive.setOpenLoop(driveCmd);
 			driveCmd = visionDriveAssistant.assist(driveCmd, controls.getButton(Constants.kVisionAssistanceButton));

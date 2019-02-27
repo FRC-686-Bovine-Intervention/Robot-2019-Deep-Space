@@ -36,12 +36,13 @@ public class DriveStraightAction implements Action {
     public void start() 
     {
         startingDistance = getCurrentDistance();
-        mDrive.setVelocityHeadingSetpoint(mVelocity, mHeadingDeg);
     }
 
     @Override
     public void update() 
     {
+        mDrive.setVelocityHeadingSetpoint(mVelocity, mHeadingDeg);
+        // mDrive.setVelocitySetpoint(mVelocity, mVelocity);
     }
 
     @Override

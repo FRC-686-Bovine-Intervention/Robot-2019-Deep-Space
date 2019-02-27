@@ -20,7 +20,7 @@ import frc.robot.lib.util.Vector2d;
 
 public class HatchAuto extends AutoModeBase {
 
-    public HatchAuto(int lane, boolean shouldDriveBack) 
+    public HatchAuto() 
     { 
     }
 
@@ -44,7 +44,6 @@ public class HatchAuto extends AutoModeBase {
 
     //     runAction(new PathFollowerAction(driveBackWardsOffPlatformPath));
     //     runAction(new PathFollowerAction(turnCargoShipPath));
-        runAction(new DeployHatchAction());
         runAction(new HatchEjectAction());
         runAction(new WaitAction(2));
         runAction(new HatchResetAction());

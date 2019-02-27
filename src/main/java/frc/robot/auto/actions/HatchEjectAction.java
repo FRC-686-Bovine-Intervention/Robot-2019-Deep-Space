@@ -32,10 +32,7 @@ public class HatchEjectAction implements Action {
     @Override
 	public void start() 
 	{
-System.out.println("Starting HatchEjectAction");		
-		boolean extended = true;
-        hatchDeploy.drop(); 
-        finished = true;
+	finished = false;
 	}
 
 	@Override
@@ -44,7 +41,11 @@ System.out.println("Starting HatchEjectAction");
 	}
 
 	@Override
-	public void update() {}
+	public void update() {
+		System.out.println("Starting HatchEjectAction");		
+        hatchDeploy.eject(); 
+        finished = true;
+	}
 
 	@Override
 	public void done() {

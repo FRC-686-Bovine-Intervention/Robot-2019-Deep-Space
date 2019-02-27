@@ -15,8 +15,10 @@ import frc.robot.lib.joystick.ButtonBoard;
 import frc.robot.lib.joystick.JoystickControlsBase;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.RisingEdgeDetector;
+import frc.robot.loops.Loop;
 
-public class HatchDeploy {
+public class HatchDeploy implements Loop
+{
     public static HatchDeploy mInstance = new HatchDeploy();
 
     public static HatchDeploy getInstance() {
@@ -30,8 +32,6 @@ public class HatchDeploy {
     public final int groundAngle = 1249;
     public final int defenseAngle = 0;
     public RisingEdgeDetector hatchBttnRisingEdgeDetector = new RisingEdgeDetector();
-    boolean on;
-    boolean off;
     public boolean zeroed  = false; 
     private double mTimeToWait = 2;
     private double mStartTime;
@@ -139,7 +139,26 @@ public class HatchDeploy {
 
     }
 
-    public void run() {
+	@Override
+	public void onStart() 
+	{
+        // if we haven't calibrated yet, do so now
+        if (!zeroed)
+        {
+            state = HatchDeployStateEnum.INIT;
+        }
+    }
+
+    
+	@Override
+	public void onStop() 
+	{
+        // stop all motors
+        dropMotor.set(ControlMode.PercentOutput, 0.0);
+    }
+
+    @Override
+    public void onLoop() {
         JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
         boolean dBtnIsPushed = buttonBoard.getButton(Constants.kDefenseButton);
         boolean hBtnIsPushed = controls.getButton(Constants.kHatchDeployButton);
@@ -218,11 +237,11 @@ public class HatchDeploy {
 public void drop() {
     dropMotor.set(ControlMode.MotionMagic, degsToEncoderUnits(groundAngle));
 }
-public void deploy(){
-    hatchSolenoid.set(on);
+public void eject(){
+    hatchSolenoid.set(true);
 }
-public void done() {
-    hatchSolenoid.set(off);
+public void retract() {
+    hatchSolenoid.set(false);
 }
 
 public void setTarget(double _targetPosition){
