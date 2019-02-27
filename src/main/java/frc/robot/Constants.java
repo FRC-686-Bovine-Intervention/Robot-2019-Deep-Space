@@ -84,7 +84,7 @@ public class Constants extends ConstantsBase {
     public static int kClimbingStartButton =        ButtonBoard.kButtonBoardLB;
     public static int kClimbingExtendButton =       ButtonBoard.kButtonBoardX;
     public static int kClimbingRetractButton =      ButtonBoard.kButtonBoardY;
-
+    public static int kCargoIntakeDepotHeight =    ButtonBoard.kButtonBoardSL;
   
     
 

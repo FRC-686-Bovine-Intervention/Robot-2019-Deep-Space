@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.lib.joystick.ButtonBoard;
 import frc.robot.lib.joystick.SelectedJoystick;
 import frc.robot.lib.util.DataLogger;
@@ -60,6 +61,7 @@ public class CargoIntake implements Loop
         ROCKET(36.0), 
         HAB_LEVEL2(14.0),
         GROUND(-8.7), 
+        DEPOT_LEVEL(-2),
         PUSHUP(-14.3),
         LEVEL2_APPROACH(10.0);
         
@@ -104,7 +106,7 @@ public class CargoIntake implements Loop
     public final double kAccel = kCruiseVelocity / kTimeToCruiseVelocity; 
     
 	public final double kKf = kCalMaxPercentOutput * 1023.0 / kCalMaxEncoderPulsePer100ms;
-	public final double kKp = 8.0;	   
+	public final double kKp = 32.0;	   
 	public final double kKd = 0.0;	// to resolve any overshoot, start at 10*Kp 
 	public final double kKi = 0.0;    
 
@@ -112,8 +114,9 @@ public class CargoIntake implements Loop
 	public static double kQuadEncoderUnitsPerRev = 4*64;
 	public static double kEncoderUnitsPerDeg = kQuadEncoderUnitsPerRev * kQuadEncoderGain / 360.0; 
 
-    public final int    kAllowableError = (int)(1.0 * kEncoderUnitsPerDeg);
+    public final int    kAllowableError = (int)(0.25 * kEncoderUnitsPerDeg);
     public final double kAllowableGroundAngleDeg = CargoDeployPositionEnum.GROUND.angleDeg + 3.0;
+    public final double kspinIntakeAngleDeg = 0;
 
     public final int kPeakCurrentLimit = 50;
     public final int kPeakCurrentDuration = 200;
@@ -298,6 +301,7 @@ public class CargoIntake implements Loop
         
         // get current target angle from driver & operator
         if (intakeButtonPress)                                              { setTarget(CargoDeployPositionEnum.GROUND); }      // go to ground on driver button, not operator's button board
+        if (buttonBoard.getButton(Constants.kCargoIntakeDepotHeight))       { setTarget(CargoDeployPositionEnum.DEPOT_LEVEL); }      
         if (buttonBoard.getButton(Constants.kCargoIntakeRetractButton))     { setTarget(CargoDeployPositionEnum.RETRACTED); }
         if (buttonBoard.getButton(Constants.kCargoIntakeRocketButton))      { setTarget(CargoDeployPositionEnum.ROCKET); }      // TODO: only allow if ball is detected?
         if (buttonBoard.getButton(Constants.kCargoIntakeCargoShipButton))   { setTarget(CargoDeployPositionEnum.CARGO_SHIP); }  // TODO: only allow if ball is detected?
@@ -310,6 +314,16 @@ public class CargoIntake implements Loop
             deployMotorMaster.setNeutralMode(NeutralMode.Coast);
         }
         
+        startCargoRetract = ballDetect() && (getArmAngleDeg() < kspinIntakeAngleDeg);
+        if (startCargoRetract)
+        {
+            // Successful ball intake.  Return to retracted position.  Driver can continue to center ball by holding down intake button.
+            setTarget(CargoDeployPositionEnum.RETRACTED);
+        }
+
+        
+       
+        
         startCargoRetract = ballDetect() && (getArmAngleDeg() < kAllowableGroundAngleDeg);
         if (startCargoRetract)
         {
@@ -318,6 +332,7 @@ public class CargoIntake implements Loop
         }
     }
 
+    
 
     public void runIntake()
     {
@@ -333,15 +348,26 @@ public class CargoIntake implements Loop
              intakePulseTrain.start(); }   
         
         boolean intakePulse = intakePulseTrain.update();
-
+        SelectedJoystick.getInstance().setRumble(RumbleType.kLeftRumble, 0);
+        SelectedJoystick.getInstance().setRumble(RumbleType.kRightRumble, 0);
         if (selectedJoystick.getAxisAsButton(Constants.kCargoOuttakeAxis)) {
             intakeMotor.set(ControlMode.PercentOutput, kOuttakePercentOutput); }
-        else if (intakeActive || intakePulse) {
-            intakeMotor.set(ControlMode.PercentOutput, kIntakePercentOutput); } 
+        // else if (intakeActive || intakePulse) {
+        else if ((getArmAngleDeg() < kspinIntakeAngleDeg) || intakePulse) {
+            intakeMotor.set(ControlMode.PercentOutput, kIntakePercentOutput); 
+        } 
         else {
-            intakeMotor.set(ControlMode.PercentOutput, 0.0); }
+            intakeMotor.set(ControlMode.PercentOutput, 0.0); 
+        }
+
+
+        if (intakePulse) {
+            SelectedJoystick.getInstance().setRumble(RumbleType.kLeftRumble, 1);
+            SelectedJoystick.getInstance().setRumble(RumbleType.kRightRumble, 1);
+        } 
     }
-        
+
+
     public void setState(CargoDeployStateEnum _state)
     {   
         state = _state;   
@@ -440,7 +466,9 @@ public class CargoIntake implements Loop
         return (CargoDeployPositionEnum.RETRACTED.angleDeg - (_encoderUnits / kEncoderUnitsPerDeg));
     }
     
-
+    public boolean shouldBlink(){
+        return intakePulseTrain.getEnabled();
+    }
     
 	private final DataLogger logger = new DataLogger()
 	{

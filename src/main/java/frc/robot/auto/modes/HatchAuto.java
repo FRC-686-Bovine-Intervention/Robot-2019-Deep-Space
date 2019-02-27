@@ -28,22 +28,22 @@ public class HatchAuto extends AutoModeBase {
     protected void routine() throws AutoModeEndedException 
     {
 
-    PathSegment.Options pathOptions	= new PathSegment.Options(DriveLoop.kPathFollowingMaxVel, DriveLoop.kPathFollowingMaxAccel, 48, false);
-    PathSegment.Options tightTurnOptions	= new PathSegment.Options(DriveLoop.kPathFollowingMaxVel/2, DriveLoop.kPathFollowingMaxAccel, 24, false);
-    Vector2d StartPosition = new Vector2d(0,0);
-    Vector2d turnCargoShipPosition = new Vector2d(0,0);
-    Vector2d facingCargoPosition = new Vector2d(0,0);
+    // PathSegment.Options pathOptions	= new PathSegment.Options(DriveLoop.kPathFollowingMaxVel, DriveLoop.kPathFollowingMaxAccel, 48, false);
+    // PathSegment.Options tightTurnOptions	= new PathSegment.Options(DriveLoop.kPathFollowingMaxVel/2, DriveLoop.kPathFollowingMaxAccel, 24, false);
+    // Vector2d StartPosition = new Vector2d(0,0);
+    // Vector2d turnCargoShipPosition = new Vector2d(0,0);
+    // Vector2d facingCargoPosition = new Vector2d(0,0);
 
-        Path driveOffPlatformPath = new Path();
-        driveOffPlatformPath.add(new Waypoint(StartPosition, pathOptions));
-        driveOffPlatformPath.add(new Waypoint(turnCargoShipPosition, pathOptions));
+    //     Path driveBackWardsOffPlatformPath = new Path();
+    //     driveBackWardsOffPlatformPath.add(new Waypoint(StartPosition, pathOptions));
+    //     driveBackWardsOffPlatformPath.add(new Waypoint(turnCargoShipPosition, pathOptions));
 
-        Path turnCargoShipPath = new Path();
-        turnCargoShipPath.add(new Waypoint(turnCargoShipPosition, tightTurnOptions));
-        turnCargoShipPath.add(new Waypoint(facingCargoPosition, tightTurnOptions));
+    //     Path turnCargoShipPath = new Path();
+    //     turnCargoShipPath.add(new Waypoint(turnCargoShipPosition, tightTurnOptions));
+    //     turnCargoShipPath.add(new Waypoint(facingCargoPosition, tightTurnOptions));
 
-        runAction(new PathFollowerAction(driveOffPlatformPath));
-        runAction(new PathFollowerAction(turnCargoShipPath));
+    //     runAction(new PathFollowerAction(driveBackWardsOffPlatformPath));
+    //     runAction(new PathFollowerAction(turnCargoShipPath));
         runAction(new DeployHatchAction());
         runAction(new HatchEjectAction());
         runAction(new WaitAction(2));

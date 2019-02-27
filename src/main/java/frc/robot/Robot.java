@@ -26,7 +26,6 @@ import frc.robot.lib.util.ControlsReverse;
 import frc.robot.lib.util.CrashTracker;
 import frc.robot.lib.util.DataLogController;
 import frc.robot.lib.util.DataLogger;
-import frc.robot.lib.util.PathFollower;
 import frc.robot.lib.util.Pose;
 import frc.robot.loops.DriveLoop;
 import frc.robot.loops.GoalStateLoop;
@@ -316,7 +315,11 @@ public class Robot extends TimedRobot {
 			drive.setOpenLoop(driveCmdReverse);
 
 			// turn on LEDs in direction of forward travel
-			if (selectedJoystick.getDrivingCargo())
+			if (CargoIntake.getInstance().shouldBlink()) {  
+				 cargoCamera.setLEDMode(Limelight.LedMode.kBlink);
+				 hatchCamera.setLEDMode(Limelight.LedMode.kBlink);
+			}
+			else if (selectedJoystick.getDrivingCargo())
 			{
 				cargoCamera.setLEDMode(Limelight.LedMode.kOn);
 				hatchCamera.setLEDMode(Limelight.LedMode.kOff);

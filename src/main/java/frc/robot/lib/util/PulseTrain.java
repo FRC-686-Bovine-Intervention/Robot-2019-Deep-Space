@@ -81,8 +81,11 @@ public class PulseTrain
 
         return state;
     }
-
-    public boolean finished()
+    public boolean getEnabled()
+    {
+        return enabled;
+    }
+    public boolean getFinished()
     {
         return finished;
     }
