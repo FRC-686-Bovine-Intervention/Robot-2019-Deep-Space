@@ -301,8 +301,7 @@ public class CargoIntake implements Loop
         
         // get current target angle from driver & operator
         if (intakeButtonPress)                                              { setTarget(CargoDeployPositionEnum.GROUND); }      // go to ground on driver button, not operator's button board
-        if (buttonBoard.getButton(Constants.kCargoIntakeDepotHeight))       { setTarget(CargoDeployPositionEnum.DEPOT_LEVEL); }      
-        if (buttonBoard.getButton(Constants.kCargoIntakeRetractButton))     { setTarget(CargoDeployPositionEnum.RETRACTED); }
+        if (selectedJoystick.getButton(Constants.kCargoIntakeDepotHeight))       { setTarget(CargoDeployPositionEnum.DEPOT_LEVEL); }      
         if (buttonBoard.getButton(Constants.kCargoIntakeRocketButton))      { setTarget(CargoDeployPositionEnum.ROCKET); }      // TODO: only allow if ball is detected?
         if (buttonBoard.getButton(Constants.kCargoIntakeCargoShipButton))   { setTarget(CargoDeployPositionEnum.CARGO_SHIP); }  // TODO: only allow if ball is detected?
         if (buttonBoard.getButton(Constants.kDefenseButton))                { setTarget(CargoDeployPositionEnum.RETRACTED); }
@@ -348,8 +347,8 @@ public class CargoIntake implements Loop
              intakePulseTrain.start(); }   
         
         boolean intakePulse = intakePulseTrain.update();
-        SelectedJoystick.getInstance().setRumble(RumbleType.kLeftRumble, 0);
-        SelectedJoystick.getInstance().setRumble(RumbleType.kRightRumble, 0);
+        // SelectedJoystick.getInstance().setRumble(RumbleType.kLeftRumble, 0);
+        // SelectedJoystick.getInstance().setRumble(RumbleType.kRightRumble, 0);
         if (selectedJoystick.getAxisAsButton(Constants.kCargoOuttakeAxis)) {
             intakeMotor.set(ControlMode.PercentOutput, kOuttakePercentOutput); }
         // else if (intakeActive || intakePulse) {
@@ -361,10 +360,10 @@ public class CargoIntake implements Loop
         }
 
 
-        if (intakePulse) {
-            SelectedJoystick.getInstance().setRumble(RumbleType.kLeftRumble, 1);
-            SelectedJoystick.getInstance().setRumble(RumbleType.kRightRumble, 1);
-        } 
+        // if (intakePulse) {
+        //     SelectedJoystick.getInstance().setRumble(RumbleType.kLeftRumble, 1);
+        //     SelectedJoystick.getInstance().setRumble(RumbleType.kRightRumble, 1);
+        // } 
     }
 
 
