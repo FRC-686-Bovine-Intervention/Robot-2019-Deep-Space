@@ -43,7 +43,6 @@ public class Robot extends TimedRobot {
 	PowerDistributionPanel pdp = new PowerDistributionPanel();
 
 	SmartDashboardInteractions smartDashboardInteractions = SmartDashboardInteractions.getInstance();
-	JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
 	SelectedJoystick selectedJoystick = SelectedJoystick.getInstance();
 
 	RobotState robotState = RobotState.getInstance();
@@ -310,13 +309,13 @@ public class Robot extends TimedRobot {
 	{
 		try
 		{
-			DriveCommand driveCmd = controls.getDriveCommand();
+			DriveCommand driveCmd = selectedJoystick.getDriveCommand();
 			drive.setOpenLoop(driveCmd);
-			driveCmd = visionDriveAssistant.assist(driveCmd, controls.getButton(Constants.kVisionAssistanceButton));
+			driveCmd = visionDriveAssistant.assist(driveCmd, selectedJoystick.getButton(Constants.kVisionAssistanceButton));
 
 			//modify drive controls based on buttons
-			DriveCommand driveCmdReverse = controlsReverse.run( driveCmd, Constants.kControlsReverseButton);
-			drive.setOpenLoop(driveCmdReverse);
+			// DriveCommand driveCmdReverse = controlsReverse.run( driveCmd, Constants.kControlsReverseButton);
+			drive.setOpenLoop(driveCmd);
 
 			// turn on LEDs in direction of forward travel
 			if (CargoIntake.getInstance().shouldBlink()) {  
