@@ -17,34 +17,35 @@ public class ReversibleArcadeDriveJoystick extends JoystickControlsBase
         return mInstance;
     }
 
-		boolean usingLeftStick = true;
-		double kCrossoverThreshold = 0.2;
+    boolean usingLeftStick = false;     // default this way so autonomous uses hatch camera
+	double kCrossoverThreshold = 0.2;
+    boolean leftStickActive = false;
+    boolean rightStickActive = false;
 
-		public DriveCommand getDriveCommand()
-		{
-			double rThrottle = 	+mStick.getRawAxis(Constants.kXboxRStickYAxis);
-			double rTurn     = +mStick.getRawAxis(Constants.kXboxRStickXAxis);
-			double lThrottle = +mStick.getRawAxis(Constants.kXboxLStickYAxis);
-			double lTurn     = +mStick.getRawAxis(Constants.kXboxLStickXAxis);
+	public DriveCommand getDriveCommand()
+	{
+		double rThrottle = +mStick.getRawAxis(Constants.kXboxRStickYAxis);
+		double rTurn     = +mStick.getRawAxis(Constants.kXboxRStickXAxis);
+		double lThrottle = +mStick.getRawAxis(Constants.kXboxLStickYAxis);
+		double lTurn     = +mStick.getRawAxis(Constants.kXboxLStickXAxis);
 
-			double throttle = lThrottle;
-			double turn = lTurn;
+		double throttle = lThrottle;
+		double turn = lTurn;
 
 // System.out.printf("lThrottle: %5.3f, lTurn: %5.3f, rThrottle: %5.3f, rTurn: %5.3f\n", lThrottle, lTurn, rThrottle, rTurn);
 
-			// check to see if we are switching sticks
-			if (usingLeftStick)
-			{
-				if ((Math.abs(lThrottle) <  kCrossoverThreshold) && (Math.abs(lTurn) <  kCrossoverThreshold) && 
-				    (Math.abs(rThrottle) >= kCrossoverThreshold) || (Math.abs(rTurn) >= kCrossoverThreshold))
-					usingLeftStick = false;
+        leftStickActive =  ((Math.abs(lThrottle) >= kCrossoverThreshold) || (Math.abs(lTurn) >= kCrossoverThreshold));
+        rightStickActive = ((Math.abs(rThrottle) >= kCrossoverThreshold) || (Math.abs(rTurn) >= kCrossoverThreshold));
+
+		// check to see if we are switching sticks
+		if (usingLeftStick)
+		{
+			if (rightStickActive && !leftStickActive) {
+				usingLeftStick = false;
 			}
-			else
-			{
-				if ((Math.abs(rThrottle) <  kCrossoverThreshold) && (Math.abs(rTurn) <  kCrossoverThreshold) && 
-				    (Math.abs(lThrottle) >= kCrossoverThreshold) || (Math.abs(lTurn) >= kCrossoverThreshold))
-					usingLeftStick = true;
-				}
+			else if (leftStickActive && !rightStickActive) {
+				usingLeftStick = true;
+			}
 
 			// if we are driving in reverse, flip stick controls
 			if (!usingLeftStick)
@@ -52,16 +53,21 @@ public class ReversibleArcadeDriveJoystick extends JoystickControlsBase
 				throttle = -rThrottle;
 				turn = +rTurn;
 			}
-
-			DriveCommand signal = ArcadeDriveJoystick.throttleTurnToDriveCommand(throttle, turn);
-	   	    
-			return signal; 
-		}       
-		
-		@Override
-		public boolean usingLeftStick()
-		{
-			return usingLeftStick;
 		}
 
+		DriveCommand signal = ArcadeDriveJoystick.throttleTurnToDriveCommand(throttle, turn);
+		
+		return signal; 
+	}       
+	
+	@Override
+	public boolean usingLeftStick()
+	{
+		return usingLeftStick;
+	}
+
+    public boolean joystickActive()
+    {
+        return leftStickActive || rightStickActive;
+	}
 }

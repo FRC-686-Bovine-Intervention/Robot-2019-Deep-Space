@@ -13,6 +13,11 @@ public class FieldDimensions
 {
     public static boolean rightSide = false;
 
+    public enum TargetPositionEnum
+    {
+        CARGO_FRONT, CARGO_SIDE1, CARGO_SIDE2, CARGO_SIDE3, ROCKET_NEAR, ROCKET_FAR;
+    }
+
 	// dimensions of field components
 	public static double kFieldLengthX = 648;       // 54'
 	public static double kFieldLengthY = 324;       // 27'
@@ -26,6 +31,8 @@ public class FieldDimensions
 	public static Pose centerRightStartPose = new Pose(kHab3DepthX + Constants.kCenterToRearBumper, 0,                                            0);	
 	public static Pose leftStartPose        = new Pose(kHab3DepthX + Constants.kCenterToRearBumper, kHabWidthY/2 - Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
 	public static Pose rightStartPose       = new Pose(kHab3DepthX + Constants.kCenterToRearBumper, kHabWidthY/2 + Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
+	public static Pose leftHab2StartPose        = new Pose(Constants.kCenterToRearBumper, kHabWidthY/2 - Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
+	public static Pose rightHab2StartPose       = new Pose(Constants.kCenterToRearBumper, kHabWidthY/2 + Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
 
     // Rocket
     public static Vector2d kRocketCenter = new Vector2d(229.1, 162.0);          // TODO: fix this -- right now Y is too high
@@ -79,10 +86,12 @@ public class FieldDimensions
     // gets
 
     // rightSide is set to true if the chosen start pose is on the right
-	public static Pose getCenterLeftStartPose()     { rightSide = false;   return centerLeftStartPose; }	
-	public static Pose getCenterRightStartPose()    { rightSide =  true;   return centerRightStartPose; }	
-	public static Pose getLeftStartPose()           { rightSide = false;   return leftStartPose; }  
-    public static Pose getRightStartPose()          { rightSide =  true;   return rightStartPose; } 
+	public static Pose getHab1CenterLeftStartPose()     { rightSide = false;   return centerLeftStartPose; }	
+	public static Pose getHab1CenterRightStartPose()    { rightSide =  true;   return centerRightStartPose; }	
+	public static Pose getHab1LeftStartPose()           { rightSide = false;   return leftStartPose; }  
+    public static Pose getHab1RightStartPose()          { rightSide =  true;   return rightStartPose; } 
+	public static Pose getHab2LeftStartPose()           { rightSide = false;   return leftHab2StartPose; }  
+    public static Pose getHab2RightStartPose()          { rightSide =  true;   return rightHab2StartPose; } 
     
     // the y-coordinate is negated if the position is on the right side of the field (using complex conjugate)
 	public static Vector2d getNearRocketHatchPosition()   { return (!rightSide ? kNearRocketHatchPosition  : kNearRocketHatchPosition.conj()); }	
@@ -118,16 +127,81 @@ public class FieldDimensions
     public static Vector2d getHumanStationHatchPosition() { return (!rightSide ? kHumanStation : kHumanStation.conj()); }
     public static Vector2d getHumanStationVisionPosition() { return (!rightSide ? kHumanStationVisionPosition : kHumanStationVisionPosition.conj()); }
 
+    public static Vector2d getTargetHatchPosition(TargetPositionEnum _target)
+    {
+        Vector2d rv = new Vector2d();
 
+        switch (_target)
+        {
+            case CARGO_FRONT:   rv =  getCargoShipFrontBayHatchPosition(); break;
+            case CARGO_SIDE1:   rv =  getCargoShipSideBay1HatchPosition(); break;
+            case CARGO_SIDE2:   rv =  getCargoShipSideBay2HatchPosition(); break;
+            case CARGO_SIDE3:   rv =  getCargoShipSideBay3HatchPosition(); break;
+            case ROCKET_NEAR:   rv =  getNearRocketHatchPosition(); break;
+            case ROCKET_FAR:    rv =  getFarRocketHatchPosition(); break;
+        }
 
+        return rv;
+    }
+
+    public static Vector2d getTargetTurnPosition(TargetPositionEnum _target)
+    {
+        Vector2d rv = new Vector2d();
+        
+       switch (_target)
+        {
+            case CARGO_FRONT:   rv =  getCargoShipFrontBayTurnPosition(); break;
+            case CARGO_SIDE1:   rv =  getCargoShipSideBay1TurnPosition(); break;
+            case CARGO_SIDE2:   rv =  getCargoShipSideBay2TurnPosition(); break;
+            case CARGO_SIDE3:   rv =  getCargoShipSideBay3TurnPosition(); break;
+            case ROCKET_NEAR:   rv =  getNearRocketTurnPosition(); break;
+            case ROCKET_FAR:    rv =  getFarRocketTurnPosition(); break;
+        }
+
+        return rv;
+    }
+
+    public static Vector2d getTargetVisionPosition(TargetPositionEnum _target)
+    {
+        Vector2d rv = new Vector2d();
+        
+        switch (_target)
+        {
+            case CARGO_FRONT:   rv =  getCargoShipFrontBayVisionPosition(); break;
+            case CARGO_SIDE1:   rv =  getCargoShipSideBay1VisionPosition(); break;
+            case CARGO_SIDE2:   rv =  getCargoShipSideBay2VisionPosition(); break;
+            case CARGO_SIDE3:   rv =  getCargoShipSideBay3VisionPosition(); break;
+            case ROCKET_NEAR:   rv =  getNearRocketVisionPosition(); break;
+            case ROCKET_FAR:    rv =  getFarRocketVisionPosition(); break;
+        }
+
+        return rv;
+    }
+
+    public static Vector2d getTargetBackupPosition(TargetPositionEnum _target)
+    {
+        Vector2d rv = new Vector2d();
+        
+        switch (_target)
+        {
+            case CARGO_FRONT:   rv =  getCargoShipFrontBayBackupPosition(); break;
+            case CARGO_SIDE1:   rv =  getCargoShipSideBay1BackupPosition(); break;
+            case CARGO_SIDE2:   rv =  getCargoShipSideBay2BackupPosition(); break;
+            case CARGO_SIDE3:   rv =  getCargoShipSideBay3BackupPosition(); break;
+            case ROCKET_NEAR:   rv =  getNearRocketBackupPosition(); break;
+            case ROCKET_FAR:    rv =  getFarRocketBackupPosition(); break;
+        }
+
+        return rv;
+    }
 
 	private static final DataLogger logger = new DataLogger()
     {
         @Override
         public void log()
         {
-			put("LeftStartPoseX", getLeftStartPose().getX());
-            put("LeftStartPoseY", getLeftStartPose().getY());
+			put("LeftStartPoseX", getHab1LeftStartPose().getX());
+            put("LeftStartPoseY", getHab1LeftStartPose().getY());
             
         
 			put("kCargoShipSideBay1TurnPositionX", kCargoShipSideBay1TurnPosition.getX());
