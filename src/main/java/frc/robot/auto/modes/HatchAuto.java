@@ -28,7 +28,7 @@ public class HatchAuto extends AutoModeBase {
     @Override
     protected void routine() throws AutoModeEndedException 
     {
-        double vel = 0;    //DriveLoop.kPathFollowingMaxVel;
+        double vel = 24;    //DriveLoop.kPathFollowingMaxVel;
         double accel = 24;  // DriveLoop.kPathFollowingMaxAccel
 
     PathSegment.Options pathOptions	= new PathSegment.Options(vel, accel, 48, false);
@@ -39,33 +39,19 @@ public class HatchAuto extends AutoModeBase {
     Path platformToSide1= new Path();
     platformToSide1.add(new Waypoint(FieldDimensions.getLeftStartPose().getPosition(), pathOptions));
     platformToSide1.add(new Waypoint(FieldDimensions.getCargoShipSideBay1TurnPosition(), pathOptions));
-    // platformToSide1.add(new Waypoint(FieldDimensions.getCargoShipSideBay1VisionPosition(), tightTurnOptions));
-    // platformToSide1.add(new Waypoint(FieldDimensions.getCargoShipSideBay1HatchPosition(), visionOptions));
-    platformToSide1.setReverseDirection();
+    platformToSide1.add(new Waypoint(FieldDimensions.getCargoShipSideBay1VisionPosition(), tightTurnOptions));
+    platformToSide1.add(new Waypoint(FieldDimensions.getCargoShipSideBay1HatchPosition(), visionOptions));
 
-        // Path driveBackWardsOffPlatformPath = new Path();
-        // driveBackWardsOffPlatformPath.add(new Waypoint(FieldDimensions.getLeftStartPose().getPosition(), pathOptions));
-        // driveBackWardsOffPlatformPath.add(new Waypoint(FieldDimensions.getCargoShipSideBay1TurnPosition(), pathOptions));
+        Path backupCargoPath = new Path();
+        backupCargoPath.add(new Waypoint(FieldDimensions.getCargoShipSideBay1HatchPosition(), pathOptions));
+        backupCargoPath.add(new Waypoint(FieldDimensions.getCargoShipSideBay1BackupPosition(), pathOptions));
+        backupCargoPath.setReverseDirection();
 
-        // Path turnCargoShipPath = new Path();
-        // turnCargoShipPath.add(new Waypoint(FieldDimensions.getCargoShipSideBay1TurnPosition(), tightTurnOptions));
-        // turnCargoShipPath.add(new Waypoint(FieldDimensions.getCargoShipSideBay1VisionPosition(), tightTurnOptions));
-    
-        // Path visionBay1Path = new Path();
-        // visionBay1Path.add(new Waypoint(FieldDimensions.getCargoShipSideBay1VisionPosition(), pathOptions));
-        // visionBay1Path.add(new Waypoint(FieldDimensions.getCargoShipSideBay1HatchPosition(), pathOptions));
-
-        // Path backupCargoPath = new Path();
-        // backupCargoPath.add(new Waypoint(FieldDimensions.getCargoShipSideBay1HatchPosition(), pathOptions));
-        // backupCargoPath.add(new Waypoint(FieldDimensions.getCargoShipBay1BackupPosition(), pathOptions));
-
-        // Path driveToHumanStationPath = new Path();
-        // driveToHumanStationPath.add(new Waypoint(FieldDimensions.getCargoShipBay1BackupPosition(), pathOptions));
-        // driveToHumanStationPath.add(new Waypoint(FieldDimensions.getHumanStationVisionPosition(), pathOptions));
-
-        // Path lineUpHumanStationPath = new Path();
-        // lineUpHumanStationPath.add(new Waypoint(FieldDimensions.getHumanStationVisionPosition(), pathOptions));
-        // lineUpHumanStationPath.add(new Waypoint(FieldDimensions.getHumanStationHatchPosition(), pathOptions));
+        Path driveToHumanStationPath = new Path();
+        driveToHumanStationPath.add(new Waypoint(FieldDimensions.getCargoShipSideBay1BackupPosition(), pathOptions));
+        driveToHumanStationPath.add(new Waypoint(FieldDimensions.getHumanStationVisionPosition(), pathOptions));
+        driveToHumanStationPath.add(new Waypoint(FieldDimensions.getHumanStationVisionPosition(), pathOptions));
+        driveToHumanStationPath.add(new Waypoint(FieldDimensions.getHumanStationHatchPosition(), visionOptions));
 
         // Path backUpCargoShipPath = new Path();
         // driveToHumanStationPath.add(new Waypoint(FieldDimensions.getHumanStationVisionPosition(), pathOptions));
@@ -84,15 +70,12 @@ public class HatchAuto extends AutoModeBase {
         // outOfWayPath.add(new Waypoint(FieldDimensions.getCargoShipBay2BackupPosition(), pathOptions));
 
         runAction(new PathFollowerAction(platformToSide1)); //drive off platform 
-        // //runAction(new PathFollowerAction(driveToCargoShipPath));//drive to cargoship 
-        // runAction(new PathFollowerAction(turnCargoShipPath)); //turn towards cargoship 1st bay
-        // runAction(new PathFollowerAction(visionBay1Path)); // turn on vision to line up with reflective and white tape
+        //runAction(new PathFollowerAction(driveToCargoShipPath));//drive to cargoship 
         runAction(new HatchEjectAction()); //eject hatch action
         runAction(new WaitAction(2));
         runAction(new HatchResetAction());
-        // runAction(new PathFollowerAction(backupCargoPath)); 
-        // runAction(new PathFollowerAction(driveToHumanStationPath));// back up to human station
-        // runAction(new PathFollowerAction(lineUpHumanStationPath));//turn on vision to line up with reflective and white tape
+        runAction(new PathFollowerAction(backupCargoPath)); 
+        runAction(new PathFollowerAction(driveToHumanStationPath));// back up to human station
         // runAction(new PathFollowerAction(backUpCargoShipPath));//drive forward to cargoship 
         // runAction(new PathFollowerAction(turnBay2Path));//turn towards  2nd bay
         // runAction(new PathFollowerAction(visionBay2Path)); // turn on vision to line up with reflective and white tape

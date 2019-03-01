@@ -238,11 +238,9 @@ public class Robot extends TimedRobot {
     		autoModeExecuter = null;
     		
 			autoModeExecuter = new AutoModeExecuter();
-			// autoModeExecuter.setAutoMode( smartDashboardInteractions.getAutoModeSelection() );
-			autoModeExecuter.setAutoMode(new SquarePatternMode());
+			autoModeExecuter.setAutoMode( smartDashboardInteractions.getAutoModeSelection() );
 
-			// setInitialPose( smartDashboardInteractions.getStartPosition() );
-			setInitialPose(new Pose());
+			setInitialPose( smartDashboardInteractions.getStartPosition() );
 
 			autoModeExecuter.start();
     	}

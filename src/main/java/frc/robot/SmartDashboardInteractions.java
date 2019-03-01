@@ -86,7 +86,8 @@ public class SmartDashboardInteractions
     
     enum AutoModeOption
     {
-        STAND_STILL("Stand Still");
+        STAND_STILL("Stand Still"),
+        SIDE1("side1");
     	
         public final String name;
 
@@ -135,6 +136,7 @@ public class SmartDashboardInteractions
        
         autoModeChooser = new SendableChooser<AutoModeOption>();
         autoModeChooser.addOption(AutoModeOption.STAND_STILL.name, AutoModeOption.STAND_STILL);
+        autoModeChooser.setDefaultOption(AutoModeOption.SIDE1.name, AutoModeOption.SIDE1);
         SmartDashboard.putData("Auto Mode", autoModeChooser);
     	
     	joystickModeChooser = new SendableChooser<JoystickOption>();
@@ -158,7 +160,10 @@ public class SmartDashboardInteractions
     	switch(autoMode)
     	{
     	case STAND_STILL:
-			return new StandStillMode();
+            return new StandStillMode();
+
+        case SIDE1:
+            return new HatchAuto();
 			
     	default:
             System.out.println("ERROR: unexpected auto mode: " + autoMode);

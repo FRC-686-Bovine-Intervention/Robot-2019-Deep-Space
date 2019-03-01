@@ -84,36 +84,36 @@ public class FieldDimensions
     public static Pose getRightStartPose()          { rightSide =  true;   return rightStartPose; } 
     
     // the y-coordinate is negated if the position is on the right side of the field (using complex conjugate)
-	public static Vector2d getNearRocketHatchPosition()   { return (rightSide ? kNearRocketHatchPosition  : kNearRocketHatchPosition.conj()); }	
-	public static Vector2d getNearRocketTurnPosition()    { return (rightSide ? kNearRocketTurnPosition   : kNearRocketTurnPosition.conj()); }	
-	public static Vector2d getNearRocketVisionPosition()  { return (rightSide ? kNearRocketVisionPosition : kNearRocketVisionPosition.conj()); }	
-    public static Vector2d getNearRocketBackupPosition()  { return (rightSide ? kNearRocketBackupPosition : kNearRocketBackupPosition.conj()); }	
+	public static Vector2d getNearRocketHatchPosition()   { return (!rightSide ? kNearRocketHatchPosition  : kNearRocketHatchPosition.conj()); }	
+	public static Vector2d getNearRocketTurnPosition()    { return (!rightSide ? kNearRocketTurnPosition   : kNearRocketTurnPosition.conj()); }	
+	public static Vector2d getNearRocketVisionPosition()  { return (!rightSide ? kNearRocketVisionPosition : kNearRocketVisionPosition.conj()); }	
+    public static Vector2d getNearRocketBackupPosition()  { return (!rightSide ? kNearRocketBackupPosition : kNearRocketBackupPosition.conj()); }	
     
-	public static Vector2d getFarRocketHatchPosition()    { return (rightSide ? kFarRocketHatchPosition   : kFarRocketHatchPosition.conj()); }	
-	public static Vector2d getFarRocketTurnPosition()     { return (rightSide ? kFarRocketTurnPosition    : kFarRocketTurnPosition.conj()); }	
-	public static Vector2d getFarRocketVisionPosition()   { return (rightSide ? kFarRocketVisionPosition  : kFarRocketVisionPosition.conj()); }	
-	public static Vector2d getFarRocketBackupPosition()   { return (rightSide ? kFarRocketBackupPosition  : kFarRocketBackupPosition.conj()); }	
+	public static Vector2d getFarRocketHatchPosition()    { return (!rightSide ? kFarRocketHatchPosition   : kFarRocketHatchPosition.conj()); }	
+	public static Vector2d getFarRocketTurnPosition()     { return (!rightSide ? kFarRocketTurnPosition    : kFarRocketTurnPosition.conj()); }	
+	public static Vector2d getFarRocketVisionPosition()   { return (!rightSide ? kFarRocketVisionPosition  : kFarRocketVisionPosition.conj()); }	
+	public static Vector2d getFarRocketBackupPosition()   { return (!rightSide ? kFarRocketBackupPosition  : kFarRocketBackupPosition.conj()); }	
 
-    public static Vector2d getCargoShipFrontBayHatchPosition()  { return (rightSide ? kCargoShipFrontBay   : kCargoShipFrontBay.conj()); }	
-    public static Vector2d getCargoShipFrontBayTurnPosition()   { return (rightSide ? kCargoShipFrontBayTurnPosition   : kCargoShipFrontBayTurnPosition.conj()); }	
-    public static Vector2d getCargoShipFrontBayVisionPosition() { return (rightSide ? kCargoShipFrontBayVisionPosition : kCargoShipFrontBayVisionPosition.conj()); }	
-    public static Vector2d getCargoShipFrontBayBackupPosition() { return (rightSide ? kCargoShipFrontBayBackupPosition : kCargoShipFrontBayBackupPosition.conj()); }	
+    public static Vector2d getCargoShipFrontBayHatchPosition()  { return (!rightSide ? kCargoShipFrontBay   : kCargoShipFrontBay.conj()); }	
+    public static Vector2d getCargoShipFrontBayTurnPosition()   { return (!rightSide ? kCargoShipFrontBayTurnPosition   : kCargoShipFrontBayTurnPosition.conj()); }	
+    public static Vector2d getCargoShipFrontBayVisionPosition() { return (!rightSide ? kCargoShipFrontBayVisionPosition : kCargoShipFrontBayVisionPosition.conj()); }	
+    public static Vector2d getCargoShipFrontBayBackupPosition() { return (!rightSide ? kCargoShipFrontBayBackupPosition : kCargoShipFrontBayBackupPosition.conj()); }	
    
-    public static Vector2d getCargoShipSideBay1HatchPosition()  { return (rightSide ? kCargoShipSideBay1   : kCargoShipSideBay1.conj()); }	
-    public static Vector2d getCargoShipSideBay1TurnPosition()   { return (rightSide ? kCargoShipSideBay1TurnPosition   : kCargoShipSideBay1TurnPosition.conj()); }	
-    public static Vector2d getCargoShipSideBay1VisionPosition() { return (rightSide ? kCargoShipSideBay1VisionPosition : kCargoShipSideBay1VisionPosition.conj()); }	
-    public static Vector2d getCargoShipSideBay1BackupPosition() { return (rightSide ? kCargoShipSideBay1BackupPosition : kCargoShipSideBay1BackupPosition.conj()); }	
+    public static Vector2d getCargoShipSideBay1HatchPosition()  { return (!rightSide ? kCargoShipSideBay1   : kCargoShipSideBay1.conj()); }	
+    public static Vector2d getCargoShipSideBay1TurnPosition()   { return (!rightSide ? kCargoShipSideBay1TurnPosition   : kCargoShipSideBay1TurnPosition.conj()); }	
+    public static Vector2d getCargoShipSideBay1VisionPosition() { return (!rightSide ? kCargoShipSideBay1VisionPosition : kCargoShipSideBay1VisionPosition.conj()); }	
+    public static Vector2d getCargoShipSideBay1BackupPosition() { return (!rightSide ? kCargoShipSideBay1BackupPosition : kCargoShipSideBay1BackupPosition.conj()); }	
     
-    public static Vector2d getCargoShipSideBay2HatchPosition()  { return (rightSide ? kCargoShipSideBay2   : kCargoShipSideBay2.conj()); }	
-    public static Vector2d getCargoShipSideBay2TurnPosition()   { return (rightSide ? kCargoShipSideBay2TurnPosition   : kCargoShipSideBay2TurnPosition.conj()); }	
-    public static Vector2d getCargoShipSideBay2VisionPosition() { return (rightSide ? kCargoShipSideBay2VisionPosition : kCargoShipSideBay2VisionPosition.conj()); }	
-    public static Vector2d getCargoShipSideBay2BackupPosition() { return (rightSide ? kCargoShipSideBay2BackupPosition : kCargoShipSideBay2BackupPosition.conj()); }	
+    public static Vector2d getCargoShipSideBay2HatchPosition()  { return (!rightSide ? kCargoShipSideBay2   : kCargoShipSideBay2.conj()); }	
+    public static Vector2d getCargoShipSideBay2TurnPosition()   { return (!rightSide ? kCargoShipSideBay2TurnPosition   : kCargoShipSideBay2TurnPosition.conj()); }	
+    public static Vector2d getCargoShipSideBay2VisionPosition() { return (!rightSide ? kCargoShipSideBay2VisionPosition : kCargoShipSideBay2VisionPosition.conj()); }	
+    public static Vector2d getCargoShipSideBay2BackupPosition() { return (!rightSide ? kCargoShipSideBay2BackupPosition : kCargoShipSideBay2BackupPosition.conj()); }	
     
-    public static Vector2d getCargoShipSideBay3HatchPosition()  { return (rightSide ? kCargoShipSideBay3   : kCargoShipSideBay3.conj()); }	
-    public static Vector2d getCargoShipSideBay3TurnPosition()   { return (rightSide ? kCargoShipSideBay3TurnPosition   : kCargoShipSideBay3TurnPosition.conj()); }	
-    public static Vector2d getCargoShipSideBay3VisionPosition() { return (rightSide ? kCargoShipSideBay3VisionPosition : kCargoShipSideBay3VisionPosition.conj()); }	
-    public static Vector2d getCargoShipSideBay3BackupPosition() { return (rightSide ? kCargoShipSideBay3BackupPosition : kCargoShipSideBay3BackupPosition.conj()); }	
+    public static Vector2d getCargoShipSideBay3HatchPosition()  { return (!rightSide ? kCargoShipSideBay3   : kCargoShipSideBay3.conj()); }	
+    public static Vector2d getCargoShipSideBay3TurnPosition()   { return (!rightSide ? kCargoShipSideBay3TurnPosition   : kCargoShipSideBay3TurnPosition.conj()); }	
+    public static Vector2d getCargoShipSideBay3VisionPosition() { return (!rightSide ? kCargoShipSideBay3VisionPosition : kCargoShipSideBay3VisionPosition.conj()); }	
+    public static Vector2d getCargoShipSideBay3BackupPosition() { return (!rightSide ? kCargoShipSideBay3BackupPosition : kCargoShipSideBay3BackupPosition.conj()); }	
     
-    public static Vector2d getHumanStationHatchPosition() { return (rightSide ? kHumanStation : kHumanStation.conj()); }
-    public static Vector2d getHumanStationVisionPosition() { return (rightSide ? kHumanStationVisionPosition : kHumanStationVisionPosition.conj()); }
+    public static Vector2d getHumanStationHatchPosition() { return (!rightSide ? kHumanStation : kHumanStation.conj()); }
+    public static Vector2d getHumanStationVisionPosition() { return (!rightSide ? kHumanStationVisionPosition : kHumanStationVisionPosition.conj()); }
 }

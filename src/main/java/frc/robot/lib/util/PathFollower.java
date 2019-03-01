@@ -183,7 +183,7 @@ public class PathFollower
 		if (path.getReverseDirection())
 			headingToTarget -= Math.PI;	// flip robot around
 		
-		curvature = 2 * Math.sin(headingToTarget) / lookaheadDist;
+		curvature = -2 * Math.sin(headingToTarget) / lookaheadDist;
 	}
 
 	
