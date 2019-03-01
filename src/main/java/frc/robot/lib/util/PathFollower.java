@@ -153,7 +153,7 @@ public class PathFollower
 		}
 		
 		// wheelSpeed = Kinematics.inverseKinematicsFromSpeedCurvature(speed, curvature);
-		wheelSpeed = Kinematics.inverseKinematicsFromSpeedCurvature(speed, -curvature);
+		wheelSpeed = Kinematics.inverseKinematicsFromSpeedCurvature(speed, curvature);
 		wheelSpeed.limit(maxSpeed);
 		return wheelSpeed;
 	}

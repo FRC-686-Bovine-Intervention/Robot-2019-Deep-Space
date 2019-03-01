@@ -24,10 +24,10 @@ public class ReversibleArcadeDriveJoystick extends JoystickControlsBase
 
 	public DriveCommand getDriveCommand()
 	{
-		double rThrottle = +mStick.getRawAxis(Constants.kXboxRStickYAxis);
-		double rTurn     = +mStick.getRawAxis(Constants.kXboxRStickXAxis);
-		double lThrottle = +mStick.getRawAxis(Constants.kXboxLStickYAxis);
-		double lTurn     = +mStick.getRawAxis(Constants.kXboxLStickXAxis);
+		double rThrottle = -mStick.getRawAxis(Constants.kXboxRStickYAxis);
+		double rTurn     = -mStick.getRawAxis(Constants.kXboxRStickXAxis);
+		double lThrottle = -mStick.getRawAxis(Constants.kXboxLStickYAxis);
+		double lTurn     = -mStick.getRawAxis(Constants.kXboxLStickXAxis);
 
 		double throttle = lThrottle;
 		double turn = lTurn;
