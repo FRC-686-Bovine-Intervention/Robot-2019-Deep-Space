@@ -1,6 +1,7 @@
 package frc.robot.auto.modes;
 
 import frc.robot.Constants;
+import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.Pose;
 import frc.robot.lib.util.Vector2d;
 
@@ -116,4 +117,30 @@ public class FieldDimensions
     
     public static Vector2d getHumanStationHatchPosition() { return (rightSide ? kHumanStation : kHumanStation.conj()); }
     public static Vector2d getHumanStationVisionPosition() { return (rightSide ? kHumanStationVisionPosition : kHumanStationVisionPosition.conj()); }
+
+
+
+	private final DataLogger logger = new DataLogger()
+    {
+        @Override
+        public void log()
+        {
+			put("LeftStartPoseX", getLeftStartPose().getX());
+            put("LeftStartPoseY", getLeftStartPose().getY());
+            
+			put("kCargoShipSideBay1TurnPositionX", kCargoShipSideBay1TurnPosition.getX());
+			put("kCargoShipSideBay1TurnPositionY", kCargoShipSideBay1TurnPosition.getY());
+
+            put("kCargoShipSideBay1VisionPosition", kCargoShipSideBay1VisionPosition.getX());
+            put("kCargoShipSideBay1VisionPosition", kCargoShipSideBay1VisionPosition.getY());
+            
+			put("kCargoShipSideBay1HatchPositionX", kCargoShipSideBay1.getX());
+			put("kCargoShipSideBay1HatchPositionY", kCargoShipSideBay1.getY());
+
+            put("kCargoShipSideBay1BackupPosition", kCargoShipSideBay1BackupPosition.getX());
+			put("kCargoShipSideBay1BackupPosition", kCargoShipSideBay1BackupPosition.getY());
+        }
+    };
+    
+    public DataLogger getLogger() { return logger; }    
 }
