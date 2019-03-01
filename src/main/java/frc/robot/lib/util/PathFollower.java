@@ -239,7 +239,7 @@ public class PathFollower
 		// vf^2 = v^2 + 2*a*d   Solve for v, configured vf, a, and measured d
 		double stoppingDistance = _remainingDistance;
 		double maxBrakingSpeed = Math.sqrt(_finalSpeed * _finalSpeed + 2.0 * _maxAccel * stoppingDistance);
-		if (Math.abs(speed) > maxBrakingSpeed)
+		if (Math.abs(speed) > Math.abs(maxBrakingSpeed))
 			speed = Math.signum(speed) * maxBrakingSpeed;
 
 		// apply minimum velocity limit (Talons can't track low speeds well)

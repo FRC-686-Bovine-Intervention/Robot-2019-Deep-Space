@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import frc.robot.auto.AutoModeExecuter;
+import frc.robot.auto.modes.FieldDimensions;
 import frc.robot.auto.modes.SquarePatternMode;
 import frc.robot.command_status.DriveCommand;
 import frc.robot.command_status.DriveState;
@@ -100,7 +101,7 @@ public class Robot extends TimedRobot {
 			loopController.register(CargoIntake.getInstance());
 			loopController.register(HatchDeploy.getInstance());
 			loopController.register(Climber.getInstance());
-
+			
 			selectedJoystick.update();
     		
     		// set datalogger and time info
@@ -121,7 +122,8 @@ public class Robot extends TimedRobot {
 			robotLogger.register(CargoIntake.getInstance().getLogger());
 			robotLogger.register(HatchDeploy.getInstance().getLogger());
 			robotLogger.register(Climber.getInstance().getLogger());
-    		
+			robotLogger.register(FieldDimensions.getLogger());
+    		// 
     		setInitialPose(new Pose());
 
    		

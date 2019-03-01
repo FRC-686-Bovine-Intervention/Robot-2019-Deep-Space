@@ -28,12 +28,12 @@ public class HatchAuto extends AutoModeBase {
     @Override
     protected void routine() throws AutoModeEndedException 
     {
-        double vel = 24;    //DriveLoop.kPathFollowingMaxVel;
+        double vel = 36;    //DriveLoop.kPathFollowingMaxVel;
         double accel = 24;  // DriveLoop.kPathFollowingMaxAccel
 
-    PathSegment.Options pathOptions	= new PathSegment.Options(vel, accel, 48, false);
-    PathSegment.Options tightTurnOptions	= new PathSegment.Options(vel/2, accel, 24, false);
-    PathSegment.Options visionOptions	= new PathSegment.Options(vel, accel, 48, true);
+    PathSegment.Options pathOptions	= new PathSegment.Options(vel, accel, 24, false);
+    PathSegment.Options tightTurnOptions	= new PathSegment.Options(vel, accel, 12, false);
+    PathSegment.Options visionOptions	= new PathSegment.Options(vel, accel, 24, true);
 
 
     Path platformToSide1= new Path();
@@ -49,7 +49,6 @@ public class HatchAuto extends AutoModeBase {
 
         Path driveToHumanStationPath = new Path();
         driveToHumanStationPath.add(new Waypoint(FieldDimensions.getCargoShipSideBay1BackupPosition(), pathOptions));
-        driveToHumanStationPath.add(new Waypoint(FieldDimensions.getHumanStationVisionPosition(), pathOptions));
         driveToHumanStationPath.add(new Waypoint(FieldDimensions.getHumanStationVisionPosition(), pathOptions));
         driveToHumanStationPath.add(new Waypoint(FieldDimensions.getHumanStationHatchPosition(), visionOptions));
 
@@ -70,10 +69,11 @@ public class HatchAuto extends AutoModeBase {
         // outOfWayPath.add(new Waypoint(FieldDimensions.getCargoShipBay2BackupPosition(), pathOptions));
 
         runAction(new PathFollowerAction(platformToSide1)); //drive off platform 
-        //runAction(new PathFollowerAction(driveToCargoShipPath));//drive to cargoship 
+
         runAction(new HatchEjectAction()); //eject hatch action
         runAction(new WaitAction(2));
         runAction(new HatchResetAction());
+
         runAction(new PathFollowerAction(backupCargoPath)); 
         runAction(new PathFollowerAction(driveToHumanStationPath));// back up to human station
         // runAction(new PathFollowerAction(backUpCargoShipPath));//drive forward to cargoship 

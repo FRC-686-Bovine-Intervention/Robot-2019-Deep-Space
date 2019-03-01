@@ -49,7 +49,7 @@ public class FieldDimensions
     public static Vector2d kCargoShipSideBay1 = new Vector2d(260.8, 27.9);
     public static Vector2d kCargoShipSideBay2 = new Vector2d(282.6, 27.9);
     public static Vector2d kCargoShipSideBay3 = new Vector2d(304.3, 27.9);
-    public static double   kCargoShipTurnDist   = 60.0;                      // distance from which to turn towards cargo bay
+    public static double   kCargoShipTurnDist   = 96.0;                      // distance from which to turn towards cargo bay
     public static double   kCargoShipVisionDist = 48.0;                      // distance from which to turn turn on cameras (desired target should be mostly centered)
 
     public static Vector2d kCargoShipFrontBayTurnPosition   = kCargoShipFrontBay.add( Vector2d.magnitudeAngle(kCargoShipTurnDist,   Math.PI) );
@@ -62,7 +62,7 @@ public class FieldDimensions
 
     public static Vector2d kCargoShipSideBay2TurnPosition   = kCargoShipSideBay2.add( Vector2d.magnitudeAngle(kCargoShipTurnDist,   Math.PI/2) );
     public static Vector2d kCargoShipSideBay2VisionPosition = kCargoShipSideBay2.add( Vector2d.magnitudeAngle(kCargoShipVisionDist, Math.PI/2) );
-    public static Vector2d kCargoShipSideBay2BackupPosition = kCargoShipSideBay2.add(new Vector2d(+30.0, +30.0));
+    public static Vector2d kCargoShipSideBay2BackupPosition = kCargoShipSideBay2.add(new Vector2d(+30.0, +48.0));
 
     public static Vector2d kCargoShipSideBay3TurnPosition   = kCargoShipSideBay3.add( Vector2d.magnitudeAngle(kCargoShipTurnDist,   Math.PI/2) );
     public static Vector2d kCargoShipSideBay3VisionPosition = kCargoShipSideBay3.add( Vector2d.magnitudeAngle(kCargoShipVisionDist, Math.PI/2) );
@@ -121,7 +121,7 @@ public class FieldDimensions
 
 
 
-	private final DataLogger logger = new DataLogger()
+	private static final DataLogger logger = new DataLogger()
     {
         @Override
         public void log()
@@ -144,5 +144,5 @@ public class FieldDimensions
         }
     };
     
-    public DataLogger getLogger() { return logger; }    
+    public static DataLogger getLogger() { return logger; }    
 }
