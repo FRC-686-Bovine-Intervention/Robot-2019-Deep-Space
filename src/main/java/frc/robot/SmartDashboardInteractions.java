@@ -87,7 +87,8 @@ public class SmartDashboardInteractions
     enum AutoModeOption
     {
         STAND_STILL("Stand Still"),
-        SIDE1("side1");
+        DEBUG("Debug"),
+        SIDE1("Cargo Side 1");
     	
         public final String name;
 
@@ -164,6 +165,9 @@ public class SmartDashboardInteractions
 
         case SIDE1:
             return new HatchAuto();
+			
+        case DEBUG:
+            return new DebugAuto();
 			
     	default:
             System.out.println("ERROR: unexpected auto mode: " + autoMode);

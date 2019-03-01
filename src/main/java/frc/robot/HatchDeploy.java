@@ -14,6 +14,7 @@ import frc.robot.lib.joystick.ArcadeDriveJoystick;
 import frc.robot.lib.joystick.ButtonBoard;
 import frc.robot.lib.joystick.JoystickControlsBase;
 import frc.robot.lib.util.DataLogger;
+import frc.robot.lib.util.FallingEdgeDetector;
 import frc.robot.lib.util.RisingEdgeDetector;
 import frc.robot.loops.Loop;
 
@@ -31,7 +32,10 @@ public class HatchDeploy implements Loop
     public final int bumperAngle = 300;
     public final int groundAngle = 1249;
     public final int defenseAngle = 0;
-    public RisingEdgeDetector hatchBttnRisingEdgeDetector = new RisingEdgeDetector();
+    public RisingEdgeDetector hatchButtonRisingEdgeDetector = new RisingEdgeDetector();
+    public FallingEdgeDetector hatchButtonFallingEdgeDetector = new FallingEdgeDetector();
+    public RisingEdgeDetector ejectButtonRisingEdgeDetector = new RisingEdgeDetector();
+    public FallingEdgeDetector ejectButtonFallingEdgeDetector = new FallingEdgeDetector();
     public boolean zeroed  = false; 
     private double mTimeToWait = 2;
     private double mStartTime;
@@ -69,7 +73,7 @@ public class HatchDeploy implements Loop
 	public final double kKd = 0.0;	// to resolve any overshoot, start at 10*Kp 
 	public final double kKi = 0.0;    
 
-    public final int    kAllowableError = (int)(1.0 * kEncoderUnitsPerDeg);
+    public final int    kAllowableError = (int)(0.25 * kEncoderUnitsPerDeg);
     
 
     public final int kPeakCurrentLimit = 30;
@@ -162,7 +166,12 @@ public class HatchDeploy implements Loop
         JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
         boolean dBtnIsPushed = buttonBoard.getButton(Constants.kDefenseButton);
         boolean hBtnIsPushed = controls.getButton(Constants.kHatchDeployButton);
-        boolean hBttnEdgeDetectorValue = hatchBttnRisingEdgeDetector.update(hBtnIsPushed);
+        boolean hButtonPush = hatchButtonRisingEdgeDetector.update(hBtnIsPushed);
+
+        boolean ejectButton = controls.getAxisAsButton(Constants.kHatchShootAxis);
+        boolean ejectButtonPush = ejectButtonRisingEdgeDetector.update(ejectButton);
+        boolean ejectButtonUnpush = ejectButtonFallingEdgeDetector.update(ejectButton);
+
         getLimitSwitches();
 
 
@@ -179,7 +188,7 @@ public class HatchDeploy implements Loop
 
         case TO_BUMPER:
             setTarget(bumperAngle);
-            if (hBttnEdgeDetectorValue)  
+            if (hButtonPush)  
             {    
                 mStartTime = Timer.getFPGATimestamp();
                  
@@ -194,7 +203,7 @@ public class HatchDeploy implements Loop
 
         case DEFENSE:
            setTarget(defenseAngle);
-            if (hBttnEdgeDetectorValue)
+            if (hButtonPush)
             {
                 state = HatchDeployStateEnum.TO_BUMPER;
             }
@@ -212,9 +221,12 @@ public class HatchDeploy implements Loop
 
         }
 
-        //shoots both pistons from the solenoid 
-        boolean ejectButton = controls.getAxisAsButton(Constants.kHatchShootAxis);
-        hatchSolenoid.set(ejectButton);
+        //shoots both pistons from the solenoid
+        if (ejectButtonPush) {
+            hatchSolenoid.set(true); }
+        else if (ejectButtonUnpush) {
+            hatchSolenoid.set(false); }
+            
 
     }
 

@@ -14,14 +14,12 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import frc.robot.auto.AutoModeExecuter;
+import frc.robot.auto.modes.DebugAuto;
 import frc.robot.auto.modes.FieldDimensions;
-import frc.robot.auto.modes.SquarePatternMode;
 import frc.robot.command_status.DriveCommand;
 import frc.robot.command_status.DriveState;
 import frc.robot.command_status.GoalStates;
 import frc.robot.command_status.RobotState;
-import frc.robot.lib.joystick.ArcadeDriveJoystick;
-import frc.robot.lib.joystick.JoystickControlsBase;
 import frc.robot.lib.joystick.SelectedJoystick;
 import frc.robot.lib.sensors.Limelight;
 import frc.robot.lib.util.ControlsReverse;
@@ -65,18 +63,8 @@ public class Robot extends TimedRobot {
 	HatchDeploy hatchDeploy;
 	ControlsReverse controlsReverse = ControlsReverse.getInstance();
 
-	enum OperationalMode 
-    {
-    	DISABLED(0), AUTONOMOUS(1), TELEOP(2), TEST(3);
-    	
-    	private int val;
-    	
-    	private OperationalMode (int val) {this.val = val;}
-    	public int getVal() {return val;}
-    } 
-    
-    OperationalMode operationalMode = OperationalMode.DISABLED;
-    
+	OperationalMode operationalMode = OperationalMode.getInstance();
+
     public Robot() {
     	CrashTracker.logRobotConstruction();
     }
@@ -87,6 +75,7 @@ public class Robot extends TimedRobot {
 		try
     	{
     		CrashTracker.logRobotInit();
+			operationalMode.set(OperationalMode.OperationalModeEnum.DISABLED);
 
 			LiveWindow.disableTelemetry(pdp);	// stops CAN error
 
@@ -101,7 +90,7 @@ public class Robot extends TimedRobot {
 			loopController.register(CargoIntake.getInstance());
 			loopController.register(HatchDeploy.getInstance());
 			loopController.register(Climber.getInstance());
-			
+
 			selectedJoystick.update();
     		
     		// set datalogger and time info
@@ -123,7 +112,7 @@ public class Robot extends TimedRobot {
 			robotLogger.register(HatchDeploy.getInstance().getLogger());
 			robotLogger.register(Climber.getInstance().getLogger());
 			robotLogger.register(FieldDimensions.getLogger());
-    		// 
+    		
     		setInitialPose(new Pose());
 
    		
@@ -163,7 +152,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledInit()
 	{
-		operationalMode = OperationalMode.DISABLED;
+		operationalMode.set(OperationalMode.OperationalModeEnum.DISABLED);
 		boolean logToFile = false;
 		boolean logToSmartDashboard = true;
 		robotLogger.setOutputMode(logToFile, logToSmartDashboard);
@@ -215,7 +204,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
-    	operationalMode = OperationalMode.AUTONOMOUS;
+		operationalMode.set(OperationalMode.OperationalModeEnum.AUTONOMOUS);
     	boolean logToFile = false;
     	boolean logToSmartDashboard = true;
     	robotLogger.setOutputMode(logToFile, logToSmartDashboard);
@@ -240,9 +229,11 @@ public class Robot extends TimedRobot {
     		autoModeExecuter = null;
     		
 			autoModeExecuter = new AutoModeExecuter();
-			autoModeExecuter.setAutoMode( smartDashboardInteractions.getAutoModeSelection() );
+			// autoModeExecuter.setAutoMode( smartDashboardInteractions.getAutoModeSelection() );
+			autoModeExecuter.setAutoMode(new DebugAuto());
 
-			setInitialPose( smartDashboardInteractions.getStartPosition() );
+			// setInitialPose( smartDashboardInteractions.getStartPosition() );
+			setInitialPose(new Pose());
 
 			autoModeExecuter.start();
     	}
@@ -267,7 +258,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit(){
-		operationalMode = OperationalMode.TELEOP;
+		operationalMode.set(OperationalMode.OperationalModeEnum.TELEOP);
 		boolean logToFile = false;
 		boolean logToSmartDashboard = true;
 		robotLogger.setOutputMode(logToFile, logToSmartDashboard); 
@@ -349,6 +340,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void testInit() 
 	{
+		operationalMode.set(OperationalMode.OperationalModeEnum.TEST);
 		loopController.start();
 	}
 
@@ -375,7 +367,7 @@ public class Robot extends TimedRobot {
         @Override
         public void log()
         {
-			put("OperationalMode", operationalMode.getVal());
+			put("OperationalMode", operationalMode.get().toString());
         }
     };
     

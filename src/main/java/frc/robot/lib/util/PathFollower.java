@@ -152,7 +152,8 @@ public class PathFollower
 			curvature = -curvature;	// TODO: simplify by removing this, and removing flipping heading 180 degrees below?
 		}
 		
-		wheelSpeed = Kinematics.inverseKinematicsFromSpeedCurvature(speed, curvature);
+		// wheelSpeed = Kinematics.inverseKinematicsFromSpeedCurvature(speed, curvature);
+		wheelSpeed = Kinematics.inverseKinematicsFromSpeedCurvature(speed, -curvature);
 		wheelSpeed.limit(maxSpeed);
 		return wheelSpeed;
 	}
@@ -183,7 +184,10 @@ public class PathFollower
 		if (path.getReverseDirection())
 			headingToTarget -= Math.PI;	// flip robot around
 		
-		curvature = -2 * Math.sin(headingToTarget) / lookaheadDist;
+		curvature = 2 * Math.sin(headingToTarget) / lookaheadDist;
+
+
+System.out.printf("CurPos: %s, LookahdPt: %s, LookahdDist: %.1f, HeadingToTarget:%.1f\n", _currentPose.toString(), lookaheadPoint.toString(), lookaheadDist, headingToTarget);		
 	}
 
 	
@@ -239,13 +243,13 @@ public class PathFollower
 		// vf^2 = v^2 + 2*a*d   Solve for v, configured vf, a, and measured d
 		double stoppingDistance = _remainingDistance;
 		double maxBrakingSpeed = Math.sqrt(_finalSpeed * _finalSpeed + 2.0 * _maxAccel * stoppingDistance);
-		if (Math.abs(speed) > Math.abs(maxBrakingSpeed))
+		if (Math.abs(speed) > maxBrakingSpeed)
 			speed = Math.signum(speed) * maxBrakingSpeed;
 
 		// apply minimum velocity limit (Talons can't track low speeds well)
 		final double kMinSpeed = 4.0;
 		if (Math.abs(speed) < kMinSpeed) 
-			speed = Math.signum(speed) * kMinSpeed;
+			speed = Math.signum(accel) * kMinSpeed;
 
 		// store for next time through loop	
 		prevTime = _currentTime;
