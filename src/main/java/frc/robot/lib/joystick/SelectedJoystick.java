@@ -42,5 +42,5 @@ public class SelectedJoystick
     public boolean getAxisAsButton(int _num) { return controls.getAxisAsButton(_num); }
     public boolean getDrivingCargo()       { return controls.usingLeftStick(); }
     public void setRumble(GenericHID.RumbleType _rumbleType, double _value)       { controls.setRumble(_rumbleType, _value); }
-
+    public boolean joystickActive() { return controls.joystickActive(); }
 }

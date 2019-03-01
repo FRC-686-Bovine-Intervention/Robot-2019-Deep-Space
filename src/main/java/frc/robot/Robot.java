@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.auto.AutoModeExecuter;
-import frc.robot.auto.modes.DebugAuto;
 import frc.robot.auto.modes.FieldDimensions;
 import frc.robot.command_status.DriveCommand;
 import frc.robot.command_status.DriveState;
@@ -221,6 +221,12 @@ public class Robot extends TimedRobot {
 			cargoCamera.autoInit();
 			hatchCamera.autoInit();
 	
+            // only using hatch camera during auto
+            cargoCamera.setLEDMode(Limelight.LedMode.kOff);
+            hatchCamera.setLEDMode(Limelight.LedMode.kOn);
+
+            Shuffleboard.selectTab(hatchCamera.getTableName());     // select hatch camera tab in Shuffleboard
+            
 			
 			if (autoModeExecuter != null)
 			{
@@ -248,7 +254,23 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousPeriodic() 
 	{
-		// autoTeleopPeriodic();
+        if (operationalMode.get() == OperationalMode.OperationalModeEnum.AUTONOMOUS)
+        {
+            if (selectedJoystick.joystickActive())
+            {
+                // Driver just started using joystick.  Abandon autonomous
+                teleopInit();
+                teleopPeriodic();
+            }
+
+            // if joystick not being used, stay in autonomous
+            // nothing else to do in this thread
+        }
+        else
+        {
+            // driver has taken us out of autonomous control
+            teleopPeriodic();
+        }
 	}
 	
 	
@@ -317,11 +339,13 @@ public class Robot extends TimedRobot {
 			{
 				cargoCamera.setLEDMode(Limelight.LedMode.kOn);
 				hatchCamera.setLEDMode(Limelight.LedMode.kOff);
+                Shuffleboard.selectTab(cargoCamera.getTableName());     // select cargo camera tab in Shuffleboard
 			}
 			else
 			{
 				cargoCamera.setLEDMode(Limelight.LedMode.kOff);
 				hatchCamera.setLEDMode(Limelight.LedMode.kOn);
+                Shuffleboard.selectTab(hatchCamera.getTableName());     // select hatch camera tab in Shuffleboard
 			}
 		}
 		catch (Throwable t)

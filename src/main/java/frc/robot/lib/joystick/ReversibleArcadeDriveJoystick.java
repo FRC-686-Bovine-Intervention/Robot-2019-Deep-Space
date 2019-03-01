@@ -66,6 +66,7 @@ public class ReversibleArcadeDriveJoystick extends JoystickControlsBase
 		return usingLeftStick;
 	}
 
+	@Override
     public boolean joystickActive()
     {
         return leftStickActive || rightStickActive;

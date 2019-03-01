@@ -25,6 +25,7 @@ public abstract class JoystickControlsBase
     public boolean getAxisAsButton(int _num) { return (mStick.getRawAxis(_num) > 0.5); }
 
     public boolean usingLeftStick() { return drivingForward; }
+    public boolean joystickActive() { return true; }
 
     public void setRumble(GenericHID.RumbleType _rumbleType, double _value)       { mStick.setRumble(_rumbleType, _value); }    
     
