@@ -128,6 +128,7 @@ public class FieldDimensions
 			put("LeftStartPoseX", getLeftStartPose().getX());
             put("LeftStartPoseY", getLeftStartPose().getY());
             
+        
 			put("kCargoShipSideBay1TurnPositionX", kCargoShipSideBay1TurnPosition.getX());
 			put("kCargoShipSideBay1TurnPositionY", kCargoShipSideBay1TurnPosition.getY());
 
