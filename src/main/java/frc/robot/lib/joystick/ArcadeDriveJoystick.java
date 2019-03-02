@@ -44,20 +44,35 @@ public class ArcadeDriveJoystick extends JoystickControlsBase {
 		double rotateValue = applyDeadband(turn);
 		double lMotorSpeed, rMotorSpeed;
 
+		// if (squaredInputs) {
+		// 	// square the inputs (while preserving the sign) to increase fine control
+		// 	// while permitting full power
+		// 	if (moveValue >= 0.0) {
+		// 		moveValue = (moveValue * moveValue);
+		// 	} else {
+		// 		moveValue = -(moveValue * moveValue);
+		// 	}
+		// 	if (rotateValue >= 0.0) {
+		// 		rotateValue = (rotateValue * rotateValue);
+		// 	} else {
+		// 		rotateValue = -(rotateValue * rotateValue);
+		// 	}
+		// }
 		if (squaredInputs) {
 			// square the inputs (while preserving the sign) to increase fine control
 			// while permitting full power
 			if (moveValue >= 0.0) {
-				moveValue = (moveValue * moveValue);
+				moveValue = (moveValue * moveValue*moveValue);
 			} else {
-				moveValue = -(moveValue * moveValue);
+				moveValue = (moveValue * moveValue*moveValue);
 			}
 			if (rotateValue >= 0.0) {
-				rotateValue = (rotateValue * rotateValue);
+				rotateValue = (rotateValue * rotateValue*rotateValue);
 			} else {
-				rotateValue = -(rotateValue * rotateValue);
+				rotateValue = (rotateValue * rotateValue*rotateValue);
 			}
 		}
+
 
 		if (moveValue > 0.0) {
 			if (rotateValue > 0.0) {

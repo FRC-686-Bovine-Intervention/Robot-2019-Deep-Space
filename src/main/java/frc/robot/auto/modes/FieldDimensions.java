@@ -29,10 +29,10 @@ public class FieldDimensions
     // Robot starting poses
 	public static Pose centerLeftStartPose  = new Pose(kHab3DepthX + Constants.kCenterToRearBumper, 0,                                            0);
 	public static Pose centerRightStartPose = new Pose(kHab3DepthX + Constants.kCenterToRearBumper, 0,                                            0);	
-	public static Pose leftStartPose        = new Pose(kHab3DepthX + Constants.kCenterToRearBumper, kHabWidthY/2 - Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
-	public static Pose rightStartPose       = new Pose(kHab3DepthX + Constants.kCenterToRearBumper, kHabWidthY/2 + Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
-	public static Pose leftHab2StartPose        = new Pose(Constants.kCenterToRearBumper, kHabWidthY/2 - Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
-	public static Pose rightHab2StartPose       = new Pose(Constants.kCenterToRearBumper, kHabWidthY/2 + Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
+	public static Pose leftStartPose        = new Pose(kHab3DepthX + Constants.kCenterToRearBumper, +kHabWidthY/2 - Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
+	public static Pose rightStartPose       = new Pose(kHab3DepthX + Constants.kCenterToRearBumper, -kHabWidthY/2 + Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
+	public static Pose leftHab2StartPose    = new Pose(Constants.kCenterToRearBumper, +kHabWidthY/2 - Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
+	public static Pose rightHab2StartPose   = new Pose(Constants.kCenterToRearBumper, -kHabWidthY/2 + Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
 
     // Rocket
     public static Vector2d kRocketCenter = new Vector2d(229.1, 162.0);          // TODO: fix this -- right now Y is too high
@@ -41,42 +41,42 @@ public class FieldDimensions
     public static double   kRocketTurnDist = 60.0;                              // distance from which to turn towards rocket
     public static double   kRocketVisionDist = 48.0;                            // distance from which to turn on cameras
     
-    public static Vector2d kNearRocketHatchPosition  = kRocketCenter.add( Vector2d.magnitudeAngle(kRocketCenterToHatch, Math.PI-kRocketAngleRad) );
+    public static Vector2d kNearRocketHatchPosition  = kRocketCenter.add( Vector2d.magnitudeAngle(kRocketCenterToHatch + Constants.kCenterToFrontBumper, Math.PI-kRocketAngleRad) );
     public static Vector2d kNearRocketTurnPosition   = kRocketCenter.add( Vector2d.magnitudeAngle(kRocketTurnDist,      Math.PI-kRocketAngleRad) );
     public static Vector2d kNearRocketVisionPosition = kRocketCenter.add( Vector2d.magnitudeAngle(kRocketVisionDist,    Math.PI-kRocketAngleRad) );
     public static Vector2d kNearRocketBackupPosition = new Vector2d(180.0, 110.0);  // point to backup to from near rocket hatch
 
-    public static Vector2d kFarRocketHatchPosition   = kRocketCenter.add( Vector2d.magnitudeAngle(kRocketCenterToHatch,     0.0-kRocketAngleRad) );
+    public static Vector2d kFarRocketHatchPosition   = kRocketCenter.add( Vector2d.magnitudeAngle(kRocketCenterToHatch + Constants.kCenterToFrontBumper,     0.0-kRocketAngleRad) );
     public static Vector2d kFarRocketTurnPosition    = kRocketCenter.add( Vector2d.magnitudeAngle(kRocketTurnDist,          0.0-kRocketAngleRad) );
     public static Vector2d kFarRocketVisionPosition  = kRocketCenter.add( Vector2d.magnitudeAngle(kRocketVisionDist,        0.0-kRocketAngleRad) );
     public static Vector2d kFarRocketBackupPosition  = kFarRocketTurnPosition;      // point to backup to from far rocket hatch
 
     // Cargo Ship
-    public static Vector2d kCargoShipFrontBay = new Vector2d(220.3, 10.9);
-    public static Vector2d kCargoShipSideBay1 = new Vector2d(260.8, 27.9);
-    public static Vector2d kCargoShipSideBay2 = new Vector2d(282.6, 27.9);
-    public static Vector2d kCargoShipSideBay3 = new Vector2d(304.3, 27.9);
-    public static double   kCargoShipTurnDist   = 96.0;                      // distance from which to turn towards cargo bay
-    public static double   kCargoShipVisionDist = 48.0;                      // distance from which to turn turn on cameras (desired target should be mostly centered)
+    public static Vector2d kCargoShipFrontBay = new Vector2d(220.3 - Constants.kCenterToFrontBumper, 10.9);
+    public static Vector2d kCargoShipSideBay1 = new Vector2d(260.8, 27.9 + Constants.kCenterToFrontBumper);
+    public static Vector2d kCargoShipSideBay2 = new Vector2d(282.6, 27.9 + Constants.kCenterToFrontBumper);
+    public static Vector2d kCargoShipSideBay3 = new Vector2d(304.3, 27.9 + Constants.kCenterToFrontBumper);
+    public static double   kCargoShipTurnDist   = 48.0;                      // distance from which to turn towards cargo bay
+    public static double   kCargoShipVisionDist = 36.0;                      // distance from which to turn turn on cameras (desired target should be mostly centered)
 
     public static Vector2d kCargoShipFrontBayTurnPosition   = kCargoShipFrontBay.add( Vector2d.magnitudeAngle(kCargoShipTurnDist,   Math.PI) );
     public static Vector2d kCargoShipFrontBayVisionPosition = kCargoShipFrontBay.add( Vector2d.magnitudeAngle(kCargoShipVisionDist, Math.PI) );
-    public static Vector2d kCargoShipFrontBayBackupPosition = kCargoShipFrontBay.add(new Vector2d(-30.0, -30.0));
+    public static Vector2d kCargoShipFrontBayBackupPosition = kCargoShipFrontBayTurnPosition.add(new Vector2d(-18.0, -18.0));
 
     public static Vector2d kCargoShipSideBay1TurnPosition   = kCargoShipSideBay1.add( Vector2d.magnitudeAngle(kCargoShipTurnDist,   Math.PI/2) );
     public static Vector2d kCargoShipSideBay1VisionPosition = kCargoShipSideBay1.add( Vector2d.magnitudeAngle(kCargoShipVisionDist, Math.PI/2) );
-    public static Vector2d kCargoShipSideBay1BackupPosition = kCargoShipSideBay1.add(new Vector2d(+30.0, +30.0));
+    public static Vector2d kCargoShipSideBay1BackupPosition = kCargoShipSideBay1TurnPosition.add(new Vector2d(+18.0, +18.0));
 
     public static Vector2d kCargoShipSideBay2TurnPosition   = kCargoShipSideBay2.add( Vector2d.magnitudeAngle(kCargoShipTurnDist,   Math.PI/2) );
     public static Vector2d kCargoShipSideBay2VisionPosition = kCargoShipSideBay2.add( Vector2d.magnitudeAngle(kCargoShipVisionDist, Math.PI/2) );
-    public static Vector2d kCargoShipSideBay2BackupPosition = kCargoShipSideBay2.add(new Vector2d(+30.0, +48.0));
+    public static Vector2d kCargoShipSideBay2BackupPosition = kCargoShipSideBay2TurnPosition.add(new Vector2d(+18.0, +18.0));
 
     public static Vector2d kCargoShipSideBay3TurnPosition   = kCargoShipSideBay3.add( Vector2d.magnitudeAngle(kCargoShipTurnDist,   Math.PI/2) );
     public static Vector2d kCargoShipSideBay3VisionPosition = kCargoShipSideBay3.add( Vector2d.magnitudeAngle(kCargoShipVisionDist, Math.PI/2) );
-    public static Vector2d kCargoShipSideBay3BackupPosition = kCargoShipSideBay3.add(new Vector2d(+30.0, +30.0));
+    public static Vector2d kCargoShipSideBay3BackupPosition = kCargoShipSideBay3TurnPosition.add(new Vector2d(+18.0, +18.0));
     
     // Human Station
-    public static Vector2d kHumanStation = new Vector2d(0.0, 136.3);
+    public static Vector2d kHumanStation = new Vector2d(0.0 + Constants.kCenterToFrontBumper, 136.3);
     public static double   kHumanStationVisionDist = 96.0;                      // distance from which to turn turn on cameras (desired target should be mostly centered)
     public static Vector2d kHumanStationVisionPosition = kHumanStation.add( Vector2d.magnitudeAngle(kHumanStationVisionDist, 0.0) );
 

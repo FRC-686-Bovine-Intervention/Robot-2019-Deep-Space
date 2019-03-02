@@ -43,16 +43,19 @@ public class ReversibleArcadeDriveJoystick extends JoystickControlsBase
 			if (rightStickActive && !leftStickActive) {
 				usingLeftStick = false;
 			}
-			else if (leftStickActive && !rightStickActive) {
+		}
+		else 
+		{
+			if (leftStickActive && !rightStickActive) {
 				usingLeftStick = true;
 			}
-
-			// if we are driving in reverse, flip stick controls
-			if (!usingLeftStick)
-			{
-				throttle = -rThrottle;
-				turn = +rTurn;
-			}
+		}
+	
+		// if we are driving in reverse, flip stick controls
+		if (!usingLeftStick)
+		{
+			throttle = -rThrottle;
+			turn = +rTurn;
 		}
 
 		DriveCommand signal = ArcadeDriveJoystick.throttleTurnToDriveCommand(throttle, turn);

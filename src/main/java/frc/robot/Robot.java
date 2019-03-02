@@ -315,11 +315,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() 
 	{
-		autoTeleopPeriodic();
-	}
-
-	public void autoTeleopPeriodic() 
-	{
 		try
 		{
 			DriveCommand driveCmd = selectedJoystick.getDriveCommand();
