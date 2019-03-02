@@ -77,11 +77,24 @@ public class Limelight
      */
     public void disabledPeriodic()
     {
-        setPipeline(0);
-        setLEDMode(LedMode.kOn);
-        setCamMode(CamMode.kVision);
-        setSnapshot(Snapshot.kOff);
-        setStream(StreamType.kPiPSecondary);
+        boolean debuggingWhileDisabled = false;
+
+        if (debuggingWhileDisabled)
+        {
+            setPipeline(0);
+            setLEDMode(LedMode.kOn);
+            setCamMode(CamMode.kVision);
+            setSnapshot(Snapshot.kOff);
+            setStream(StreamType.kStandard);
+        }
+        else
+        {
+            setPipeline(0);
+            setLEDMode(LedMode.kOff);
+            setCamMode(CamMode.kDriver);
+            setSnapshot(Snapshot.kOff);
+            setStream(StreamType.kStandard);
+        }
     }
 
     /**

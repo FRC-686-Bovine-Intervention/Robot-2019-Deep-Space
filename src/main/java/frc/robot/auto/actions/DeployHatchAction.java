@@ -34,7 +34,7 @@ public class DeployHatchAction implements Action {
 	{
 System.out.println("Starting DeployHatchAction");		
 		boolean extended = true;
-        hatchDeploy.deploy(); 
+        hatchDeploy.eject(); 
         finished = true;
 	}
 

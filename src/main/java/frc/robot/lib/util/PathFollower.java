@@ -111,7 +111,7 @@ public class PathFollower
 		if (prevTime < 0)				// initial setting of prevTime is important to limit initial acceleration
 			prevTime = _currentTime;	// avoid calling Timer.getFPGATimestamp() in this function to allow off-robot testing
 		
-		//System.out.println("At " + _currentPose + "  Driving to " + path.getSegmentEnd());
+		System.out.println("At " + _currentPose + "  Driving to " + path.getSegmentEnd());
 		
 		remainingDistance = Double.MAX_VALUE;
 		double finalSpeed = 0;
@@ -152,6 +152,7 @@ public class PathFollower
 			curvature = -curvature;	// TODO: simplify by removing this, and removing flipping heading 180 degrees below?
 		}
 		
+		// wheelSpeed = Kinematics.inverseKinematicsFromSpeedCurvature(speed, curvature);
 		wheelSpeed = Kinematics.inverseKinematicsFromSpeedCurvature(speed, curvature);
 		wheelSpeed.limit(maxSpeed);
 		return wheelSpeed;
@@ -184,6 +185,9 @@ public class PathFollower
 			headingToTarget -= Math.PI;	// flip robot around
 		
 		curvature = 2 * Math.sin(headingToTarget) / lookaheadDist;
+
+
+System.out.printf("CurPos: %s, LookahdPt: %s, LookahdDist: %.1f, HeadingToTarget:%.1f\n", _currentPose.toString(), lookaheadPoint.toString(), lookaheadDist, headingToTarget);		
 	}
 
 	
@@ -245,7 +249,7 @@ public class PathFollower
 		// apply minimum velocity limit (Talons can't track low speeds well)
 		final double kMinSpeed = 4.0;
 		if (Math.abs(speed) < kMinSpeed) 
-			speed = Math.signum(speed) * kMinSpeed;
+			speed = Math.signum(accel) * kMinSpeed;
 
 		// store for next time through loop	
 		prevTime = _currentTime;

@@ -9,7 +9,7 @@ import frc.robot.auto.actions.DriveStraightAction;
  */
 public class DriveStraightMode extends AutoModeBase {
 
-    public DriveStraightMode(int lane, boolean shouldDriveBack) 
+    public DriveStraightMode() 
     { 
     }
 

@@ -13,13 +13,13 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.auto.AutoModeExecuter;
+import frc.robot.auto.modes.FieldDimensions;
 import frc.robot.command_status.DriveCommand;
 import frc.robot.command_status.DriveState;
 import frc.robot.command_status.GoalStates;
 import frc.robot.command_status.RobotState;
-import frc.robot.lib.joystick.ArcadeDriveJoystick;
-import frc.robot.lib.joystick.JoystickControlsBase;
 import frc.robot.lib.joystick.SelectedJoystick;
 import frc.robot.lib.sensors.Limelight;
 import frc.robot.lib.util.ControlsReverse;
@@ -42,7 +42,6 @@ public class Robot extends TimedRobot {
 	PowerDistributionPanel pdp = new PowerDistributionPanel();
 
 	SmartDashboardInteractions smartDashboardInteractions = SmartDashboardInteractions.getInstance();
-	JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
 	SelectedJoystick selectedJoystick = SelectedJoystick.getInstance();
 
 	RobotState robotState = RobotState.getInstance();
@@ -64,18 +63,8 @@ public class Robot extends TimedRobot {
 	HatchDeploy hatchDeploy;
 	ControlsReverse controlsReverse = ControlsReverse.getInstance();
 
-	enum OperationalMode 
-    {
-    	DISABLED(0), AUTONOMOUS(1), TELEOP(2), TEST(3);
-    	
-    	private int val;
-    	
-    	private OperationalMode (int val) {this.val = val;}
-    	public int getVal() {return val;}
-    } 
-    
-    OperationalMode operationalMode = OperationalMode.DISABLED;
-    
+	OperationalMode operationalMode = OperationalMode.getInstance();
+
     public Robot() {
     	CrashTracker.logRobotConstruction();
     }
@@ -86,6 +75,7 @@ public class Robot extends TimedRobot {
 		try
     	{
     		CrashTracker.logRobotInit();
+			operationalMode.set(OperationalMode.OperationalModeEnum.DISABLED);
 
 			LiveWindow.disableTelemetry(pdp);	// stops CAN error
 
@@ -98,6 +88,7 @@ public class Robot extends TimedRobot {
     		loopController.register(VisionLoop.getInstance());
 			loopController.register(GoalStateLoop.getInstance());
 			loopController.register(CargoIntake.getInstance());
+			loopController.register(HatchDeploy.getInstance());
 			loopController.register(Climber.getInstance());
 
 			selectedJoystick.update();
@@ -120,6 +111,7 @@ public class Robot extends TimedRobot {
 			robotLogger.register(CargoIntake.getInstance().getLogger());
 			robotLogger.register(HatchDeploy.getInstance().getLogger());
 			robotLogger.register(Climber.getInstance().getLogger());
+			robotLogger.register(FieldDimensions.getLogger());
     		
     		setInitialPose(new Pose());
 
@@ -160,7 +152,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledInit()
 	{
-		operationalMode = OperationalMode.DISABLED;
+		operationalMode.set(OperationalMode.OperationalModeEnum.DISABLED);
 		boolean logToFile = false;
 		boolean logToSmartDashboard = true;
 		robotLogger.setOutputMode(logToFile, logToSmartDashboard);
@@ -212,13 +204,15 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
-    	operationalMode = OperationalMode.AUTONOMOUS;
+		operationalMode.set(OperationalMode.OperationalModeEnum.AUTONOMOUS);
     	boolean logToFile = false;
     	boolean logToSmartDashboard = true;
     	robotLogger.setOutputMode(logToFile, logToSmartDashboard);
 
     	try
     	{
+			zeroAllSensors();
+
 			superStructure.enable();
 			
 			CrashTracker.logAutoInit();
@@ -227,19 +221,27 @@ public class Robot extends TimedRobot {
 			cargoCamera.autoInit();
 			hatchCamera.autoInit();
 	
-			
-			// if (autoModeExecuter != null)
-			// {
-    			// autoModeExecuter.stop();
-    		// }
-    		// autoModeExecuter = null;
-    		
-			// autoModeExecuter = new AutoModeExecuter();
-			// autoModeExecuter.setAutoMode( smartDashboardInteractions.getAutoModeSelection() );
+            // only using hatch camera during auto
+            cargoCamera.setLEDMode(Limelight.LedMode.kOff);
+            hatchCamera.setLEDMode(Limelight.LedMode.kOn);
 
+            Shuffleboard.selectTab(hatchCamera.getTableName());     // select hatch camera tab in Shuffleboard
+            
+			
+			if (autoModeExecuter != null)
+			{
+    			autoModeExecuter.stop();
+    		}
+    		autoModeExecuter = null;
+    		
+			autoModeExecuter = new AutoModeExecuter();
+			autoModeExecuter.setAutoMode( smartDashboardInteractions.getAutoModeSelection() );
 			setInitialPose( smartDashboardInteractions.getStartPosition() );
- 
-			// autoModeExecuter.start();
+
+			// autoModeExecuter.setAutoMode(new DebugAuto());
+			// setInitialPose(new Pose());
+
+			autoModeExecuter.start();
     	}
     	catch(Throwable t)
     	{
@@ -252,7 +254,23 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousPeriodic() 
 	{
-		autoTeleopPeriodic();
+        if (operationalMode.get() == OperationalMode.OperationalModeEnum.AUTONOMOUS)
+        {
+            if (selectedJoystick.joystickActive())
+            {
+                // Driver just started using joystick.  Abandon autonomous
+                teleopInit();
+                teleopPeriodic();
+            }
+
+            // if joystick not being used, stay in autonomous
+            // nothing else to do in this thread
+        }
+        else
+        {
+            // driver has taken us out of autonomous control
+            teleopPeriodic();
+        }
 	}
 	
 	
@@ -262,7 +280,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit(){
-		operationalMode = OperationalMode.TELEOP;
+		operationalMode.set(OperationalMode.OperationalModeEnum.TELEOP);
 		boolean logToFile = false;
 		boolean logToSmartDashboard = true;
 		robotLogger.setOutputMode(logToFile, logToSmartDashboard); 
@@ -297,22 +315,15 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() 
 	{
-		autoTeleopPeriodic();
-	}
-
-	public void autoTeleopPeriodic() 
-	{
 		try
 		{
-			hatchDeploy.run();
-			
-			DriveCommand driveCmd = controls.getDriveCommand();
+			DriveCommand driveCmd = selectedJoystick.getDriveCommand();
 			drive.setOpenLoop(driveCmd);
-			driveCmd = visionDriveAssistant.assist(driveCmd, controls.getButton(Constants.kVisionAssistanceButton));
+			driveCmd = visionDriveAssistant.assist(driveCmd, selectedJoystick.getButton(Constants.kVisionAssistanceButton));
 
 			//modify drive controls based on buttons
-			DriveCommand driveCmdReverse = controlsReverse.run( driveCmd, Constants.kControlsReverseButton);
-			drive.setOpenLoop(driveCmdReverse);
+			// DriveCommand driveCmdReverse = controlsReverse.run( driveCmd, Constants.kControlsReverseButton);
+			drive.setOpenLoop(driveCmd);
 
 			// turn on LEDs in direction of forward travel
 			if (CargoIntake.getInstance().shouldBlink()) {  
@@ -323,11 +334,13 @@ public class Robot extends TimedRobot {
 			{
 				cargoCamera.setLEDMode(Limelight.LedMode.kOn);
 				hatchCamera.setLEDMode(Limelight.LedMode.kOff);
+                Shuffleboard.selectTab(cargoCamera.getTableName());     // select cargo camera tab in Shuffleboard
 			}
 			else
 			{
 				cargoCamera.setLEDMode(Limelight.LedMode.kOff);
 				hatchCamera.setLEDMode(Limelight.LedMode.kOn);
+                Shuffleboard.selectTab(hatchCamera.getTableName());     // select hatch camera tab in Shuffleboard
 			}
 		}
 		catch (Throwable t)
@@ -346,6 +359,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void testInit() 
 	{
+		operationalMode.set(OperationalMode.OperationalModeEnum.TEST);
 		loopController.start();
 	}
 
@@ -372,7 +386,7 @@ public class Robot extends TimedRobot {
         @Override
         public void log()
         {
-			put("OperationalMode", operationalMode.getVal());
+			put("OperationalMode", operationalMode.get().toString());
         }
     };
     

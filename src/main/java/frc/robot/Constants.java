@@ -73,19 +73,19 @@ public class Constants extends ConstantsBase {
     public static int kCargoIntakeButton =          kXboxButtonLB;
     public static int kCargoOuttakeAxis =           kXboxLTriggerAxis;
     public static int kVisionAssistanceButton =     kXboxButtonA;
-    public static int kControlsReverseButton =      kXboxButtonX;
     public static int kQuickTurnButton =            kXboxButtonY; // bogus setting to make TriggerDrive Joysticks happy
+    public static int kCargoIntakeDepotHeight =    kXboxButtonX;
+  
 
     // Operator Button Board Configuration
-    public static int kCargoIntakeRetractButton =   kXboxButtonX;          
     public static int kCargoIntakeRocketButton =    ButtonBoard.kButtonBoardB;
     public static int kCargoIntakeCargoShipButton = ButtonBoard.kButtonBoardA;
     public static int kDefenseButton =              ButtonBoard.kButtonBoardRB;
     public static int kClimbingStartButton =        ButtonBoard.kButtonBoardLB;
     public static int kClimbingExtendButton =       ButtonBoard.kButtonBoardX;
     public static int kClimbingRetractButton =      ButtonBoard.kButtonBoardY;
-    public static int kCargoIntakeDepotHeight =    ButtonBoard.kButtonBoardSL;
-  
+    public static int kControlsReverseButton =      ButtonBoard.kButtonBoardSL;
+   
     
 
 
