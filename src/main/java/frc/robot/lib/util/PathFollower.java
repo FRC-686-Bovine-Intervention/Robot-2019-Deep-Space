@@ -235,6 +235,7 @@ public class PathFollower
 	    	distanceToGoal = shooterToGoal.length();
 			bearingToGoal = shooterToGoal.angle() - fieldToShooter.getHeading(); 	// bearing relative to shooter's heading
 
+			kTargetDistanceThresholdFromCenterInches = Constants.kHatchTargetDistanceThresholdFromCenterInches;			
             distanceToTargetInches = distanceToGoal - kTargetDistanceThresholdFromCenterInches;   // distance from camera
             bearingToTarget = bearingToGoal;
 

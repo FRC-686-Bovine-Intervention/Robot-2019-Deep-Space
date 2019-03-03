@@ -30,11 +30,11 @@ public class DebugAuto extends AutoModeBase {
     @Override
     protected void routine() throws AutoModeEndedException 
     {
-        double vel = 24;    //DriveLoop.kPathFollowingMaxVel;
+        double vel = 48;    //DriveLoop.kPathFollowingMaxVel;
         double accel = 24;  // DriveLoop.kPathFollowingMaxAccel
 
-        PathSegment.Options pathOptions	= new PathSegment.Options(vel, accel, 24, false);
-        PathSegment.Options tightTurnOptions	= new PathSegment.Options(vel, accel, 12, false);
+        PathSegment.Options pathOptions	= new PathSegment.Options(vel, accel, 48, false);
+        PathSegment.Options tightTurnOptions	= new PathSegment.Options(vel, accel, 24, false);
         PathSegment.Options visionOptions	= new PathSegment.Options(vel, accel, 24, true);
 
         // override initial position from SmartDashboardInteractions
@@ -47,12 +47,13 @@ public class DebugAuto extends AutoModeBase {
 
         Path path2= new Path();
         path2.add(new Waypoint(new Vector2d(30, 0), tightTurnOptions));
-        path2.add(new Waypoint(new Vector2d( 0,-30), visionOptions));
-        path2.add(new Waypoint(new Vector2d( 0,-72), visionOptions));
+        path2.add(new Waypoint(new Vector2d( 0,-30), tightTurnOptions));
+        path2.add(new Waypoint(new Vector2d( 0,-42), visionOptions));
+        path2.add(new Waypoint(new Vector2d( 0,-84), visionOptions));
         path2.setReverseDirection();
 
         Path path3= new Path();
-        path3.add(new Waypoint(new Vector2d(  0,-72), pathOptions));
+        path3.add(new Waypoint(new Vector2d(  0,-84), pathOptions));
         path3.add(new Waypoint(new Vector2d(  0,-60), pathOptions));
 
 

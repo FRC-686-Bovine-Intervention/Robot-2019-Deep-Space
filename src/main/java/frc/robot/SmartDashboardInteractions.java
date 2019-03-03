@@ -49,11 +49,11 @@ public class SmartDashboardInteractions
     	SmartDashboard.putData("Joystick Chooser", joystickModeChooser);
 
         autoModeChooser = new SendableChooser<AutoModeOption>();
-        // autoModeChooser.setDefaultOption(AutoModeOption.HATCH_AUTO.name, AutoModeOption.HATCH_AUTO);
-        autoModeChooser.addOption(AutoModeOption.HATCH_AUTO.name, AutoModeOption.HATCH_AUTO);
+        autoModeChooser.setDefaultOption(AutoModeOption.HATCH_AUTO.name, AutoModeOption.HATCH_AUTO);
+        // autoModeChooser.addOption(AutoModeOption.HATCH_AUTO.name, AutoModeOption.HATCH_AUTO);
         autoModeChooser.addOption(AutoModeOption.STAND_STILL.name, AutoModeOption.STAND_STILL);
-        // autoModeChooser.addOption(AutoModeOption.DEBUG_AUTO.name, AutoModeOption.DEBUG_AUTO);
-        autoModeChooser.setDefaultOption(AutoModeOption.DEBUG_AUTO.name, AutoModeOption.DEBUG_AUTO);
+        autoModeChooser.addOption(AutoModeOption.DEBUG_AUTO.name, AutoModeOption.DEBUG_AUTO);
+        // autoModeChooser.setDefaultOption(AutoModeOption.DEBUG_AUTO.name, AutoModeOption.DEBUG_AUTO);
         SmartDashboard.putData("Auto Mode", autoModeChooser);
     	
         startPositionChooser = new SendableChooser<StartPositionOption>();

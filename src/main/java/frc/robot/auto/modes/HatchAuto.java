@@ -79,7 +79,7 @@ public class HatchAuto extends AutoModeBase {
             Path backupToScore = new Path();
             backupToScore.add(new Waypoint(backupPos,   pathOptions));
             backupToScore.add(new Waypoint(turnPos,     pathOptions));
-            backupToScore.add(new Waypoint(visionPos,   pathOptions));
+            backupToScore.add(new Waypoint(visionPos,   visionOptions));
             backupToScore.add(new Waypoint(hatchPos,    visionOptions));    // use vision after turning towards target
             backupToScore.setReverseDirection();
 
@@ -89,7 +89,7 @@ public class HatchAuto extends AutoModeBase {
 
             Path backupToHumanStation = new Path();
             backupToHumanStation.add(new Waypoint(backupPos,               pathOptions));
-            backupToHumanStation.add(new Waypoint(humanStationVisionPos,   pathOptions));
+            backupToHumanStation.add(new Waypoint(humanStationVisionPos,   visionOptions));
             backupToHumanStation.add(new Waypoint(humanStationHatchPos,    visionOptions)); // use vision after turning towards target
             backupToHumanStation.setReverseDirection();
 

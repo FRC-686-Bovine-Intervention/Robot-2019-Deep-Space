@@ -29,7 +29,7 @@ public class HatchDeploy implements Loop
     public TalonSRX dropMotor;
     public Solenoid hatchSolenoid;
     public final double zeroingSpeed = -0.15;
-    public final int bumperAngle = 300;
+    public final int bumperAngle = 200;
     public final int groundAngle = 1249;
     public final int defenseAngle = 0;
     public RisingEdgeDetector hatchButtonRisingEdgeDetector = new RisingEdgeDetector();
