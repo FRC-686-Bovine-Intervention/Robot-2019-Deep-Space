@@ -171,16 +171,26 @@ public class RobotState
 
 	// Field to camera functions
 
-	public static final Pose robotToShooter = new Pose(Constants.kShooterPoseX, Constants.kShooterPoseY,
-			Constants.kShooterPoseThetaRad);
 
 	public synchronized Pose getFieldToShooter(double timestamp) {
+		Pose robotToShooter = new Pose(0, 0, Math.PI);
+		if (SelectedJoystick.getInstance().getDrivingCargo())
+		{
+			robotToShooter = new Pose(0, 0, 0);
+		}
+
 		Pose fieldToRobot = getFieldToVehicle(timestamp);
 		Pose fieldToShooter = robotToShooter.changeCoordinateSystem(fieldToRobot);
 		return fieldToShooter;
 	}
 
 	public synchronized Pose getPredictedFieldToShooter(double _lookaheadTime) {
+		Pose robotToShooter = new Pose(0, 0, Math.PI);
+		if (SelectedJoystick.getInstance().getDrivingCargo())
+		{
+			robotToShooter = new Pose(0, 0, 0);
+		}
+
 		Pose fieldToRobot = getPredictedFieldToVehicle(_lookaheadTime);
 		Pose fieldToShooter = robotToShooter.changeCoordinateSystem(fieldToRobot);
 		return fieldToShooter;

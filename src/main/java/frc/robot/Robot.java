@@ -158,6 +158,8 @@ public class Robot extends TimedRobot {
 		robotLogger.setOutputMode(logToFile, logToSmartDashboard);
 		zeroAllSensors();
 
+		Shuffleboard.stopRecording();
+
 		try
 		{
 			CrashTracker.logDisabledInit();
@@ -209,6 +211,8 @@ public class Robot extends TimedRobot {
     	boolean logToSmartDashboard = true;
     	robotLogger.setOutputMode(logToFile, logToSmartDashboard);
 
+		Shuffleboard.startRecording();
+
     	try
     	{
 			zeroAllSensors();
@@ -237,9 +241,6 @@ public class Robot extends TimedRobot {
 			autoModeExecuter = new AutoModeExecuter();
 			autoModeExecuter.setAutoMode( smartDashboardInteractions.getAutoModeSelection() );
 			setInitialPose( smartDashboardInteractions.getStartPosition() );
-
-			// autoModeExecuter.setAutoMode(new DebugAuto());
-			// setInitialPose(new Pose());
 
 			autoModeExecuter.start();
     	}
@@ -285,6 +286,7 @@ public class Robot extends TimedRobot {
 		boolean logToSmartDashboard = true;
 		robotLogger.setOutputMode(logToFile, logToSmartDashboard); 
 
+		Shuffleboard.startRecording();
 		
 		try 
 		{

@@ -5,9 +5,9 @@ import frc.robot.command_status.DriveCommand;
 import frc.robot.command_status.GoalStates;
 import frc.robot.command_status.RobotState;
 import frc.robot.command_status.GoalStates.GoalState;
-import frc.robot.lib.joystick.SelectedJoystick;
 import frc.robot.lib.util.Kinematics.WheelSpeed;
 import frc.robot.loops.DriveLoop;
+import frc.robot.loops.GoalStateLoop;
 import frc.robot.subsystems.Drive;
 
 import java.util.Optional;
@@ -43,7 +43,7 @@ public class PathFollower
 	public double distanceFromPath;
 	public double lookaheadDist;
 	public Vector2d lookaheadPoint = new Vector2d();
-	public double headingToTarget;		
+	public double bearingToTarget;		
 	
 	public double currentTime;
 
@@ -68,6 +68,10 @@ public class PathFollower
 	
 	private double prevSpeed;
 	private double prevTime;
+
+	public boolean haveGoal;
+	public Optional<Vector2d> currentFieldToGoal = Optional.empty();
+    double kTargetDistanceThresholdFromCenterInches;
 
 	
     public PathFollower(Path _path, PathVisionState _initialState) 
@@ -120,9 +124,14 @@ public class PathFollower
 		
 		boolean visionEnabledSegment = path.getSegmentVisionEnable(); 
 		if (visionEnabledSegment)
+		{
 			visionDrive(_currentTime, _currentPose);
+		}
 		else
+		{
+			// GoalStateLoop.getInstance().resetVision();
 			pathDrive(_currentTime, _currentPose);
+		}
 			
 		if (state == PathVisionState.PATH_FOLLOWING)	 
 		{
@@ -133,12 +142,7 @@ public class PathFollower
 		}
 		else
 		{
-			double kTargetDistanceThresholdFromCameraInches = Constants.kHatchTargetDistanceThresholdFromCenterInches;
-			if (SelectedJoystick.getInstance().getDrivingCargo())
-			{
-				kTargetDistanceThresholdFromCameraInches = Constants.kCargoTargetDistanceThresholdFromCenterInches;
-			}
-			remainingDistance = distanceToTargetInches - kTargetDistanceThresholdFromCameraInches;
+			remainingDistance = Math.max(distanceToTargetInches, 0.0);   // keep maxSpeed = 0 when we pass the target			
 			finalSpeed = path.getSegmentFinalSpeed();
 			maxSpeed = Constants.kVisionMaxVel;
 			maxAccel = Constants.kVisionMaxAccel;
@@ -180,36 +184,64 @@ public class PathFollower
 		//---------------------------------------------------
 		Vector2d robotToTarget = lookaheadPoint.sub(_currentPose.getPosition());
 		lookaheadDist = robotToTarget.length();
-		headingToTarget = robotToTarget.angle() - _currentPose.getHeading();
+		bearingToTarget = robotToTarget.angle() - _currentPose.getHeading();
 		if (path.getReverseDirection())
-			headingToTarget -= Math.PI;	// flip robot around
+			bearingToTarget -= Math.PI;	// flip robot around
 		
-		curvature = 2 * Math.sin(headingToTarget) / lookaheadDist;
-
-
-System.out.printf("CurPos: %s, LookahdPt: %s, LookahdDist: %.1f, HeadingToTarget:%.1f\n", _currentPose.toString(), lookaheadPoint.toString(), lookaheadDist, headingToTarget);		
+		curvature = 2 * Math.sin(bearingToTarget) / lookaheadDist;
 	}
 
-	
+	Vector2d fieldToGoal = new Vector2d();
+	Pose fieldToShooter = new Pose();
+	double distanceToGoal = -999;
+	double bearingToGoal = -999;
+
 	
 	// drive towards vision target (or follow path if no target acquired)
 	public void visionDrive(double _currentTime, Pose _currentPose)
 	{
-		Optional<GoalState> optGoalState = goalStates.getBestVisionTarget();
+		// update currentGoalState based on whether target is currently seen, and if button is being pressed
+		Optional<GoalState> visionGoalState = goalStates.getBestVisionTarget();
+		if (visionGoalState.isPresent())
+		{
+			currentFieldToGoal = Optional.of( visionGoalState.get().getPosition() );
+		}
+		else
+		{
+			boolean enabled = true;	// replaces checking for driver assistance button
+			if (enabled)
+			{
+				// target not currently seen, but button is still pressed
+				// --> keep same currentFieldToGoal
+			}
+			else
+			{
+				// target not currently seen, button not pressed
+				currentFieldToGoal = Optional.empty();
+			}
+		}
+
+		haveGoal = currentFieldToGoal.isPresent();
 
 		// If we get a valid message from the Vision co-processor, update our estimate of the target location
-		if (optGoalState.isPresent())
+		if (haveGoal)
 		{
 			state = PathVisionState.VISION;
 
-			// Get range and angle to target
-			GoalState goalState = optGoalState.get();
-			distanceToTargetInches = goalState.getHorizontalDistance();
-			headingToTarget = goalState.getRelativeBearing();
+            // Get range and angle to target
+            fieldToGoal = currentFieldToGoal.get();
+            fieldToShooter = RobotState.getInstance().getFieldToShooter(currentTime);
+		    Vector2d shooterToGoal = fieldToGoal.sub(fieldToShooter.getPosition());
+	    	distanceToGoal = shooterToGoal.length();
+			bearingToGoal = shooterToGoal.angle() - fieldToShooter.getHeading(); 	// bearing relative to shooter's heading
+
+			kTargetDistanceThresholdFromCenterInches = Constants.kHatchTargetDistanceThresholdFromCenterInches;			
+            distanceToTargetInches = distanceToGoal - kTargetDistanceThresholdFromCenterInches;   // distance from camera
+            bearingToTarget = bearingToGoal;
 
 			// Calculate motor settings to turn towards target
 			lookaheadDist = Math.min(Constants.kVisionLookaheadDist, distanceToTargetInches);	// length of chord <= kVisionLookaheadDist
-			curvature     = 2 * Math.sin(headingToTarget) / lookaheadDist;						// curvature = 1/radius of circle (positive: turn left, negative: turn right)
+			curvature     = 2 * Math.sin(bearingToTarget) / lookaheadDist;						// curvature = 1/radius of circle (positive: turn left, negative: turn right)
 		}
 		else
 		{
@@ -320,8 +352,29 @@ System.out.printf("CurPos: %s, LookahdPt: %s, LookahdDist: %.1f, HeadingToTarget
 			put("PathVision/curvature", curvature );
 			put("PathVision/lSpeed", 	wheelSpeed.left);
 			put("PathVision/rSpeed", 	wheelSpeed.right);
-			
-        }
+
+			put("PathVision/visionEnabledSegment", path.getSegmentVisionEnable());
+			put("PathVision/state", state.toString());
+ 			
+			if (currentFieldToGoal.isPresent())
+			{
+				put("PathVision/fieldToGoalX", fieldToGoal.getX());
+				put("PathVision/fieldToGoalY", fieldToGoal.getY());
+				put("PathVision/fieldToShooterX", fieldToShooter.getX());
+				put("PathVision/fieldToShooterY", fieldToShooter.getY());
+				put("PathVision/distanceToGoal", distanceToGoal);
+				put("PathVision/bearingToGoal", bearingToGoal);
+			}
+			else{
+				put("PathVision/fieldToGoalX", -999);
+				put("PathVision/fieldToGoalY", -999);
+				put("PathVision/fieldToShooterX", -999);
+				put("PathVision/fieldToShooterY", -999);
+				put("PathVision/distanceToGoal", -999);
+				put("PathVision/bearingToGoal", -999);
+			}
+
+       }
     };
 	
     public DataLogger getLogger() { return logger; }

@@ -13,6 +13,7 @@ import frc.robot.auto.actions.PathFollowerAction;
 import frc.robot.auto.actions.SeriesAction;
 import frc.robot.auto.actions.WaitAction;
 import frc.robot.auto.modes.FieldDimensions.TargetPositionEnum;
+import frc.robot.lib.sensors.Limelight;
 import frc.robot.lib.util.Path;
 import frc.robot.lib.util.Path.Waypoint;
 import frc.robot.lib.util.PathSegment;
@@ -78,7 +79,7 @@ public class HatchAuto extends AutoModeBase {
             Path backupToScore = new Path();
             backupToScore.add(new Waypoint(backupPos,   pathOptions));
             backupToScore.add(new Waypoint(turnPos,     pathOptions));
-            backupToScore.add(new Waypoint(visionPos,   pathOptions));
+            backupToScore.add(new Waypoint(visionPos,   visionOptions));
             backupToScore.add(new Waypoint(hatchPos,    visionOptions));    // use vision after turning towards target
             backupToScore.setReverseDirection();
 
@@ -88,10 +89,15 @@ public class HatchAuto extends AutoModeBase {
 
             Path backupToHumanStation = new Path();
             backupToHumanStation.add(new Waypoint(backupPos,               pathOptions));
-            backupToHumanStation.add(new Waypoint(humanStationVisionPos,   pathOptions));
+            backupToHumanStation.add(new Waypoint(humanStationVisionPos,   visionOptions));
             backupToHumanStation.add(new Waypoint(humanStationHatchPos,    visionOptions)); // use vision after turning towards target
             backupToHumanStation.setReverseDirection();
 
+
+            
+            Limelight.getCargoInstance().setLEDMode(Limelight.LedMode.kOff);
+            Limelight.getHatchInstance().setLEDMode(Limelight.LedMode.kOn);
+    
 
             if (k==0) {
                 runAction(new WaitAction(startDelaySec));

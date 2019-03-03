@@ -1,6 +1,7 @@
 package frc.robot.vision;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.lib.joystick.SelectedJoystick;
@@ -57,8 +58,7 @@ public class VisionLoop implements Loop {
 		double imageCaptureTimestamp = currentTime - cameraLatency; // assumes transport time from phone to this code is
 																	// instantaneous
 
-		int numTargets = 1; // for Limelight
-		ArrayList<VisionTargetList.Target> targets = new ArrayList<>(numTargets);
+		ArrayList<VisionTargetList.Target> targets = new ArrayList<>();	// initially empty
 
 		if (cameraSelection.getIsTargetFound()) 
 		{
@@ -99,6 +99,90 @@ public class VisionLoop implements Loop {
     };
     
     public DataLogger getLogger() { return logger; }
+
+	/**
+	 * @return the selectedJoystick
+	 */
+	public SelectedJoystick getSelectedJoystick() {
+		return selectedJoystick;
+	}
+
+	/**
+	 * @param selectedJoystick the selectedJoystick to set
+	 */
+	public void setSelectedJoystick(SelectedJoystick selectedJoystick) {
+		this.selectedJoystick = selectedJoystick;
+	}
+
+	/**
+	 * @return the cargoCamera
+	 */
+	public Limelight getCargoCamera() {
+		return cargoCamera;
+	}
+
+	/**
+	 * @param cargoCamera the cargoCamera to set
+	 */
+	public void setCargoCamera(Limelight cargoCamera) {
+		this.cargoCamera = cargoCamera;
+	}
+
+	/**
+	 * @return the hatchCamera
+	 */
+	public Limelight getHatchCamera() {
+		return hatchCamera;
+	}
+
+	/**
+	 * @param hatchCamera the hatchCamera to set
+	 */
+	public void setHatchCamera(Limelight hatchCamera) {
+		this.hatchCamera = hatchCamera;
+	}
+
+	/**
+	 * @return the cameraSelection
+	 */
+	public Limelight getCameraSelection() {
+		return cameraSelection;
+	}
+
+	/**
+	 * @param cameraSelection the cameraSelection to set
+	 */
+	public void setCameraSelection(Limelight cameraSelection) {
+		this.cameraSelection = cameraSelection;
+	}
+
+	/**
+	 * @return the visionTargetList
+	 */
+	public VisionTargetList getVisionTargetList() {
+		return visionTargetList;
+	}
+
+	/**
+	 * @param visionTargetList the visionTargetList to set
+	 */
+	public void setVisionTargetList(VisionTargetList visionTargetList) {
+		this.visionTargetList = visionTargetList;
+	}
+
+	/**
+	 * @return the boundingRectangle
+	 */
+	public BoundingRectangle getBoundingRectangle() {
+		return boundingRectangle;
+	}
+
+	/**
+	 * @param boundingRectangle the boundingRectangle to set
+	 */
+	public void setBoundingRectangle(BoundingRectangle boundingRectangle) {
+		this.boundingRectangle = boundingRectangle;
+	}
 
 
 }

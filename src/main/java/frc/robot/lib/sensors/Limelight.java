@@ -109,7 +109,7 @@ public class Limelight
         setLEDMode(LedMode.kOn);
         setCamMode(CamMode.kVision);
         setSnapshot(Snapshot.kOff);
-        setStream(StreamType.kPiPSecondary);
+        setStream(StreamType.kStandard);
     }
 
     /**
@@ -124,7 +124,6 @@ public class Limelight
         setLEDMode(LedMode.kOn);
         setCamMode(CamMode.kVision);
         setSnapshot(Snapshot.kOff);
-        // setStream(StreamType.kPiPSecondary);
         setStream(StreamType.kStandard);
     }
 
