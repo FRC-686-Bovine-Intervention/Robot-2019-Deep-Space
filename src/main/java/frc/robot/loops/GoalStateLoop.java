@@ -77,13 +77,13 @@ public class GoalStateLoop implements Loop
 		List<VisionTargetList.Target> visionTargets = visionTargetList.getTargets();
 		Pose fieldToCamera = robotState.getFieldToCamera(imageCaptureTimestamp);	// find position of camera back when image was taken (removes latency in processing)
 
-		double kCameraPoseThetaRad = Constants.kHatchCameraPoseThetaRad;
+		double kCameraPoseThetaRad = 0.0;	// no variation from PI in Constants
 		double kCameraPitchRad = Constants.kHatchCameraPitchRad;
 		double kCameraPoseZ = Constants.kHatchCameraPoseZ;
 		
 		if (selectedJoystick.getDrivingCargo())
 		{
-			kCameraPoseThetaRad = Constants.kCargoCameraPoseThetaRad;
+			kCameraPoseThetaRad = 0.0;
 			kCameraPitchRad = Constants.kCargoCameraPitchRad;
 			kCameraPoseZ = Constants.kCargoCameraPoseZ;
 		}
@@ -113,7 +113,7 @@ public class GoalStateLoop implements Loop
 				case TARGET_WIDTH:
 					// assumes target is horizontally perpendicular to camera axis (not likely unless you attempt to make it so)
 					range = (Constants.kTargetWidthInches/2.0) / Math.tan(hWidth/2.0);
-					horizontalDistance = range * Math.cos(hAngle);
+					horizontalDistance = Math.abs(range * Math.cos(hAngle));
 					break;
 					
 				case TARGET_HEIGHT:
@@ -121,7 +121,7 @@ public class GoalStateLoop implements Loop
 					// assumes target is vertical
 					// using Law of Sines
 					range = (Constants.kTargetHeightInches/2.0) * Math.sin(Math.PI/2.0-vAngle-vWidth/2.0) / Math.sin(vWidth/2.0);
-					horizontalDistance = range * Math.cos(vAngle);
+					horizontalDistance = Math.abs(range * Math.cos(vAngle));
 					break;
 				}
 				
@@ -132,6 +132,10 @@ public class GoalStateLoop implements Loop
 					fieldToGoals.add( fieldToTarget.getPosition() );
 				}
 			}
+		}
+		else
+		{
+			boolean break_here = true; 	
 		}
 		
 	

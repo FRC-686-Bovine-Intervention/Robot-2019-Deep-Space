@@ -119,17 +119,17 @@ public class Constants extends ConstantsBase {
     public static double kTargetHeightInches = 6.00;
     public static double kCenterOfTargetHeightInches = 27.75;
 
-    public static double kCargoCameraPoseX        = +5.00;	// camera location with respect to robot center of rotation, X axis is in direction of travel
-    public static double kCargoCameraPoseY        = -5.00;	// camera location with respect to robot center of rotation, Y axis is positive to the left
+    public static double kCargoCameraPoseX        =  0.00;	// camera location with respect to robot center of rotation, X axis is in direction of travel
+    public static double kCargoCameraPoseY        =  0.00;	// camera location with respect to robot center of rotation, Y axis is positive to the left
     public static double kCargoCameraPoseZ        =  18.0;	// camera location with respect to floor, Z axis is positive with increasing elevation
     public static double kCargoCameraPoseThetaRad =   0.0;	// camera angle with respect to robot heading, in radians
     public static double kCargoCameraPitchRad     = 3.588;   // camera vertical angle with respect to level ground, in radians
     public static double kCargoCameraDeadband = 0.0;
 
-    public static double kHatchCameraPoseX        = +11.5;	// camera location with respect to robot center of rotation, X axis is in direction of travel
+    public static double kHatchCameraPoseX        = -11.5;	// camera location with respect to robot center of rotation, X axis is in direction of travel
     public static double kHatchCameraPoseY        =     0;	// camera location with respect to robot center of rotation, Y axis is positive to the left
     public static double kHatchCameraPoseZ        =  41.0;	// camera location with respect to floor, Z axis is positive with increasing elevation
-    public static double kHatchCameraPoseThetaRad =   0.0;	// camera angle with respect to robot heading, in radians
+    public static double kHatchCameraPoseThetaRad = Math.PI;	// camera angle with respect to robot heading, in radians
     public static double kHatchCameraPitchRad     = -0.3665;   // camera vertical angle with respect to level ground, in radians
     public static double kHatchCameraDeadband = 0.0;
 
@@ -144,10 +144,6 @@ public class Constants extends ConstantsBase {
     public static double kVisionLookaheadDist = 24.0;	// inches
     
     // Shooter Constants
-    public static double kShooterPoseX        =     0;	// shooter location with respect to robot center of rotation, X axis is in direction of travel
-    public static double kShooterPoseY        =     0;	// shooter location with respect to robot center of rotation, Y axis is positive to the left
-    public static double kShooterPoseZ        =     0;	// shooter location with respect to floor, Z axis is positive with increasing elevation
-    public static double kShooterPoseThetaRad =     0;	// shooter angle with respect to robot heading, in radians
     public static double kAutoAimPredictionTime =   0;	// set to 0 since we don't have a turret and need to point the entire robot
 
 

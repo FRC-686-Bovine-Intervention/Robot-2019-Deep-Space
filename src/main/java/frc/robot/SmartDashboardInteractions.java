@@ -49,8 +49,11 @@ public class SmartDashboardInteractions
     	SmartDashboard.putData("Joystick Chooser", joystickModeChooser);
 
         autoModeChooser = new SendableChooser<AutoModeOption>();
+        // autoModeChooser.setDefaultOption(AutoModeOption.HATCH_AUTO.name, AutoModeOption.HATCH_AUTO);
+        autoModeChooser.addOption(AutoModeOption.HATCH_AUTO.name, AutoModeOption.HATCH_AUTO);
         autoModeChooser.addOption(AutoModeOption.STAND_STILL.name, AutoModeOption.STAND_STILL);
-        autoModeChooser.setDefaultOption(AutoModeOption.HATCH_AUTO.name, AutoModeOption.HATCH_AUTO);
+        // autoModeChooser.addOption(AutoModeOption.DEBUG_AUTO.name, AutoModeOption.DEBUG_AUTO);
+        autoModeChooser.setDefaultOption(AutoModeOption.DEBUG_AUTO.name, AutoModeOption.DEBUG_AUTO);
         SmartDashboard.putData("Auto Mode", autoModeChooser);
     	
         startPositionChooser = new SendableChooser<StartPositionOption>();
@@ -152,8 +155,9 @@ public class SmartDashboardInteractions
     
     enum AutoModeOption
     {
+        HATCH_AUTO("2 Hatch Panel Auto"),
         STAND_STILL("Stand Still"),
-        HATCH_AUTO("2 Hatch Panel Auto");
+        DEBUG_AUTO("Debug");
     
         public final String name;
     
@@ -168,11 +172,14 @@ public class SmartDashboardInteractions
 
     	switch(autoMode)
     	{
+        case HATCH_AUTO:
+            return new HatchAuto();
+			
     	case STAND_STILL:
             return new StandStillMode();
 
-        case HATCH_AUTO:
-            return new HatchAuto();
+        case DEBUG_AUTO:
+            return new DebugAuto();
 			
     	default:
             System.out.println("ERROR: unexpected auto mode: " + autoMode);

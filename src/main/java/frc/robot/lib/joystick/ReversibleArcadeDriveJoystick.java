@@ -72,6 +72,17 @@ public class ReversibleArcadeDriveJoystick extends JoystickControlsBase
 	@Override
     public boolean joystickActive()
     {
+		// in autonomous, we want to check if driver is attempting to override autonomous
+		// by moving joystick.  This is the function that does this.
+		
+		double rThrottle = -mStick.getRawAxis(Constants.kXboxRStickYAxis);
+		double rTurn     = -mStick.getRawAxis(Constants.kXboxRStickXAxis);
+		double lThrottle = -mStick.getRawAxis(Constants.kXboxLStickYAxis);
+		double lTurn     = -mStick.getRawAxis(Constants.kXboxLStickXAxis);
+
+        leftStickActive =  ((Math.abs(lThrottle) >= kCrossoverThreshold) || (Math.abs(lTurn) >= kCrossoverThreshold));
+        rightStickActive = ((Math.abs(rThrottle) >= kCrossoverThreshold) || (Math.abs(rTurn) >= kCrossoverThreshold));
+
         return leftStickActive || rightStickActive;
 	}
 }
