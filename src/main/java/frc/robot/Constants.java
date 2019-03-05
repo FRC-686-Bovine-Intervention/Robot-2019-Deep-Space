@@ -68,9 +68,9 @@ public class Constants extends ConstantsBase {
     public static int kXboxRStickYAxis = 5;
 
     // Driver Joystick Configuration    
-    public static int kIntakeButton =               kXboxButtonLB;
-    public static int kOuttakeAxis =                kXboxLTriggerAxis;
-    public static int kVisionAssistanceButton =     kXboxButtonRB;
+    public static int kIntakeButton =               kXboxButtonRB;
+    public static int kOuttakeAxis =                kXboxRTriggerAxis;
+    public static int kVisionAssistanceButton =     kXboxButtonA;
     public static int kQuickTurnButton =            kXboxButtonY; // bogus setting to make TriggerDrive Joysticks happy
     public static int kCargoIntakeDepotHeight =     kXboxButtonX;
   
