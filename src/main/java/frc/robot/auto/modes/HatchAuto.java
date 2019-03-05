@@ -34,6 +34,7 @@ public class HatchAuto extends AutoModeBase {
     @Override
     protected void routine() throws AutoModeEndedException 
     {
+        /*
         double speed = 36;    //DriveLoop.kPathFollowingMaxVel;
         double visionSpeed = 36;    // slow down for collision/score
         double accel = 24;  // DriveLoop.kPathFollowingMaxAccel
@@ -117,5 +118,6 @@ public class HatchAuto extends AutoModeBase {
                 runAction(new PathFollowerAction(backupToHumanStation));    // to human station
             }
     }
-}
+    */
+    }
 }

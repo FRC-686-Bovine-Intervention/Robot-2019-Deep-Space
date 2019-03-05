@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.lib.joystick.ArcadeDriveJoystick;
 import frc.robot.lib.joystick.ButtonBoard;
 import frc.robot.lib.joystick.JoystickControlsBase;
+import frc.robot.lib.joystick.SelectedJoystick;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.FallingEdgeDetector;
 import frc.robot.lib.util.RisingEdgeDetector;
@@ -48,7 +49,7 @@ public class HatchDeploy implements Loop
     public static double kEncoderUnitsPerDeg = kEncoderUnitsPerRev/kEncoderDegPerRev;
 
 
-       //====================================================
+    //====================================================
     // Constants
     //====================================================
     
@@ -163,12 +164,15 @@ public class HatchDeploy implements Loop
 
     @Override
     public void onLoop() {
+        boolean drivingHatch = !SelectedJoystick.getInstance().getDrivingCargo();
+
         JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
         boolean dBtnIsPushed = buttonBoard.getButton(Constants.kDefenseButton);
-        boolean hBtnIsPushed = controls.getButton(Constants.kHatchDeployButton);
+        
+        boolean hBtnIsPushed = controls.getButton(Constants.kIntakeButton) && drivingHatch;
         boolean hButtonPush = hatchButtonRisingEdgeDetector.update(hBtnIsPushed);
 
-        boolean ejectButton = controls.getAxisAsButton(Constants.kHatchShootAxis);
+        boolean ejectButton = controls.getAxisAsButton(Constants.kOuttakeAxis) && drivingHatch;
         boolean ejectButtonPush = ejectButtonRisingEdgeDetector.update(ejectButton);
         boolean ejectButtonUnpush = ejectButtonFallingEdgeDetector.update(ejectButton);
 
