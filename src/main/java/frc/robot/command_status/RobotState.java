@@ -78,7 +78,8 @@ public class RobotState
 	public synchronized void reset(double _startTime, double _lEncoderDistance, double _rEncoderDistance,
 			Pose _initialFieldToRobot) {
 		// calibrate initial position to initial pose (set by autonomous mode)
-        setFieldToVehicle(_startTime, _initialFieldToRobot);
+        fieldToRobot = new InterpolatingTreeMap<>(kObservationBufferSize);
+        fieldToRobot.put(new InterpolatingDouble(_startTime), _initialFieldToRobot);
        
         // calculate gyro heading correction for the desired initial pose (as set by autonomous mode)
         double desiredHeading = _initialFieldToRobot.getHeading();  
@@ -95,13 +96,7 @@ public class RobotState
         lPrevDistance = _lPrevDistance;
         rPrevDistance = _rPrevDistance;     
 	}
-		 
-	public void setFieldToVehicle(double _startTime, Pose _newPose)
-	{
-        fieldToRobot = new InterpolatingTreeMap<>(kObservationBufferSize);
-        fieldToRobot.put(new InterpolatingDouble(_startTime), _newPose);
-	}
-
+	 	
 	public synchronized Pose getFieldToVehicle(double _timestamp) 
 	{
         return fieldToRobot.getInterpolated(new InterpolatingDouble(_timestamp));
