@@ -39,8 +39,8 @@ public class GoalStateLoop implements Loop
 	int currentBestTrackId = -1;
 	
 	enum RangeMethod { DIFFERENTIAL_HEIGHT, TARGET_HEIGHT, TARGET_WIDTH };
-	// RangeMethod rangeMethod = RangeMethod.TARGET_HEIGHT; 
-	RangeMethod rangeMethod = RangeMethod.TARGET_WIDTH; 
+	RangeMethod rangeMethod = RangeMethod.TARGET_HEIGHT; 
+	// RangeMethod rangeMethod = RangeMethod.TARGET_WIDTH; 
 	
 	public static GoalStateLoop getInstance()
 	{
