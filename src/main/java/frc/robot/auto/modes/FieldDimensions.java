@@ -126,7 +126,7 @@ public class FieldDimensions
     
     public static Vector2d kCargoSide1BackupPosition1 = kCargoSide1HatchPosition.add(  Vector2d.magnitudeAngle(kCargoSideBackupDist1,   kCargoSideBackupAngle1) );
     public static Vector2d kCargoSide2BackupPosition1 = kCargoSide2HatchPosition.add(  Vector2d.magnitudeAngle(kCargoSideBackupDist1,   kCargoSideBackupAngle1) );
-    public static Vector2d kCargoSide2BackupPosition1 = kCargoSide3HatchPosition.add(  Vector2d.magnitudeAngle(kCargoSideBackupDist1,   kCargoSideBackupAngle1) );
+    public static Vector2d kCargoSide3BackupPosition1 = kCargoSide3HatchPosition.add(  Vector2d.magnitudeAngle(kCargoSideBackupDist1,   kCargoSideBackupAngle1) );
     
     public static Vector2d kCargoSide1BackupPosition2 = kCargoSide1BackupPosition1.add(Vector2d.magnitudeAngle(kCargoSideBackupDist2,   kCargoSideBackupAngle2) );
     public static Vector2d kCargoSide2BackupPosition2 = kCargoSide2BackupPosition1.add(Vector2d.magnitudeAngle(kCargoSideBackupDist2,   kCargoSideBackupAngle2) );
@@ -221,15 +221,15 @@ public class FieldDimensions
     {
         Vector2d rv = new Vector2d();
         
-       switch (_target)
-        {
-            case CARGO_FRONT:   rv =  getCargoFrontBackupTurnPosition(); break;
-            case CARGO_SIDE1:   rv =  getCargoSide1BackupTurnPosition(); break;
-            case CARGO_SIDE2:   rv =  getCargoSide2BackupTurnPosition(); break;
-            case CARGO_SIDE3:   rv =  getCargoSide3BackupTurnPosition(); break;
-            case ROCKET_NEAR:   rv =  getNearRocketBackupTurnPosition(); break;
-            case ROCKET_FAR:    rv =  getFarRocketBackupTurnPosition(); break;
-        }
+    //    switch (_target)
+    //     {
+    //         case CARGO_FRONT:   rv =  getCargoFrontBackupTurnPosition(); break;
+    //         case CARGO_SIDE1:   rv =  getCargoSide1BackupTurnPosition(); break;
+    //         case CARGO_SIDE2:   rv =  getCargoSide2BackupTurnPosition(); break;
+    //         case CARGO_SIDE3:   rv =  getCargoSide3BackupTurnPosition(); break;
+    //         case ROCKET_NEAR:   rv =  getNearRocketBackupTurnPosition(); break;
+    //         case ROCKET_FAR:    rv =  getFarRocketBackupTurnPosition(); break;
+    //     }
 
         return rv;
     }

@@ -36,13 +36,18 @@ public class HatchAuto extends AutoModeBase {
     {
         double speed = 36;    //DriveLoop.kPathFollowingMaxVel;
         double visionSpeed = 36;    // slow down for collision/score
-        double accel = 24;  // DriveLoop.kPathFollowingMaxAccel
+        double accel = 24;   //DriveLoop.kPathFollowingMaxAccel
         double lookaheadDist = DriveLoop.kPathFollowingLookahead;
 
 
         PathSegment.Options pathOptions	=       new PathSegment.Options(speed, accel, lookaheadDist, false);
         PathSegment.Options tightTurnOptions =  new PathSegment.Options(speed, accel, lookaheadDist/2, false);
         PathSegment.Options visionOptions =     new PathSegment.Options(visionSpeed, accel, lookaheadDist, true);
+        PathSegment.Options fastOptions =     new PathSegment.Options(120, 40, 72, true);
+        PathSegment.Options medOptions =     new PathSegment.Options(72, 38, 36, true);
+        PathSegment.Options slowOptions =     new PathSegment.Options(36, 38, 24, true);
+       
+
 
         SmartDashboardInteractions smartDashboardInteractions = SmartDashboardInteractions.getInstance();
         Pose startPose = smartDashboardInteractions.getStartPosition();
@@ -57,8 +62,7 @@ public class HatchAuto extends AutoModeBase {
         Vector2d humanStationVisionPos = FieldDimensions.getHumanStationVisionPosition();
         Vector2d humanStationHatchPos =  FieldDimensions.getHumanStationHatchPosition();
 
-        for (int k = 0; k < 2; k++)
-        {
+      
             Vector2d startPos = new Vector2d();
             if (k==0) {
                 startPos = startPosition;           // 1st target: start from HAB
@@ -72,29 +76,36 @@ public class HatchAuto extends AutoModeBase {
             Vector2d visionPos = FieldDimensions.getTargetVisionPosition(target[k]);
             Vector2d hatchPos =  FieldDimensions.getTargetHatchPosition(target[k]);
 
-            Path startToBackup = new Path();
-            startToBackup.add(new Waypoint(startPos,    pathOptions));
-            startToBackup.add(new Waypoint(backupPos,   pathOptions));
+            // Path startToBackup = new Path();
+            // startToBackup.add(new Waypoint(startPos,    pathOptions));
+            // startToBackup.add(new Waypoint(backupPos,   pathOptions));
             
-            Path backupToScore = new Path();
-            backupToScore.add(new Waypoint(backupPos,   pathOptions));
-            backupToScore.add(new Waypoint(turnPos,     pathOptions));
-            backupToScore.add(new Waypoint(visionPos,   visionOptions));
-            backupToScore.add(new Waypoint(hatchPos,    visionOptions));    // use vision after turning towards target
-            backupToScore.setReverseDirection();
+            // Path backupToScore = new Path();
+            // backupToScore.add(new Waypoint(backupPos,   pathOptions));
+            // backupToScore.add(new Waypoint(turnPos,     pathOptions));
+            // backupToScore.add(new Waypoint(visionPos,   visionOptions));
+            // backupToScore.add(new Waypoint(hatchPos,    visionOptions));    // use vision after turning towards target
+            // backupToScore.setReverseDirection();
 
-            Path scoreToBackup = new Path();
-            scoreToBackup.add(new Waypoint(hatchPos,    pathOptions));
-            scoreToBackup.add(new Waypoint(backupPos,   pathOptions));
+            // Path scoreToBackup = new Path();
+            // scoreToBackup.add(new Waypoint(hatchPos,    pathOptions));
+            // scoreToBackup.add(new Waypoint(backupPos,   pathOptions));
 
-            Path backupToHumanStation = new Path();
-            backupToHumanStation.add(new Waypoint(backupPos,               pathOptions));
-            backupToHumanStation.add(new Waypoint(humanStationVisionPos,   visionOptions));
-            backupToHumanStation.add(new Waypoint(humanStationHatchPos,    visionOptions)); // use vision after turning towards target
-            backupToHumanStation.setReverseDirection();
+            // Path backupToHumanStation = new Path();
+            // backupToHumanStation.add(new Waypoint(backupPos,               pathOptions));
+            // backupToHumanStation.add(new Waypoint(humanStationVisionPos,   visionOptions));
+            // backupToHumanStation.add(new Waypoint(humanStationHatchPos,    visionOptions)); // use vision after turning towards target
+            // backupToHumanStation.setReverseDirection();
 
+            Path firstTargetPathF = new Path();
+            firstTargetPathF.add(new Waypoint(startPos, medOptions));
+            firstTargetPathF.add(new Waypoint(FieldDimensions.getCargoSide1TurnPosition(), medOptions));
+            firstTargetPathF.add(new Waypoint(FieldDimensions.getCargoSide1VisionPosition(), visionOptions));
+            firstTargetPathF.add(new Waypoint(FieldDimensions.getCargoSide1HatchPosition(), visionOptions));
 
-            
+            Path firstTargetPathB = new Path();
+            firstTargetPathB.add(new Waypoint(FieldDimensions, _options)))
+
             Limelight.getCargoInstance().setLEDMode(Limelight.LedMode.kOff);
             Limelight.getHatchInstance().setLEDMode(Limelight.LedMode.kOn);
     
@@ -103,11 +114,9 @@ public class HatchAuto extends AutoModeBase {
                 runAction(new WaitAction(startDelaySec));
             }
 
-            runAction(new PathFollowerAction(startToBackup));   // drive off platform 
-            runAction(new PathFollowerAction(backupToScore));   // to target
-
+            runAction(new PathFollowerAction(firstTargetPathF));   // drive off platform 
+            //setRobotPosition(targetHatch);
             runAction(new HatchEjectAction()); //eject hatch action
-
             // backup and retract pistons
             double retractDelay = 0.5;
             Action waitAndRetractAction = new SeriesAction(Arrays.asList(new WaitAction(retractDelay), new HatchResetAction()));
@@ -116,6 +125,6 @@ public class HatchAuto extends AutoModeBase {
             if (k==0) {
                 runAction(new PathFollowerAction(backupToHumanStation));    // to human station
             }
-    }
+    
 }
 }
