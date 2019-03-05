@@ -74,8 +74,12 @@ public class HatchAuto extends AutoModeBase {
         firstTargetPathF.add(new Waypoint(target1StartPos,  medOptions));
         firstTargetPathF.add(new Waypoint(target1TurnPos,   medOptions));
         firstTargetPathF.add(new Waypoint(target1VisionPos, visionOptions));
-        firstTargetPathF.add(new Waypoint(target1HatchPos,  visionOptions));
         firstTargetPathF.setReverseDirection();
+
+        Path firstTargetPathV = new Path();
+        firstTargetPathV.add(new Waypoint(target1VisionPos, visionOptions));
+        firstTargetPathV.add(new Waypoint(target1HatchPos,  visionOptions));
+        firstTargetPathV.setReverseDirection();
 
         Path firstTargetPathB = new Path();
         firstTargetPathB.add(new Waypoint(target1HatchPos,   fastOptions));
@@ -97,7 +101,7 @@ public class HatchAuto extends AutoModeBase {
         // Second Target
         //============================================================================
 
-        Vector2d target2StartPos =   humanStationHatchPos;
+        Vector2d target2StartPos =      humanStationHatchPos;
         Vector2d target2BackupTurnPos = FieldDimensions.getTargetBackupTurnPosition(target2);
         Vector2d target2TurnPos =       FieldDimensions.getTargetTurnPosition(target2);
         Vector2d target2VisionPos =     FieldDimensions.getTargetVisionPosition(target2);
@@ -116,12 +120,15 @@ public class HatchAuto extends AutoModeBase {
         Limelight.getHatchInstance().setLEDMode(Limelight.LedMode.kOn);
 
         
-        // At Starrting Position: Go to Target 1
+        // At Starting Position: Go to Target 1
         runAction(new WaitAction(startDelaySec));               // initial delay (optional)
         runAction(new PathFollowerAction(firstTargetPathF));    // drive off platform towards first target
 
-        // At Target 1:  Save position, Place Hatch, then backup from target
+        // Collide with Target 1
+        runAction(new InterruptableAction(new HatchCollisionAction(), new PathFollowerAction(firstTargetPathV)));
         setRobotPosition(target1);
+
+        // At Target 1:  Save position, Place Hatch, then backup from target
         runAction(new HatchEjectAction()); //eject hatch action
         // backup and retract pistons
         double retractDelay = 0.5;
