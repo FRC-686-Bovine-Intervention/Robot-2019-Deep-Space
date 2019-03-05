@@ -57,9 +57,9 @@ public class SmartDashboardInteractions
         SmartDashboard.putData("Auto Mode", autoModeChooser);
     	
         startPositionChooser = new SendableChooser<StartPositionOption>();
-        startPositionChooser.setDefaultOption(StartPositionOption.LEFT_START.toString(),    StartPositionOption.LEFT_START);
+        startPositionChooser.addOption(StartPositionOption.LEFT_START.toString(),    StartPositionOption.LEFT_START);
         startPositionChooser.addOption(StartPositionOption.CENTER_LEFT_START.toString(),    StartPositionOption.CENTER_LEFT_START);
-        startPositionChooser.addOption(StartPositionOption.CENTER_RIGHT_START.toString(),    StartPositionOption.CENTER_RIGHT_START);
+        startPositionChooser.setDefaultOption(StartPositionOption.CENTER_RIGHT_START.toString(),    StartPositionOption.CENTER_RIGHT_START);
         startPositionChooser.addOption(StartPositionOption.RIGHT_START.toString(),    StartPositionOption.RIGHT_START);
         SmartDashboard.putData("Start Position", startPositionChooser);
 
@@ -73,8 +73,8 @@ public class SmartDashboardInteractions
         SmartDashboard.putData("Auto Start Delay", startDelayChooser);
 
         firstTargetChooser = new SendableChooser<FieldDimensions.TargetPositionEnum>();
-        firstTargetChooser.addOption(FieldDimensions.TargetPositionEnum.CARGO_FRONT.toString(), FieldDimensions.TargetPositionEnum.CARGO_FRONT);
-        firstTargetChooser.setDefaultOption(FieldDimensions.TargetPositionEnum.CARGO_SIDE1.toString(), FieldDimensions.TargetPositionEnum.CARGO_SIDE1);
+        firstTargetChooser.setDefaultOption(FieldDimensions.TargetPositionEnum.CARGO_FRONT.toString(), FieldDimensions.TargetPositionEnum.CARGO_FRONT);
+        firstTargetChooser.addOption(FieldDimensions.TargetPositionEnum.CARGO_SIDE1.toString(), FieldDimensions.TargetPositionEnum.CARGO_SIDE1);
         firstTargetChooser.addOption(FieldDimensions.TargetPositionEnum.CARGO_SIDE2.toString(), FieldDimensions.TargetPositionEnum.CARGO_SIDE2);
         firstTargetChooser.addOption(FieldDimensions.TargetPositionEnum.CARGO_SIDE3.toString(), FieldDimensions.TargetPositionEnum.CARGO_SIDE3);
         firstTargetChooser.addOption(FieldDimensions.TargetPositionEnum.ROCKET_NEAR.toString(), FieldDimensions.TargetPositionEnum.ROCKET_NEAR);
@@ -82,9 +82,9 @@ public class SmartDashboardInteractions
         SmartDashboard.putData("First Auto Target", firstTargetChooser);
 
         secondTargetChooser = new SendableChooser<FieldDimensions.TargetPositionEnum>();
-        secondTargetChooser.addOption(FieldDimensions.TargetPositionEnum.CARGO_FRONT.toString(), FieldDimensions.TargetPositionEnum.CARGO_FRONT);
+        secondTargetChooser.setDefaultOption(FieldDimensions.TargetPositionEnum.CARGO_FRONT.toString(), FieldDimensions.TargetPositionEnum.CARGO_FRONT);
         secondTargetChooser.addOption(FieldDimensions.TargetPositionEnum.CARGO_SIDE1.toString(), FieldDimensions.TargetPositionEnum.CARGO_SIDE1);
-        secondTargetChooser.setDefaultOption(FieldDimensions.TargetPositionEnum.CARGO_SIDE2.toString(), FieldDimensions.TargetPositionEnum.CARGO_SIDE2);
+        secondTargetChooser.addOption(FieldDimensions.TargetPositionEnum.CARGO_SIDE2.toString(), FieldDimensions.TargetPositionEnum.CARGO_SIDE2);
         secondTargetChooser.addOption(FieldDimensions.TargetPositionEnum.CARGO_SIDE3.toString(), FieldDimensions.TargetPositionEnum.CARGO_SIDE3);
         secondTargetChooser.addOption(FieldDimensions.TargetPositionEnum.ROCKET_NEAR.toString(), FieldDimensions.TargetPositionEnum.ROCKET_NEAR);
         secondTargetChooser.addOption(FieldDimensions.TargetPositionEnum.ROCKET_FAR.toString(),  FieldDimensions.TargetPositionEnum.ROCKET_FAR);

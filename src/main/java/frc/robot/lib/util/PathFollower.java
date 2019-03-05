@@ -156,7 +156,6 @@ public class PathFollower
 			curvature = -curvature;	// TODO: simplify by removing this, and removing flipping heading 180 degrees below?
 		}
 		
-		// wheelSpeed = Kinematics.inverseKinematicsFromSpeedCurvature(speed, curvature);
 		wheelSpeed = Kinematics.inverseKinematicsFromSpeedCurvature(speed, curvature);
 		wheelSpeed.limit(maxSpeed);
 		return wheelSpeed;

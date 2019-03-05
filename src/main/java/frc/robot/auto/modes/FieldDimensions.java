@@ -27,12 +27,12 @@ public class FieldDimensions
     public static double kHab3DepthX = 48.0;
 
     // Robot starting poses
-	public static Pose centerLeftStartPose  = new Pose(kHab3DepthX + Constants.kCenterToFrontBumper, 0,                                            0);
-	public static Pose centerRightStartPose = new Pose(kHab3DepthX + Constants.kCenterToFrontBumper, 0,                                            0);	
-	public static Pose leftStartPose        = new Pose(kHab3DepthX + Constants.kCenterToFrontBumper, +kHabWidthY/2 - Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
-	public static Pose rightStartPose       = new Pose(kHab3DepthX + Constants.kCenterToFrontBumper, -kHabWidthY/2 + Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
-	public static Pose leftHab2StartPose    = new Pose(Constants.kCenterToFrontBumper, +kHabWidthY/2 - Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
-	public static Pose rightHab2StartPose   = new Pose(Constants.kCenterToFrontBumper, -kHabWidthY/2 + Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
+	public static Pose centerLeftStartPose  = new Pose(kHab3DepthX + Constants.kCenterToFrontBumper, 0,                                            Math.PI);
+	public static Pose centerRightStartPose = new Pose(kHab3DepthX + Constants.kCenterToFrontBumper, 0,                                            Math.PI);	
+	public static Pose leftStartPose        = new Pose(kHab3DepthX + Constants.kCenterToFrontBumper, +kHabWidthY/2 - Constants.kCenterToSideBumper, Math.PI);  // side of robot aligned with edge of HAB
+	public static Pose rightStartPose       = new Pose(kHab3DepthX + Constants.kCenterToFrontBumper, -kHabWidthY/2 + Constants.kCenterToSideBumper, Math.PI);  // side of robot aligned with edge of HAB
+	public static Pose leftHab2StartPose    = new Pose(Constants.kCenterToFrontBumper, +kHabWidthY/2 - Constants.kCenterToSideBumper, Math.PI);  // side of robot aligned with edge of HAB
+	public static Pose rightHab2StartPose   = new Pose(Constants.kCenterToFrontBumper, -kHabWidthY/2 + Constants.kCenterToSideBumper, Math.PI);  // side of robot aligned with edge of HAB
 
     // Rocket
     public static Vector2d kRocketCenter = new Vector2d(229.1, 162.0);          // TODO: fix this -- right now Y is too high
@@ -106,9 +106,9 @@ public class FieldDimensions
     public static double   kCargoFrontBackupDist3   = 1.0;                  // backup3: just to keep robot pointed in right direction
     public static double   kCargoFrontBackupAngle3  = 0.0;                           
     
-    public static Vector2d kCargoFrontBackupPosition1 = kCargoFrontHatchPosition.add(   Vector2d.magnitudeAngle(kFarRocketBackupDist1, kFarRocketBackupAngle1));
-    public static Vector2d kCargoFrontBackupPosition2 = kCargoFrontBackupPosition1.add( Vector2d.magnitudeAngle(kFarRocketBackupDist2, kFarRocketBackupAngle2));
-    public static Vector2d kCargoFrontBackupPosition3 = kCargoFrontBackupPosition2.add( Vector2d.magnitudeAngle(kFarRocketBackupDist3, kFarRocketBackupAngle3));
+    public static Vector2d kCargoFrontBackupPosition1 = kCargoFrontHatchPosition.add(   Vector2d.magnitudeAngle(kCargoFrontBackupDist1, kCargoFrontBackupAngle1));
+    public static Vector2d kCargoFrontBackupPosition2 = kCargoFrontBackupPosition1.add( Vector2d.magnitudeAngle(kCargoFrontBackupDist2, kCargoFrontBackupAngle2));
+    public static Vector2d kCargoFrontBackupPosition3 = kCargoFrontBackupPosition2.add( Vector2d.magnitudeAngle(kCargoFrontBackupDist3, kCargoFrontBackupAngle3));
     
     
     // Cargo Ship Side Bays
@@ -240,15 +240,15 @@ public class FieldDimensions
     {
         Vector2d rv = new Vector2d();
         
-    //    switch (_target)
-    //     {
-    //         case CARGO_FRONT:   rv =  getCargoFrontBackupTurnPosition(); break;
-    //         case CARGO_SIDE1:   rv =  getCargoSide1BackupTurnPosition(); break;
-    //         case CARGO_SIDE2:   rv =  getCargoSide2BackupTurnPosition(); break;
-    //         case CARGO_SIDE3:   rv =  getCargoSide3BackupTurnPosition(); break;
-    //         case ROCKET_NEAR:   rv =  getNearRocketBackupTurnPosition(); break;
-    //         case ROCKET_FAR:    rv =  getFarRocketBackupTurnPosition(); break;
-    //     }
+       switch (_target)
+        {
+            case CARGO_FRONT:   rv =  getCargoFrontBackupTurnPosition(); break;
+            case CARGO_SIDE1:   rv =  getCargoSide1BackupTurnPosition(); break;
+            case CARGO_SIDE2:   rv =  getCargoSide2BackupTurnPosition(); break;
+            case CARGO_SIDE3:   rv =  getCargoSide3BackupTurnPosition(); break;
+            case ROCKET_NEAR:   rv =  getNearRocketBackupTurnPosition(); break;
+            case ROCKET_FAR:    rv =  getFarRocketBackupTurnPosition(); break;
+        }
 
         return rv;
     }

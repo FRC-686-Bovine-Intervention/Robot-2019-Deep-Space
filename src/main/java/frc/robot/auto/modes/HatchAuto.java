@@ -34,8 +34,8 @@ public class HatchAuto extends AutoModeBase {
     @Override
     protected void routine() throws AutoModeEndedException 
     {
-        double speed = 36;    //DriveLoop.kPathFollowingMaxVel;
-        double visionSpeed = 36;    // slow down for collision/score
+        double speed = 48;    //DriveLoop.kPathFollowingMaxVel;
+        double visionSpeed = 24;    // slow down for collision/score
         double accel = 24;   //DriveLoop.kPathFollowingMaxAccel
         double lookaheadDist = DriveLoop.kPathFollowingLookahead;
 
@@ -43,9 +43,9 @@ public class HatchAuto extends AutoModeBase {
         PathSegment.Options pathOptions	=       new PathSegment.Options(speed, accel, lookaheadDist, false);
         PathSegment.Options tightTurnOptions =  new PathSegment.Options(speed, accel, lookaheadDist/2, false);
         PathSegment.Options visionOptions =     new PathSegment.Options(visionSpeed, accel, lookaheadDist, true);
-        PathSegment.Options fastOptions =     new PathSegment.Options(120, 40, 72, true);
-        PathSegment.Options medOptions =     new PathSegment.Options(72, 38, 36, true);
-        PathSegment.Options slowOptions =     new PathSegment.Options(36, 38, 24, true);
+        PathSegment.Options fastOptions =     new PathSegment.Options(speed, accel, lookaheadDist, false);
+        PathSegment.Options medOptions =     new PathSegment.Options(speed, accel, lookaheadDist, false);
+        PathSegment.Options slowOptions =     new PathSegment.Options(speed, accel, lookaheadDist, false);
        
 
 
@@ -62,69 +62,40 @@ public class HatchAuto extends AutoModeBase {
         Vector2d humanStationVisionPos = FieldDimensions.getHumanStationVisionPosition();
         Vector2d humanStationHatchPos =  FieldDimensions.getHumanStationHatchPosition();
 
-      
-            Vector2d startPos = new Vector2d();
-            if (k==0) {
-                startPos = startPosition;           // 1st target: start from HAB
-            }
-            else {
-                startPos = humanStationHatchPos;    // 2nd target: start from human station
-            }
-
-            Vector2d backupPos = FieldDimensions.getTargetBackupPosition(target[k]);
-            Vector2d turnPos =   FieldDimensions.getTargetTurnPosition(target[k]);
-            Vector2d visionPos = FieldDimensions.getTargetVisionPosition(target[k]);
-            Vector2d hatchPos =  FieldDimensions.getTargetHatchPosition(target[k]);
-
-            // Path startToBackup = new Path();
-            // startToBackup.add(new Waypoint(startPos,    pathOptions));
-            // startToBackup.add(new Waypoint(backupPos,   pathOptions));
-            
-            // Path backupToScore = new Path();
-            // backupToScore.add(new Waypoint(backupPos,   pathOptions));
-            // backupToScore.add(new Waypoint(turnPos,     pathOptions));
-            // backupToScore.add(new Waypoint(visionPos,   visionOptions));
-            // backupToScore.add(new Waypoint(hatchPos,    visionOptions));    // use vision after turning towards target
-            // backupToScore.setReverseDirection();
-
-            // Path scoreToBackup = new Path();
-            // scoreToBackup.add(new Waypoint(hatchPos,    pathOptions));
-            // scoreToBackup.add(new Waypoint(backupPos,   pathOptions));
-
-            // Path backupToHumanStation = new Path();
-            // backupToHumanStation.add(new Waypoint(backupPos,               pathOptions));
-            // backupToHumanStation.add(new Waypoint(humanStationVisionPos,   visionOptions));
-            // backupToHumanStation.add(new Waypoint(humanStationHatchPos,    visionOptions)); // use vision after turning towards target
-            // backupToHumanStation.setReverseDirection();
+           // Vector2d backupPos = FieldDimensions.getTargetBackupPosition(target[k]);
+            // Vector2d turnPos =   FieldDimensions.getTargetTurnPosition(target[k]);
+            // Vector2d visionPos = FieldDimensions.getTargetVisionPosition(target[k]);
+            // Vector2d hatchPos =  FieldDimensions.getTargetHatchPosition(target[k]);
 
             Path firstTargetPathF = new Path();
-            firstTargetPathF.add(new Waypoint(startPos, medOptions));
-            firstTargetPathF.add(new Waypoint(FieldDimensions.getCargoSide1TurnPosition(), medOptions));
-            firstTargetPathF.add(new Waypoint(FieldDimensions.getCargoSide1VisionPosition(), visionOptions));
-            firstTargetPathF.add(new Waypoint(FieldDimensions.getCargoSide1HatchPosition(), visionOptions));
+            firstTargetPathF.add(new Waypoint(startPosition, medOptions));
+            firstTargetPathF.add(new Waypoint(FieldDimensions.getCargoFrontTurnPosition(), medOptions));
+            firstTargetPathF.add(new Waypoint(FieldDimensions.getCargoFrontVisionPosition(), visionOptions));
+            firstTargetPathF.add(new Waypoint(FieldDimensions.getCargoFrontHatchPosition(), visionOptions));
+            firstTargetPathF.setReverseDirection();
 
             Path firstTargetPathB = new Path();
-            firstTargetPathB.add(new Waypoint(FieldDimensions, _options)))
+            firstTargetPathB.add(new Waypoint(FieldDimensions.getCargoFrontHatchPosition(), fastOptions));
+            firstTargetPathB.add(new Waypoint(FieldDimensions.getCargoFrontBackupPosition1(), fastOptions));
+            firstTargetPathB.add(new Waypoint(FieldDimensions.getCargoFrontBackupPosition2(), fastOptions));
+            firstTargetPathB.add(new Waypoint(FieldDimensions.getCargoFrontBackupPosition3(), fastOptions));
+
 
             Limelight.getCargoInstance().setLEDMode(Limelight.LedMode.kOff);
             Limelight.getHatchInstance().setLEDMode(Limelight.LedMode.kOn);
     
 
-            if (k==0) {
-                runAction(new WaitAction(startDelaySec));
-            }
-
+            
+            runAction(new WaitAction(startDelaySec));
             runAction(new PathFollowerAction(firstTargetPathF));   // drive off platform 
             //setRobotPosition(targetHatch);
             runAction(new HatchEjectAction()); //eject hatch action
             // backup and retract pistons
             double retractDelay = 0.5;
             Action waitAndRetractAction = new SeriesAction(Arrays.asList(new WaitAction(retractDelay), new HatchResetAction()));
-            runAction(new ParallelAction(Arrays.asList(new PathFollowerAction(scoreToBackup), waitAndRetractAction)));   // reverse away from target
-    
-            if (k==0) {
-                runAction(new PathFollowerAction(backupToHumanStation));    // to human station
-            }
+            runAction(new ParallelAction(Arrays.asList(new PathFollowerAction(firstTargetPathB), waitAndRetractAction)));   // reverse away from target
+            // runAction(new PathFollowerAction(backupToHumanStation));    // to human station
+            
     
 }
 }
