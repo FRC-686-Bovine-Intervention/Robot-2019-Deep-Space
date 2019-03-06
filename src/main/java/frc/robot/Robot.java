@@ -65,6 +65,9 @@ public class Robot extends TimedRobot {
 
 	OperationalMode operationalMode = OperationalMode.getInstance();
 
+	final boolean PRACTICE_BOT = false;		// set to true when running on practice bot without Cargo Intake / Climber
+
+
     public Robot() {
     	CrashTracker.logRobotConstruction();
     }
@@ -87,9 +90,12 @@ public class Robot extends TimedRobot {
        		loopController.register(RobotStateLoop.getInstance());
     		loopController.register(VisionLoop.getInstance());
 			loopController.register(GoalStateLoop.getInstance());
-			loopController.register(CargoIntake.getInstance());
 			loopController.register(HatchDeploy.getInstance());
-			loopController.register(Climber.getInstance());
+			if (!PRACTICE_BOT)
+			{
+				loopController.register(CargoIntake.getInstance());
+				loopController.register(Climber.getInstance());
+			}
 
 			selectedJoystick.update();
     		
@@ -108,10 +114,12 @@ public class Robot extends TimedRobot {
 			robotLogger.register(GoalStateLoop.getInstance().getGoalTracker().getLogger());
 			robotLogger.register(GoalStates.getInstance().getLogger());
 			robotLogger.register(VisionDriveAssistant.getInstance().getLogger());
-			robotLogger.register(CargoIntake.getInstance().getLogger());
 			robotLogger.register(HatchDeploy.getInstance().getLogger());
-			robotLogger.register(Climber.getInstance().getLogger());
-			robotLogger.register(FieldDimensions.getLogger());
+			if (!PRACTICE_BOT)
+			{
+				robotLogger.register(CargoIntake.getInstance().getLogger());
+				robotLogger.register(Climber.getInstance().getLogger());
+			}
     		
     		setInitialPose(new Pose());
 
@@ -328,7 +336,7 @@ public class Robot extends TimedRobot {
 			drive.setOpenLoop(driveCmd);
 
 			// turn on LEDs in direction of forward travel
-			if (CargoIntake.getInstance().shouldBlink() || Climber.getInstance().shouldBlink()) 
+			if (!PRACTICE_BOT && (CargoIntake.getInstance().shouldBlink() || Climber.getInstance().shouldBlink())) 
 			{  
 				 cargoCamera.setLEDMode(Limelight.LedMode.kBlink);
 				 hatchCamera.setLEDMode(Limelight.LedMode.kBlink);

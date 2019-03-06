@@ -27,9 +27,9 @@ public class Climber implements Loop
         return instance;
     }
     
+    public VictorSPX climberDriveMotor;
     public CargoIntake arm = CargoIntake.getInstance();
     public ClimberCylinders cylinders = ClimberCylinders.getInstance();
-    public VictorSPX climberDriveMotor = new VictorSPX(Constants.kClimberDriveMotorTalonId);
     public ButtonBoard buttonBoard = ButtonBoard.getInstance();
     public double pushUpThresholdLevel2 = -5;
     public double pushUpThresholdLevel3 = 5;
@@ -73,6 +73,7 @@ public class Climber implements Loop
 
     public Climber()
     {
+        climberDriveMotor = new VictorSPX(Constants.kClimberDriveMotorTalonId);
         cylinders.retract();
 
         climberDriveMotor.set(ControlMode.PercentOutput, 0.0);
@@ -207,6 +208,7 @@ public class Climber implements Loop
                 climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorAtTopPercentOutput);
                 
                 arm.turnOffSoftLimits(); // turn of soft limits so we can do a pushup
+//              arm.setTarget(CargoDeployPositionEnum.LEVEL2_APPROACH);    // push arm until level with frame
                 
                 
                 // the piston dance
@@ -249,7 +251,6 @@ public class Climber implements Loop
                     }
                 }   
 
-//              arm.setTarget(CargoDeployPositionEnum.LEVEL2_APPROACH);    // push arm until level with frame
 
                 break;
 
