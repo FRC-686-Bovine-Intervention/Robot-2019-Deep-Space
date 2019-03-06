@@ -35,12 +35,12 @@ public class FieldDimensions
 	public static Pose rightHab2StartPose   = new Pose(Constants.kCenterToFrontBumper, -kHabWidthY/2 + Constants.kCenterToSideBumper, Math.PI);  // side of robot aligned with edge of HAB
 
     // Rocket
-    public static Vector2d kRocketCenter = new Vector2d(229.1, 162.0);          // TODO: fix this -- right now Y is too high
-    public static double   kRocketCenterToHatch = 17.0;                         // distance from rocket center to center of hatches on diagonal
-    public static double   kRocketAngleRad = 30.0*Vector2d.degreesToRadians ;   // angle from center to hatch, relative to back
-    public static double   kRocketVisionDist = 40.0;                            // distance from which to turn on cameras
-    public static double   kRocketTurnDist   = 30.0;                            // distance from which to turn towards rocket
-    public static double   kRocketBackupTurnDist   = 30.0;                      
+    private static Vector2d kRocketCenter = new Vector2d(229.1, 153.3);
+    private static double   kRocketCenterToHatch = 17.0;                         // distance from rocket center to center of hatches on diagonal
+    private static double   kRocketAngleRad = 30.0*Vector2d.degreesToRadians ;   // angle from center to hatch, relative to back
+    private static double   kRocketVisionDist = 40.0;                            // distance from which to turn on cameras
+    private static double   kRocketTurnDist   = 30.0;                            // distance from which to turn towards rocket
+    private static double   kRocketBackupTurnDist   = 30.0;                      
     
     public static double   kNearRocketAngleRad = Math.PI - kRocketAngleRad;
     public static double   kFarRocketAngleRad =      0.0 - kRocketAngleRad;
