@@ -328,7 +328,8 @@ public class Robot extends TimedRobot {
 			drive.setOpenLoop(driveCmd);
 
 			// turn on LEDs in direction of forward travel
-			if (CargoIntake.getInstance().shouldBlink()) {  
+			if (CargoIntake.getInstance().shouldBlink() || Climber.getInstance().shouldBlink()) 
+			{  
 				 cargoCamera.setLEDMode(Limelight.LedMode.kBlink);
 				 hatchCamera.setLEDMode(Limelight.LedMode.kBlink);
 			}

@@ -301,6 +301,15 @@ public class Climber implements Loop
         }
     }
     
+    public boolean shouldBlink()
+    {
+        // blink if at beginning of climb sequence to let drivers know climber is active
+        // blink when finished to celebrate
+        return ((arm.state == CargoDeployStateEnum.CLIMBING) && (climberState == ClimberStateEnum.LEVEL3_ARMS_ON_PLATFORM)) || 
+               ((arm.state == CargoDeployStateEnum.CLIMBING) && (climberState == ClimberStateEnum.LEVEL2_ARMS_ON_PLATFORM) || 
+               (climberState == ClimberStateEnum.FINISHED)); 
+    }
+
 	private final DataLogger logger = new DataLogger()
 	{
         @Override

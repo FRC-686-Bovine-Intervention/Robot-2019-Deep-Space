@@ -92,7 +92,7 @@ public class CargoIntake implements Loop
 
     public final double kMinFwdOutput = +0;
     public final double kMinRevOutput = -0;
-    public final double kMaxFwdOutput = +0.5;   // start with low voltage!!!  TODO: increase to 0.5 max (6V)
+    public final double kMaxFwdOutput = +0.5;
     public final double kMaxRevOutput = -0.5;
 
     public final int kSlotIdx = 0;
@@ -302,9 +302,9 @@ public class CargoIntake implements Loop
         
         // get current target angle from driver & operator
         if (intakeButtonPress)                                              { setTarget(CargoDeployPositionEnum.GROUND); }      // go to ground on driver button, not operator's button board
-        if (selectedJoystick.getButton(Constants.kCargoIntakeDepotHeight))       { setTarget(CargoDeployPositionEnum.DEPOT_LEVEL); }      
-        if (buttonBoard.getButton(Constants.kCargoIntakeRocketButton))      { setTarget(CargoDeployPositionEnum.ROCKET); }      // TODO: only allow if ball is detected?
-        if (buttonBoard.getButton(Constants.kCargoIntakeCargoShipButton))   { setTarget(CargoDeployPositionEnum.CARGO_SHIP); }  // TODO: only allow if ball is detected?
+        if (selectedJoystick.getButton(Constants.kCargoIntakeDepotHeight))  { setTarget(CargoDeployPositionEnum.DEPOT_LEVEL); }      
+        if (buttonBoard.getButton(Constants.kCargoIntakeRocketButton))      { setTarget(CargoDeployPositionEnum.ROCKET); }      
+        if (buttonBoard.getButton(Constants.kCargoIntakeCargoShipButton))   { setTarget(CargoDeployPositionEnum.CARGO_SHIP); }  
         if (buttonBoard.getButton(Constants.kDefenseButton))                { setTarget(CargoDeployPositionEnum.RETRACTED); }
 
         // if in the ground state, turn off motor while riding on wheels
@@ -457,7 +457,8 @@ public class CargoIntake implements Loop
         return (CargoDeployPositionEnum.RETRACTED.angleDeg - (_encoderUnits / kEncoderUnitsPerDeg));
     }
     
-    public boolean shouldBlink(){
+    public boolean shouldBlink()
+    {
         return intakePulseTrain.getEnabled();
     }
     

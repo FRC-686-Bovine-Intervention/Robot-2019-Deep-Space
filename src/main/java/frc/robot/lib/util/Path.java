@@ -53,7 +53,7 @@ public class Path
     // constructor for empty path
     public Path() 
     {
-    	this(0);
+    	this(0.0);    // default to stopping at end of path, with finalSpeed = 0.0;
     }
 
     public Path(double _finalSpeed) 	// extra constructor parameter if not stopping at the end of this path.  use carefully.
@@ -67,6 +67,7 @@ public class Path
 
     public Path(Path _path) 
     {
+        finalSpeed = _path.finalSpeed;
     	reverseDirection = _path.reverseDirection;		// call setReverseDirection() to drive backwards
         waypoints = new ArrayList<Waypoint>(_path.waypoints);
         segments  = new ArrayList<PathSegment>(_path.segments);
