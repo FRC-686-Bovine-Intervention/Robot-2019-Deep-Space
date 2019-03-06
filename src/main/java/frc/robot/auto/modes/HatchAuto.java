@@ -120,9 +120,24 @@ public class HatchAuto extends AutoModeBase {
         Vector2d target2BackupPos2 =    FieldDimensions.getTargetBackupPosition2(target2);
         Vector2d target2BackupPos3 =    FieldDimensions.getTargetBackupPosition3(target2);
 
+        if (target1 == FieldDimensions.TargetPositionEnum.CARGO_FRONT && target2 == FieldDimensions.TargetPositionEnum.CARGO_FRONT)
+        {
+            // if both targets are CARGO_FRONT, there are issues with the above code because the positions cross the y=0 line
+            // so we'll get target2's positions by applying an offset to target1's positions
+            Vector2d offset = FieldDimensions.getCargoFrontSpacing();   // (0, +/-21.75)
+            target2BackupTurnPos = target1BackupTurnPos.add(offset);
+            target2TurnPos =       target1TurnPos.add(offset);
+            target2VisionPos =     target1VisionPos.add(offset);
+            target2HatchPos =      target1HatchPos.add(offset);
+            target2BackupPos1 =    target1BackupPos1.add(offset);
+            target2BackupPos2 =    target1BackupPos2.add(offset);
+            target2BackupPos3 =    target1BackupPos3.add(offset);
+        }
+
+
         Path secondTargetPathB1 = new Path();
         secondTargetPathB1.add(new Waypoint(target2StartPos, fastOptions));
-        if(target2 == FieldDimensions.TargetPositionEnum.ROCKET_FAR)
+        if (target2 == FieldDimensions.TargetPositionEnum.ROCKET_FAR)
         {
             secondTargetPathB1.add(new Waypoint(FieldDimensions.getHumanStationFarRocketMidPosition(), fastOptions));
         }
@@ -132,7 +147,7 @@ public class HatchAuto extends AutoModeBase {
         {
             secondTargetPathB1.add(new Waypoint(FieldDimensions.getHumanStationSideCargoMidPosition(), fastOptions));
         }
-        if(target2 == FieldDimensions.TargetPositionEnum.CARGO_FRONT)
+        if (target2 == FieldDimensions.TargetPositionEnum.CARGO_FRONT)
         {
             secondTargetPathB1.add(new Waypoint(FieldDimensions.getHumanStationFrontCargoMidPosition(), fastOptions));
         }
