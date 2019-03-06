@@ -235,10 +235,10 @@ public class CargoIntake implements Loop
 
         drivingCargo = SelectedJoystick.getInstance().getDrivingCargo();
 
-        intakeButton = selectedJoystick.getButton(Constants.kIntakeButton) && drivingCargo;
+        intakeButton = selectedJoystick.getButton(Constants.kCargoIntakeButton) && drivingCargo;
         intakeButtonPress = intakeButtonRisingEdgeDetector.update(intakeButton);
         intakeButtonUnpress = intakeButtonFallingEdgeDetector.update(intakeButton);
-        outtakeButton = selectedJoystick.getAxisAsButton(Constants.kOuttakeAxis) && drivingCargo;
+        outtakeButton = selectedJoystick.getAxisAsButton(Constants.kCargoOuttakeAxis) && drivingCargo;
 
         runDeploy();
         runIntake();
@@ -349,23 +349,14 @@ public class CargoIntake implements Loop
              intakePulseTrain.start(); }   
         
         boolean intakePulse = intakePulseTrain.update();
-        // SelectedJoystick.getInstance().setRumble(RumbleType.kLeftRumble, 0);
-        // SelectedJoystick.getInstance().setRumble(RumbleType.kRightRumble, 0);
-        if (selectedJoystick.getAxisAsButton(Constants.kOuttakeAxis) && drivingCargo) {
+        if (selectedJoystick.getAxisAsButton(Constants.kCargoOuttakeAxis) && drivingCargo) {
             intakeMotor.set(ControlMode.PercentOutput, kOuttakePercentOutput); }
-        // else if (intakeActive || intakePulse) {
         else if ((getArmAngleDeg() < kspinIntakeAngleDeg) || intakePulse) {
             intakeMotor.set(ControlMode.PercentOutput, kIntakePercentOutput); 
         } 
         else {
             intakeMotor.set(ControlMode.PercentOutput, 0.0); 
         }
-
-
-        // if (intakePulse) {
-        //     SelectedJoystick.getInstance().setRumble(RumbleType.kLeftRumble, 1);
-        //     SelectedJoystick.getInstance().setRumble(RumbleType.kRightRumble, 1);
-        // } 
     }
 
 

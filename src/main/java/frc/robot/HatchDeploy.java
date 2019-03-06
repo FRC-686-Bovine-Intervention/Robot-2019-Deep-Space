@@ -169,10 +169,10 @@ public class HatchDeploy implements Loop
         JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
         boolean dBtnIsPushed = buttonBoard.getButton(Constants.kDefenseButton);
         
-        boolean hBtnIsPushed = controls.getButton(Constants.kIntakeButton) && drivingHatch;
+        boolean hBtnIsPushed = controls.getButton(Constants.kHatchDeployButton) && drivingHatch;
         boolean hButtonPush = hatchButtonRisingEdgeDetector.update(hBtnIsPushed);
 
-        boolean ejectButton = controls.getAxisAsButton(Constants.kOuttakeAxis) && drivingHatch;
+        boolean ejectButton = controls.getAxisAsButton(Constants.kHatchShootAxis) && drivingHatch;
         boolean ejectButtonPush = ejectButtonRisingEdgeDetector.update(ejectButton);
         boolean ejectButtonUnpush = ejectButtonFallingEdgeDetector.update(ejectButton);
 

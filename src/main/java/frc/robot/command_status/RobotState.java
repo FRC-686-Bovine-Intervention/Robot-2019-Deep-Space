@@ -78,25 +78,31 @@ public class RobotState
 	public synchronized void reset(double _startTime, double _lEncoderDistance, double _rEncoderDistance,
 			Pose _initialFieldToRobot) {
 		// calibrate initial position to initial pose (set by autonomous mode)
-        fieldToRobot = new InterpolatingTreeMap<>(kObservationBufferSize);
-        fieldToRobot.put(new InterpolatingDouble(_startTime), _initialFieldToRobot);
-       
-        // calculate gyro heading correction for the desired initial pose (as set by autonomous mode)
-        double desiredHeading = _initialFieldToRobot.getHeading();  
-        double gyroHeading  = DriveState.getInstance().getHeading();
-        gyroCorrection = gyroHeading - desiredHeading;		// subtract gyroCorrection from actual gyro heading to get desired orientation
-        
-        robotSpeed = new Kinematics.LinearAngularSpeed(0, 0);
-        
-        setPrevEncoderDistance(_lEncoderDistance, _rEncoderDistance);
-    }
+        setFieldToVehicle(_startTime, _initialFieldToRobot);
+
+		// calculate gyro heading correction for the desired initial pose (as set by
+		// autonomous mode)
+		double desiredHeading = _initialFieldToRobot.getHeading();
+		double gyroHeading = DriveState.getInstance().getHeading();
+		gyroCorrection = gyroHeading - desiredHeading; // subtract gyroCorrection from actual gyro heading to get
+														// desired orientation
+
+		robotSpeed = new Kinematics.LinearAngularSpeed(0, 0);
+
+		setPrevEncoderDistance(_lEncoderDistance, _rEncoderDistance);
+	}
+
+	public synchronized void setFieldToVehicle(double _timestamp, Pose _pose) {
+		fieldToRobot = new InterpolatingTreeMap<>(kObservationBufferSize);
+		fieldToRobot.put(new InterpolatingDouble(_timestamp), _pose);
+	}
 	
 	public void setPrevEncoderDistance(double _lPrevDistance, double _rPrevDistance)
 	{
         lPrevDistance = _lPrevDistance;
         rPrevDistance = _rPrevDistance;     
 	}
-	 	
+	
 	public synchronized Pose getFieldToVehicle(double _timestamp) 
 	{
         return fieldToRobot.getInterpolated(new InterpolatingDouble(_timestamp));

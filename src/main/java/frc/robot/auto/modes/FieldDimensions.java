@@ -356,6 +356,25 @@ public class FieldDimensions
         return rv;
     }
     
+    public static Vector2d getRobotPositionAtTarget(TargetPositionEnum _target)
+    {
+        Vector2d rv = new Vector2d();
+        switch (_target)
+        {
+            case CARGO_FRONT:   rv =  getCargoFrontHatchPosition().add( Vector2d.magnitudeAngle(Constants.kCenterToRearBumper, kCargoFrontAngleRad)); break;
+            case CARGO_SIDE1:   rv =  getCargoSide1HatchPosition().add( Vector2d.magnitudeAngle(Constants.kCenterToRearBumper, kCargoSideAngleRad)); break;
+            case CARGO_SIDE2:   rv =  getCargoSide2HatchPosition().add( Vector2d.magnitudeAngle(Constants.kCenterToRearBumper, kCargoSideAngleRad)); break;
+            case CARGO_SIDE3:   rv =  getCargoSide3HatchPosition().add( Vector2d.magnitudeAngle(Constants.kCenterToRearBumper, kCargoSideAngleRad)); break;
+            case ROCKET_NEAR:   rv =  getNearRocketHatchPosition().add( Vector2d.magnitudeAngle(Constants.kCenterToRearBumper, kNearRocketAngleRad)); break;
+            case ROCKET_FAR:    rv =   getFarRocketHatchPosition().add( Vector2d.magnitudeAngle(Constants.kCenterToRearBumper,  kFarRocketAngleRad)); break;
+        }
+        if (rightSide)
+        {
+            rv = rv.conj();
+        }
+        return rv;
+    }
+
     public static Vector2d getRobotPositionAtHumanStation()
     {
         Vector2d rv = new Vector2d();
