@@ -229,6 +229,7 @@ public class FieldDimensions
     public static Vector2d getCargoSide3BackupPosition3() { return (!rightSide ? kCargoSide3BackupPosition3 : kCargoSide3BackupPosition3.conj()); }	
     
     public static Vector2d getHumanStationHatchPosition()  { return (!rightSide ? kHumanStationHatchPosition : kHumanStationHatchPosition.conj()); }
+    public static Vector2d getHumanStationTurnPosition()  { return (!rightSide ? kHumanStationTurnPosition : kHumanStationTurnPosition.conj()); }
     public static Vector2d getHumanStationVisionPosition() { return (!rightSide ? kHumanStationVisionPosition : kHumanStationVisionPosition.conj()); }
 
     public static Vector2d getHumanStationFarRocketMidPosition()  { return (!rightSide ? kHumanStationFarRocketMidPosition  : kHumanStationFarRocketMidPosition.conj()); }
