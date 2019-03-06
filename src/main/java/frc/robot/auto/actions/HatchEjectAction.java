@@ -1,12 +1,7 @@
 package frc.robot.auto.actions;
 
-import frc.robot.lib.util.DataLogger;
-import frc.robot.command_status.DriveState;
-import frc.robot.subsystems.*;
-
-import frc.robot.subsystems.Superstructure;
 import frc.robot.HatchDeploy;
-import frc.robot.Robot;
+import frc.robot.lib.util.DataLogger;
 
 /**
  * DriveStraightAction drives the robot straight at a settable angle, distance,

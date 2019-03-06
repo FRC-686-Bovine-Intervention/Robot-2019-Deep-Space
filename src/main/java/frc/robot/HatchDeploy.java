@@ -30,9 +30,10 @@ public class HatchDeploy implements Loop
     public TalonSRX dropMotor;
     public Solenoid hatchSolenoid;
     public final double zeroingSpeed = -0.15;
-    public final int bumperAngle = 250;
-    public final int groundAngle = 1249;
-    public final int defenseAngle = 0;
+    public static final int bumperAngle = 250;
+    public static final int collisionAngle = 350;
+    public static final int groundAngle = 1249;
+    public static final int defenseAngle = 0;
     public RisingEdgeDetector hatchButtonRisingEdgeDetector = new RisingEdgeDetector();
     public FallingEdgeDetector hatchButtonFallingEdgeDetector = new FallingEdgeDetector();
     public RisingEdgeDetector ejectButtonRisingEdgeDetector = new RisingEdgeDetector();
@@ -83,7 +84,7 @@ public class HatchDeploy implements Loop
     
     
     public enum HatchDeployStateEnum {
-        INIT, DEFENSE, TO_BUMPER, GROUND;
+        INIT, DEFENSE, AUTO_COLLISION, TO_BUMPER, GROUND;
     }
 
     public HatchDeployStateEnum state = HatchDeployStateEnum.INIT;
@@ -205,6 +206,22 @@ public class HatchDeploy implements Loop
             break;
 
 
+        case AUTO_COLLISION:
+            setTarget(collisionAngle);
+
+            // allow us to get out of this mode with button presses
+            if (hButtonPush)  
+            {    
+                mStartTime = Timer.getFPGATimestamp();
+                 
+                state = HatchDeployStateEnum.GROUND;
+            }
+            if (dBtnIsPushed)
+            {
+                state = HatchDeployStateEnum.DEFENSE;
+            }
+
+
         case DEFENSE:
            setTarget(defenseAngle);
             if (hButtonPush)
@@ -234,7 +251,7 @@ public class HatchDeploy implements Loop
 
     }
 
-    public static double dedegsToEncoderUnits(int _encoderUnits)
+    public static double degsToEncoderUnits(int _encoderUnits)
 	{
 		return _encoderUnits / kEncoderUnitsPerDeg;
 	}
@@ -250,6 +267,16 @@ public class HatchDeploy implements Loop
 		return _encoderVelocity * 10.0 / kEncoderUnitsPerDeg;
 	}
     
+    public void setState(HatchDeployStateEnum _newState)
+    {
+        state = _newState;
+    }
+
+    public double getHatchAngle()
+    {
+        return dropMotor.getSelectedSensorPosition(Constants.kTalonPidIdx);
+    }
+
 public void drop() {
     dropMotor.set(ControlMode.MotionMagic, degsToEncoderUnits(groundAngle));
 }

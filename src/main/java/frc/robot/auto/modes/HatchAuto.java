@@ -46,7 +46,6 @@ public class HatchAuto extends AutoModeBase {
 
         PathSegment.Options fastOptions =     new PathSegment.Options(speed, accel, lookaheadDist, false);
         PathSegment.Options medOptions =     new PathSegment.Options(speed, accel, lookaheadDist, false);
-        PathSegment.Options slowOptions =     new PathSegment.Options(speed, accel, lookaheadDist, false);
         PathSegment.Options visionOptions =     new PathSegment.Options(visionSpeed, accel, lookaheadDist, true);
 
         SmartDashboardInteractions smartDashboardInteractions = SmartDashboardInteractions.getInstance();
@@ -63,7 +62,6 @@ public class HatchAuto extends AutoModeBase {
         //============================================================================
 
         Vector2d target1StartPos =      startPosition;
-        Vector2d target1BackupTurnPos = FieldDimensions.getTargetBackupTurnPosition(target1);
         Vector2d target1TurnPos =       FieldDimensions.getTargetTurnPosition(target1);
         Vector2d target1VisionPos =     FieldDimensions.getTargetVisionPosition(target1);
         Vector2d target1HatchPos =      FieldDimensions.getTargetHatchPosition(target1);
@@ -123,7 +121,7 @@ public class HatchAuto extends AutoModeBase {
         Vector2d target2BackupPos3 =    FieldDimensions.getTargetBackupPosition3(target2);
 
         Path secondTargetPathB1 = new Path();
-        secondTargetPathB1.add(new Waypoint(humanStationHatchPos, fastOptions));
+        secondTargetPathB1.add(new Waypoint(target2StartPos, fastOptions));
         if(target2 == FieldDimensions.TargetPositionEnum.ROCKET_FAR)
         {
             secondTargetPathB1.add(new Waypoint(FieldDimensions.getHumanStationFarRocketMidPosition(), fastOptions));

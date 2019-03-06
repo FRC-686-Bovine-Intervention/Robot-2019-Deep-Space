@@ -1,7 +1,6 @@
 package frc.robot.vision;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.lib.joystick.SelectedJoystick;

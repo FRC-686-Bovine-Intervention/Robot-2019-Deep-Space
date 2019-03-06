@@ -3,11 +3,9 @@ package frc.robot.auto.modes;
 import frc.robot.auto.AutoModeBase;
 import frc.robot.auto.AutoModeEndedException;
 import frc.robot.auto.actions.PathFollowerAction;
-import frc.robot.command_status.RobotState;
 import frc.robot.lib.util.Path;
 import frc.robot.lib.util.Path.Waypoint;
 import frc.robot.lib.util.PathSegment;
-import frc.robot.lib.util.Pose;
 import frc.robot.lib.util.Vector2d;
 import frc.robot.loops.DriveLoop;
 
