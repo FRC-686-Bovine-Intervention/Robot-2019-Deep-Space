@@ -38,8 +38,6 @@ public class PathFollower
 	
 	Path path;
 	
-	public Vector2d avgTargetLocation = new Vector2d(0,0);
-
 	public double distanceFromPath;
 	public double lookaheadDist;
 	public Vector2d lookaheadPoint = new Vector2d();
@@ -50,13 +48,9 @@ public class PathFollower
 	public Pose currentPose = new Pose();
 	public Pose previousPose = new Pose();
 	
-	// camera pose with respect to robot
-	public Pose cameraPose_Robot = new Pose(Constants.kHatchCameraPoseX, Constants.kHatchCameraPoseY, Constants.kHatchCameraPoseThetaRad);
-	
 	public double prevDistanceToTargetInches;
 	public double prevHeadingToTarget;
 	
-	public Vector2d targetLocation = new Vector2d(0,0);
 	public double distanceToTargetInches;
 
 	public double remainingDistance;

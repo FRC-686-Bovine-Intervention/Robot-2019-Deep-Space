@@ -109,7 +109,7 @@ public class VisionDriveAssistant
             if (allowSpeedControl)
             {
                 // automatically reduce speed to stop in front of target
-                approachSpeed = Math.signum(approachSpeed)*Math.min(Math.abs(approachSpeed), maxSpeed);
+                approachSpeed = Math.signum(approachSpeed)*Math.min(Math.abs(approachSpeed), Math.abs(maxSpeed));
             }   
 
             // keep on target even when backing up
@@ -172,8 +172,8 @@ public class VisionDriveAssistant
 		if (Math.abs(speed) > maxBrakingSpeed)
 			speed = Math.signum(speed) * maxBrakingSpeed;
 
-		// apply minimum velocity limit (Talons can't track low speeds well)
-		final double kMinSpeed = 4.0;
+		// apply minimum velocity limit (so driver can slowly move past endpoint)
+		final double kMinSpeed = 6.0;
 		if (Math.abs(speed) < kMinSpeed) 
 			speed = Math.signum(speed) * kMinSpeed;
 
