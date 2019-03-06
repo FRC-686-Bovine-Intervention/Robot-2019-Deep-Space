@@ -62,6 +62,7 @@ public class HatchAuto extends AutoModeBase {
         //============================================================================
 
         Vector2d target1StartPos =      startPosition;
+        Vector2d target1BackupTurnPos = FieldDimensions.getTargetBackupTurnPosition(target1);
         Vector2d target1TurnPos =       FieldDimensions.getTargetTurnPosition(target1);
         Vector2d target1VisionPos =     FieldDimensions.getTargetVisionPosition(target1);
         Vector2d target1HatchPos =      FieldDimensions.getTargetHatchPosition(target1);
