@@ -355,6 +355,17 @@ public class FieldDimensions
         return rv;
     }
     
+    public static Vector2d getRobotPositionAtHumanStation()
+    {
+        Vector2d rv = new Vector2d();
+        rv =  kHumanStationHatchPosition.add(Vector2d.magnitudeAngle(Constants.kHatchTargetDistanceThresholdFromCenterInches, kHumanStationAngleRad));
+        if (rightSide)
+        {
+            rv = rv.conj();
+        }
+        return rv;
+    }
+
 	private static final DataLogger logger = new DataLogger()
     {
         @Override

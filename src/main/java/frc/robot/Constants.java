@@ -134,7 +134,7 @@ public class Constants extends ConstantsBase {
     public static double kCargoTargetDistanceThresholdFromBumperInches = 17.0;		// inches to stop from target, measured from front bumper
     public static double kCargoTargetDistanceThresholdFromCenterInches = kCenterToFrontBumper + kCargoTargetDistanceThresholdFromBumperInches;
     
-    public static double kHatchTargetDistanceThresholdFromBumperInches = 9.0;		// inches to stop from target, measured from front bumper
+    public static double kHatchTargetDistanceThresholdFromBumperInches = 3.0;		// inches to stop from target, measured from front bumper
     public static double kHatchTargetDistanceThresholdFromCenterInches = kCenterToRearBumper + kHatchTargetDistanceThresholdFromBumperInches;
     
     public static double kVisionCompletionTolerance = 1.0; 
