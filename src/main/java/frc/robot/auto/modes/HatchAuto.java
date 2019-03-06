@@ -63,7 +63,7 @@ public class HatchAuto extends AutoModeBase {
         Vector2d target1BackupPos2 =    FieldDimensions.getTargetBackupPosition2(target1);
         Vector2d target1BackupPos3 =    FieldDimensions.getTargetBackupPosition3(target1);
 
-        Path firstTargetPathF = new Path();
+        Path firstTargetPathF = new Path(visionSpeed);                          // finish this path at vision speed so we don't stop
         firstTargetPathF.add(new Waypoint(target1StartPos,  medOptions));       // drive slowly off of hab
         firstTargetPathF.add(new Waypoint(target1TurnPos,   medOptions));
         firstTargetPathF.add(new Waypoint(target1VisionPos, medOptions));    
@@ -88,7 +88,7 @@ public class HatchAuto extends AutoModeBase {
         Vector2d humanStationVisionPos = FieldDimensions.getHumanStationVisionPosition();
         Vector2d humanStationHatchPos =  FieldDimensions.getHumanStationHatchPosition();
         
-        Path humanStationPathF = new Path();
+        Path humanStationPathF = new Path(visionSpeed);                          // finish this path at vision speed so we don't stop
         humanStationPathF.add(new Waypoint(target1BackupPos3, fastOptions));
         if(target1 == FieldDimensions.TargetPositionEnum.ROCKET_FAR)
         {
@@ -140,7 +140,7 @@ public class HatchAuto extends AutoModeBase {
         }
         secondTargetPathB1.add(new Waypoint(target2BackupTurnPos, fastOptions));
 
-        Path secondTargetPathF = new Path();
+        Path secondTargetPathF = new Path(visionSpeed);                          // finish this path at vision speed so we don't stop
         secondTargetPathF.add(new Waypoint(target2BackupTurnPos, medOptions));
         secondTargetPathF.add(new Waypoint(target2TurnPos,       medOptions));
         secondTargetPathF.add(new Waypoint(target2VisionPos,     medOptions));
