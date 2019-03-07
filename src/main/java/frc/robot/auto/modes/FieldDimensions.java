@@ -122,9 +122,9 @@ public class FieldDimensions
     private static Vector2d kCargoSide2VisionPosition = kCargoSide2HatchPosition.add(  Vector2d.magnitudeAngle(kCargoVisionDist, kCargoSideAngleRad) );
     private static Vector2d kCargoSide3VisionPosition = kCargoSide3HatchPosition.add(  Vector2d.magnitudeAngle(kCargoVisionDist, kCargoSideAngleRad) );
     
-    private static Vector2d kCargoSide1TurnPosition   = kCargoSide1VisionPosition.add( Vector2d.magnitudeAngle(kCargoTurnDist,   kCargoSideAngleRad) );
-    private static Vector2d kCargoSide2TurnPosition   = kCargoSide2VisionPosition.add( Vector2d.magnitudeAngle(kCargoTurnDist,   kCargoSideAngleRad) );
-    private static Vector2d kCargoSide3TurnPosition   = kCargoSide3VisionPosition.add( Vector2d.magnitudeAngle(kCargoTurnDist,   kCargoSideAngleRad) );
+    private static Vector2d kCargoSide1TurnPosition   = kCargoSide1VisionPosition.add( Vector2d.magnitudeAngle(kCargoTurnDist,   kCargoSideAngleRad).add( new Vector2d(-12,24)) );
+    private static Vector2d kCargoSide2TurnPosition   = kCargoSide2VisionPosition.add( Vector2d.magnitudeAngle(kCargoTurnDist,   kCargoSideAngleRad).add( new Vector2d(-12,24)) );
+    private static Vector2d kCargoSide3TurnPosition   = kCargoSide3VisionPosition.add( Vector2d.magnitudeAngle(kCargoTurnDist,   kCargoSideAngleRad).add( new Vector2d(-12,24)) );
     
     private static Vector2d kCargoSide1BackupTurnPosition   = kCargoSide1TurnPosition.add( Vector2d.magnitudeAngle(kCargoBackupTurnDist,   kCargoSideBackupTurnAngleRad) );
     private static Vector2d kCargoSide2BackupTurnPosition   = kCargoSide2TurnPosition.add( Vector2d.magnitudeAngle(kCargoBackupTurnDist,   kCargoSideBackupTurnAngleRad) );
@@ -156,7 +156,7 @@ public class FieldDimensions
     private static Vector2d kHumanStationHatchPosition = new Vector2d(-4.0, 136.3); //0.0
     private static double   kHumanStationAngleRad = 0.0;
 
-    private static double   kHumanStationVisionDist = 96.0;                      // distance from which to turn turn on cameras (desired target should be mostly centered)
+    private static double   kHumanStationVisionDist = 48.0;                      // distance from which to turn turn on cameras (desired target should be mostly centered)
     private static double   kHumanStationTurnDist   = 30.0;                      // distance from which to turn towards human station
     
     private static Vector2d kHumanStationFarRocketMidPosition  = new Vector2d(200, 110);     // position to pass through when going FarRocket<-->HumanStation

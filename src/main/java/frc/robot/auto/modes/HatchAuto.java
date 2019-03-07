@@ -44,9 +44,9 @@ public class HatchAuto extends AutoModeBase {
         double retractDelay = 0.5;
 
 
-        PathSegment.Options fastOptions =     new PathSegment.Options(speed, accel, lookaheadDist, false);
-        PathSegment.Options medOptions =     new PathSegment.Options(speed, accel, lookaheadDist, false);
-        PathSegment.Options visionOptions =     new PathSegment.Options(visionSpeed, accel, lookaheadDist, true);
+        PathSegment.Options fastOptions =     new PathSegment.Options(72, accel, 72, false);
+        PathSegment.Options medOptions =     new PathSegment.Options(speed, accel, 24, false);
+        PathSegment.Options visionOptions =     new PathSegment.Options(visionSpeed, accel, 24, true);
 
         SmartDashboardInteractions smartDashboardInteractions = SmartDashboardInteractions.getInstance();
         Pose startPose = smartDashboardInteractions.getStartPosition();
