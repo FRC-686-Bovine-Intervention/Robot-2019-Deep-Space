@@ -27,9 +27,9 @@ import frc.robot.loops.DriveLoop;
  * 2-Hatch Autonomous mode for Sandstorm period
  */
 
-public class FrontHatchAuto extends AutoModeBase {
+public class HatchAuto extends AutoModeBase {
 
-    public FrontHatchAuto() 
+    public HatchAuto() 
     { 
     }
 
@@ -70,12 +70,35 @@ public class FrontHatchAuto extends AutoModeBase {
         Vector2d target1BackupPos2 =    FieldDimensions.getTargetBackupPosition2(target1);
         Vector2d target1BackupPos3 =    FieldDimensions.getTargetBackupPosition3(target1);
 
-        Path firstTargetPathF = new Path();
-        firstTargetPathF.add(new Waypoint(target1StartPos,  medOptions));       // drive slowly off of hab
-        firstTargetPathF.add(new Waypoint(target1TurnPos,   medOptions));
-        firstTargetPathF.add(new Waypoint(target1VisionPos, visionOptions));    // turn on leds, use vision
-        firstTargetPathF.add(new Waypoint(target1HatchPos,  visionOptions));    // target hatch
-        firstTargetPathF.setReverseDirection();
+        Path firstTargetPathB1;
+        Path firstTargetPathF;
+        if (target1 == FieldDimensions.TargetPositionEnum.CARGO_FRONT)
+        {
+            firstTargetPathB1 = new Path();    // no backup
+
+            firstTargetPathF = new Path(visionSpeed);
+            firstTargetPathF.add(new Waypoint(target1StartPos,  medOptions));       // drive slowly off of hab
+            firstTargetPathF.add(new Waypoint(target1TurnPos,   medOptions));
+            firstTargetPathF.add(new Waypoint(target1VisionPos, visionOptions));    // turn on leds, use vision
+            firstTargetPathF.setReverseDirection();
+        }
+        else    // side cargo
+        {
+            firstTargetPathB1 = new Path();
+            firstTargetPathB1.add(new Waypoint(target1StartPos, fastOptions));
+            firstTargetPathB1.add(new Waypoint(target1BackupTurnPos, fastOptions));
+    
+            firstTargetPathF = new Path();
+            firstTargetPathF.add(new Waypoint(target1BackupTurnPos,  slowOptions));       // drive slowly off of hab
+            firstTargetPathF.add(new Waypoint(target1TurnPos,   slowOptions));
+            firstTargetPathF.add(new Waypoint(target1VisionPos, visionOptions));    // turn on leds, use vision
+            firstTargetPathF.setReverseDirection();
+        }
+
+        Path firstTargetPathV = new Path();
+        firstTargetPathV.add(new Waypoint(target1VisionPos, visionOptions));    // turn on leds, use vision
+        firstTargetPathV.add(new Waypoint(target1HatchPos,  visionOptions));    // target hatch
+        firstTargetPathV.setReverseDirection();
 
         Path firstTargetPathB = new Path();
         firstTargetPathB.add(new Waypoint(target1HatchPos,   fastOptions));     // backup quickly
@@ -91,7 +114,7 @@ public class FrontHatchAuto extends AutoModeBase {
         Vector2d humanStationVisionPos = FieldDimensions.getHumanStationVisionPosition();
         Vector2d humanStationHatchPos =  FieldDimensions.getHumanStationHatchPosition();
         
-        Path humanStationPathF = new Path();
+        Path humanStationPathF = new Path(visionSpeed);
         humanStationPathF.add(new Waypoint(target1BackupPos3, fastOptions));
         if(target1 == FieldDimensions.TargetPositionEnum.ROCKET_FAR)
         {
@@ -105,8 +128,12 @@ public class FrontHatchAuto extends AutoModeBase {
         }
         humanStationPathF.add(new Waypoint(humanStationTurnPos,   fastOptions));
         humanStationPathF.add(new Waypoint(humanStationVisionPos, visionOptions));
-        humanStationPathF.add(new Waypoint(humanStationHatchPos,  visionOptions));
         humanStationPathF.setReverseDirection();
+
+        Path humanStationPathV = new Path();
+        humanStationPathV.add(new Waypoint(humanStationVisionPos, visionOptions));
+        humanStationPathV.add(new Waypoint(humanStationHatchPos,  visionOptions));
+        humanStationPathV.setReverseDirection();
 
         //============================================================================
         // Target 2
@@ -154,12 +181,16 @@ public class FrontHatchAuto extends AutoModeBase {
         }
         secondTargetPathB1.add(new Waypoint(target2BackupTurnPos, fastOptions));
 
-        Path secondTargetPathF = new Path();
+        Path secondTargetPathF = new Path(visionSpeed);
         secondTargetPathF.add(new Waypoint(target2BackupTurnPos, medOptions));
         secondTargetPathF.add(new Waypoint(target2TurnPos,       medOptions));
         secondTargetPathF.add(new Waypoint(target2VisionPos,     visionOptions));
-        secondTargetPathF.add(new Waypoint(target2HatchPos,      visionOptions));
         secondTargetPathF.setReverseDirection();
+
+        Path secondTargetPathV = new Path();
+        secondTargetPathV.add(new Waypoint(target2VisionPos,     visionOptions));
+        secondTargetPathV.add(new Waypoint(target2HatchPos,      visionOptions));
+        secondTargetPathV.setReverseDirection();
 
         Path secondTargetPathB2 = new Path();
         secondTargetPathB2.add(new Waypoint(target2HatchPos,   fastOptions));
@@ -181,7 +212,12 @@ public class FrontHatchAuto extends AutoModeBase {
         runAction(new WaitAction(startDelaySec));               // initial delay (optional)
         
         // At Starting Position: Go to Target 1
+        if (target1 == FieldDimensions.TargetPositionEnum.CARGO_FRONT)
+        {
+            runAction(new PathFollowerAction(firstTargetPathB1));
+        }
         runAction(new PathFollowerAction(firstTargetPathF));    // drive off platform towards first target
+        runAction(new InterruptableAction(new HatchCollisionDetectionAction(), new PathFollowerAction(firstTargetPathV)));    // score
 
         // At Target 1:  Save position, Place Hatch, then backup from target
         setRobotPosition(target1);
@@ -192,6 +228,7 @@ public class FrontHatchAuto extends AutoModeBase {
 
         // Backed up from Target 1: Drive to Human Station
         runAction(new PathFollowerAction(humanStationPathF));
+        runAction(new InterruptableAction(new HatchCollisionDetectionAction(), new PathFollowerAction(humanStationPathV)));
         runAction(new WaitAction(0.25));
         setRobotPositionAtHumanStation();
 
@@ -199,8 +236,9 @@ public class FrontHatchAuto extends AutoModeBase {
         // At Human Station: Backup to Target 2
         runAction(new PathFollowerAction(secondTargetPathB1));
         runAction(new PathFollowerAction(secondTargetPathF));
+        runAction(new InterruptableAction(new HatchCollisionDetectionAction(), new PathFollowerAction(secondTargetPathV)));    // score
 
-        // At Target 2: Save position, Place Hatch, then backup from target
+        // At Target 2: Place Hatch, then backup from target
         runAction(new HatchEjectAction());
         waitAndRetractAction = new SeriesAction(Arrays.asList(new WaitAction(retractDelay), new HatchResetAction()));
         runAction(new ParallelAction(Arrays.asList(new PathFollowerAction(secondTargetPathB2), waitAndRetractAction)));   // reverse away from target

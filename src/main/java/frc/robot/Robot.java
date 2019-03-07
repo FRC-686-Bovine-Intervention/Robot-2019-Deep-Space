@@ -133,7 +133,7 @@ public class Robot extends TimedRobot {
 	}
 	
 	public void setInitialPose (Pose _initialPose){
-		robotState.reset(Timer.getFPGATimestamp(), DriveState.getInstance().getLeftDistanceInches(), DriveState.getInstance().getRightDistanceInches(), _initialPose);
+		robotState.reset(_initialPose);
     	System.out.println("InitialPose: " + _initialPose);
     }
     

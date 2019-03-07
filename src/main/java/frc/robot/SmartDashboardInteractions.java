@@ -171,10 +171,7 @@ public class SmartDashboardInteractions
     	switch(autoMode)
     	{
         case HATCH_AUTO:
-            if (getAutoFirstTarget() == FieldDimensions.TargetPositionEnum.CARGO_FRONT) {
-                return new FrontHatchAuto(); }
-            else {
-                return new SideHatchAuto(); }
+            return new HatchAuto(); 
 			
     	case STAND_STILL:
             return new StandStillMode();

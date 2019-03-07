@@ -27,28 +27,32 @@ import frc.robot.loops.DriveLoop;
  * 2-Hatch Autonomous mode for Sandstorm period
  */
 
-public class SideHatchAuto extends AutoModeBase {
+public class HatchAuto extends AutoModeBase {
 
-    public SideHatchAuto() 
+    public HatchAuto() 
     { 
     }
 
     @Override
     protected void routine() throws AutoModeEndedException 
     {
-        double speed = 48;    //DriveLoop.kPathFollowingMaxVel;
-        double visionSpeed = 24;    // slow down for collision/score
-        double accel = 48;   //DriveLoop.kPathFollowingMaxAccel
-        double lookaheadDist = DriveLoop.kPathFollowingLookahead;
+
+        double   fastSpeed = 72;
+        double    medSpeed = 48;
+        double   slowSpeed = 24;
+        double visionSpeed = 36;
+
+        double     accelTime = 0.5;     // time to accelerate to full speed
+        double lookaheadTime = 1.0;     // time to lookahead
+
+        double visionLookaheadDist = 24;
+
+        PathSegment.Options   fastOptions = new PathSegment.Options(  fastSpeed,   fastSpeed/accelTime, fastSpeed/lookaheadTime, false);
+        PathSegment.Options    medOptions = new PathSegment.Options(   medSpeed,    medSpeed/accelTime,  medSpeed/lookaheadTime, false);
+        PathSegment.Options   slowOptions = new PathSegment.Options(  slowSpeed,   slowSpeed/accelTime, slowSpeed/lookaheadTime, false);
+        PathSegment.Options visionOptions = new PathSegment.Options(visionSpeed, visionSpeed/accelTime,     visionLookaheadDist, true);
 
         double retractDelay = 0.5;
-
-
-        PathSegment.Options fastOptions =   new PathSegment.Options(100, accel, 72, false);
-        PathSegment.Options medOptions =    new PathSegment.Options(72, accel, 24, false);
-        PathSegment.Options slowOptions =   new PathSegment.Options(48, accel, 24, false);
-        PathSegment.Options visionOptions = new PathSegment.Options(visionSpeed, accel, 24, true);
-
 
         SmartDashboardInteractions smartDashboardInteractions = SmartDashboardInteractions.getInstance();
         Pose startPose = smartDashboardInteractions.getStartPosition();
@@ -72,15 +76,30 @@ public class SideHatchAuto extends AutoModeBase {
         Vector2d target1BackupPos2 =    FieldDimensions.getTargetBackupPosition2(target1);
         Vector2d target1BackupPos3 =    FieldDimensions.getTargetBackupPosition3(target1);
 
-        Path firstTargetPathB1 = new Path();
-        firstTargetPathB1.add(new Waypoint(target1StartPos, fastOptions));
-        firstTargetPathB1.add(new Waypoint(target1BackupTurnPos, fastOptions));
+        Path firstTargetPathB1;
+        Path firstTargetPathF;
+        if (target1 == FieldDimensions.TargetPositionEnum.CARGO_FRONT)
+        {
+            firstTargetPathB1 = new Path();    // no backup
 
-        Path firstTargetPathF = new Path();
-        firstTargetPathF.add(new Waypoint(target1BackupTurnPos,  slowOptions));       // drive slowly off of hab
-        firstTargetPathF.add(new Waypoint(target1TurnPos,   slowOptions));
-        firstTargetPathF.add(new Waypoint(target1VisionPos, visionOptions));    // turn on leds, use vision
-        firstTargetPathF.setReverseDirection();
+            firstTargetPathF = new Path(visionSpeed);
+            firstTargetPathF.add(new Waypoint(target1StartPos,  medOptions));       // drive slowly off of hab
+            firstTargetPathF.add(new Waypoint(target1TurnPos,   medOptions));
+            firstTargetPathF.add(new Waypoint(target1VisionPos, visionOptions));    // turn on leds, use vision
+            firstTargetPathF.setReverseDirection();
+        }
+        else    // side cargo
+        {
+            firstTargetPathB1 = new Path();
+            firstTargetPathB1.add(new Waypoint(target1StartPos,      fastOptions));
+            firstTargetPathB1.add(new Waypoint(target1BackupTurnPos, fastOptions));
+    
+            firstTargetPathF = new Path();
+            firstTargetPathF.add(new Waypoint(target1BackupTurnPos,     medOptions));       // drive slowly off of hab
+            firstTargetPathF.add(new Waypoint(target1TurnPos,           medOptions));
+            firstTargetPathF.add(new Waypoint(target1VisionPos,      visionOptions));    // turn on leds, use vision
+            firstTargetPathF.setReverseDirection();
+        }
 
         Path firstTargetPathV = new Path();
         firstTargetPathV.add(new Waypoint(target1VisionPos, visionOptions));    // turn on leds, use vision
@@ -101,7 +120,7 @@ public class SideHatchAuto extends AutoModeBase {
         Vector2d humanStationVisionPos = FieldDimensions.getHumanStationVisionPosition();
         Vector2d humanStationHatchPos =  FieldDimensions.getHumanStationHatchPosition();
         
-        Path humanStationPathF = new Path();
+        Path humanStationPathF = new Path(visionSpeed);
         humanStationPathF.add(new Waypoint(target1BackupPos3, fastOptions));
         if(target1 == FieldDimensions.TargetPositionEnum.ROCKET_FAR)
         {
@@ -113,7 +132,7 @@ public class SideHatchAuto extends AutoModeBase {
         {
             humanStationPathF.add(new Waypoint(FieldDimensions.getHumanStationSideCargoMidPosition(), fastOptions));
         }
-        humanStationPathF.add(new Waypoint(humanStationTurnPos,   fastOptions));
+        humanStationPathF.add(new Waypoint(humanStationTurnPos,      medOptions));  // slow down a bit to avoid jerkiness
         humanStationPathF.add(new Waypoint(humanStationVisionPos, visionOptions));
         humanStationPathF.setReverseDirection();
 
@@ -199,7 +218,10 @@ public class SideHatchAuto extends AutoModeBase {
         runAction(new WaitAction(startDelaySec));               // initial delay (optional)
         
         // At Starting Position: Go to Target 1
-        runAction(new PathFollowerAction(firstTargetPathB1));
+        if (target1 == FieldDimensions.TargetPositionEnum.CARGO_FRONT)
+        {
+            runAction(new PathFollowerAction(firstTargetPathB1));
+        }
         runAction(new PathFollowerAction(firstTargetPathF));    // drive off platform towards first target
         runAction(new InterruptableAction(new HatchCollisionDetectionAction(), new PathFollowerAction(firstTargetPathV)));    // score
 
