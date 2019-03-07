@@ -86,7 +86,7 @@ public class FieldDimensions
 
 
     // Cargo Ship
-    private static double   kCargoVisionDist = 48.0;                      // distance from which to turn turn on cameras (desired target should be mostly centered)
+    private static double   kCargoVisionDist = 60.0;                      // distance from which to turn turn on cameras (desired target should be mostly centered)
     private static double   kCargoTurnDist   = 30.0;                      // distance from which to turn towards cargo bay
     private static double   kCargoBackupTurnDist   = 30.0;                      // distance from which to turn towards cargo bay
 
@@ -156,8 +156,8 @@ public class FieldDimensions
     private static Vector2d kHumanStationHatchPosition = new Vector2d(-4.0, 136.3); //0.0
     private static double   kHumanStationAngleRad = 0.0;
 
-    private static double   kHumanStationVisionDist = 48.0;                      // distance from which to turn turn on cameras (desired target should be mostly centered)
-    private static double   kHumanStationTurnDist   = 30.0;                      // distance from which to turn towards human station
+    private static double   kHumanStationVisionDist = 72.0;                      // distance from which to turn turn on cameras (desired target should be mostly centered)
+    private static double   kHumanStationTurnDist   = 48.0;                      // distance from which to turn towards human station
     
     private static Vector2d kHumanStationFarRocketMidPosition  = new Vector2d(200, 110);     // position to pass through when going FarRocket<-->HumanStation
     private static Vector2d kHumanStationSideCargoMidPosition  = new Vector2d(200, 110);     // position to pass through when going CargoSide<-->HumanStation

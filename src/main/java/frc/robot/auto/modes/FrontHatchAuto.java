@@ -27,9 +27,9 @@ import frc.robot.loops.DriveLoop;
  * 2-Hatch Autonomous mode for Sandstorm period
  */
 
-public class HatchAuto extends AutoModeBase {
+public class FrontHatchAuto extends AutoModeBase {
 
-    public HatchAuto() 
+    public FrontHatchAuto() 
     { 
     }
 

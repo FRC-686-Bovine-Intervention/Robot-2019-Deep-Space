@@ -1,17 +1,16 @@
 package frc.robot;
 
-import frc.robot.auto.AutoModeBase;
-import frc.robot.auto.modes.*;
-
-import frc.robot.lib.joystick.*;
-
-import frc.robot.lib.util.Pose;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-
-
+import frc.robot.auto.AutoModeBase;
+import frc.robot.auto.modes.DebugAuto;
+import frc.robot.auto.modes.FieldDimensions;
+import frc.robot.auto.modes.FrontHatchAuto;
+import frc.robot.auto.modes.SideHatchAuto;
+import frc.robot.auto.modes.StandStillMode;
+import frc.robot.lib.joystick.JoystickControlsBase;
+import frc.robot.lib.joystick.ReversibleArcadeDriveJoystick;
+import frc.robot.lib.util.Pose;
 
 /**
  * Controls the interactive elements of SmartDashboard.
@@ -49,7 +48,7 @@ public class SmartDashboardInteractions
     	SmartDashboard.putData("Joystick Chooser", joystickModeChooser);
 
         autoModeChooser = new SendableChooser<AutoModeOption>();
-        autoModeChooser.setDefaultOption(AutoModeOption.FRONT_ATCH_AUTO.name, AutoModeOption.FRONT_HATCH_AUTO);
+        autoModeChooser.setDefaultOption(AutoModeOption.FRONT_HATCH_AUTO.name, AutoModeOption.FRONT_HATCH_AUTO);
         autoModeChooser.addOption(AutoModeOption.SIDE_HATCH_AUTO.name, AutoModeOption.SIDE_HATCH_AUTO);
         // autoModeChooser.addOption(AutoModeOption.HATCH_AUTO.name, AutoModeOption.HATCH_AUTO);
         autoModeChooser.addOption(AutoModeOption.STAND_STILL.name, AutoModeOption.STAND_STILL);
@@ -156,7 +155,7 @@ public class SmartDashboardInteractions
     
     enum AutoModeOption
     {
-        HATCH_AUTO("Front CargoShip"),
+        FRONT_HATCH_AUTO("Front CargoShip"),
         SIDE_HATCH_AUTO("Side CargoShip"),
         STAND_STILL("Stand Still"),
         DEBUG_AUTO("Debug");
