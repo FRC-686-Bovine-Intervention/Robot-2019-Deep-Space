@@ -48,9 +48,7 @@ public class SmartDashboardInteractions
     	SmartDashboard.putData("Joystick Chooser", joystickModeChooser);
 
         autoModeChooser = new SendableChooser<AutoModeOption>();
-        autoModeChooser.setDefaultOption(AutoModeOption.FRONT_HATCH_AUTO.name, AutoModeOption.FRONT_HATCH_AUTO);
-        autoModeChooser.addOption(AutoModeOption.SIDE_HATCH_AUTO.name, AutoModeOption.SIDE_HATCH_AUTO);
-        // autoModeChooser.addOption(AutoModeOption.HATCH_AUTO.name, AutoModeOption.HATCH_AUTO);
+        autoModeChooser.setDefaultOption(AutoModeOption.HATCH_PANEL_AUTO.name, AutoModeOption.HATCH_PANEL_AUTO);
         autoModeChooser.addOption(AutoModeOption.STAND_STILL.name, AutoModeOption.STAND_STILL);
         autoModeChooser.addOption(AutoModeOption.DEBUG_AUTO.name, AutoModeOption.DEBUG_AUTO);
         // autoModeChooser.setDefaultOption(AutoModeOption.DEBUG_AUTO.name, AutoModeOption.DEBUG_AUTO);
@@ -155,8 +153,7 @@ public class SmartDashboardInteractions
     
     enum AutoModeOption
     {
-        FRONT_HATCH_AUTO("Front CargoShip"),
-        SIDE_HATCH_AUTO("Side CargoShip"),
+        HATCH_AUTO("Hatch Panel Auto"),
         STAND_STILL("Stand Still"),
         DEBUG_AUTO("Debug");
     
@@ -173,11 +170,11 @@ public class SmartDashboardInteractions
 
     	switch(autoMode)
     	{
-        case FRONT_HATCH_AUTO:
-            return new FrontHatchAuto();
-			
-        case SIDE_HATCH_AUTO:
-            return new SideHatchAuto();
+        case HATCH_AUTO:
+            if (getAutoFirstTarget() == FieldDimensions.TargetPositionEnum.CARGO_FRONT) {
+                return new FrontHatchAuto(); }
+            else {
+                return new SideHatchAuto(); }
 			
     	case STAND_STILL:
             return new StandStillMode();
@@ -200,8 +197,8 @@ public class SmartDashboardInteractions
     public enum StartPositionOption
     {
         LEFT_START("Hab 1 Left", FieldDimensions.getHab1LeftStartPose()),
-        CENTER_LEFT_START("Hab 1 Center (Left)", FieldDimensions.getHab1CenterLeftStartPose()),
-        CENTER_RIGHT_START("Hab 1 Center (Right)", FieldDimensions.getHab1CenterRightStartPose()),
+        CENTER_LEFT_START("Hab 1 Center (go Left)", FieldDimensions.getHab1CenterLeftStartPose()),
+        CENTER_RIGHT_START("Hab 1 Center (go Right)", FieldDimensions.getHab1CenterRightStartPose()),
         RIGHT_START("Hab 1 Right", FieldDimensions.getHab1RightStartPose()),
         HAB2_LEFT_START("Hab 2 Left", FieldDimensions.getHab2LeftStartPose()),
         HAB2_RIGHT_START("Hab 2 Right", FieldDimensions.getHab2RightStartPose());
