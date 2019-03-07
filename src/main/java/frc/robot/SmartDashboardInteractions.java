@@ -49,7 +49,8 @@ public class SmartDashboardInteractions
     	SmartDashboard.putData("Joystick Chooser", joystickModeChooser);
 
         autoModeChooser = new SendableChooser<AutoModeOption>();
-        autoModeChooser.setDefaultOption(AutoModeOption.HATCH_AUTO.name, AutoModeOption.HATCH_AUTO);
+        autoModeChooser.setDefaultOption(AutoModeOption.FRONT_ATCH_AUTO.name, AutoModeOption.FRONT_HATCH_AUTO);
+        autoModeChooser.addOption(AutoModeOption.SIDE_HATCH_AUTO.name, AutoModeOption.SIDE_HATCH_AUTO);
         // autoModeChooser.addOption(AutoModeOption.HATCH_AUTO.name, AutoModeOption.HATCH_AUTO);
         autoModeChooser.addOption(AutoModeOption.STAND_STILL.name, AutoModeOption.STAND_STILL);
         autoModeChooser.addOption(AutoModeOption.DEBUG_AUTO.name, AutoModeOption.DEBUG_AUTO);
@@ -155,7 +156,8 @@ public class SmartDashboardInteractions
     
     enum AutoModeOption
     {
-        HATCH_AUTO("2 Hatch Panel Auto"),
+        HATCH_AUTO("Front CargoShip"),
+        SIDE_HATCH_AUTO("Side CargoShip"),
         STAND_STILL("Stand Still"),
         DEBUG_AUTO("Debug");
     
@@ -172,8 +174,11 @@ public class SmartDashboardInteractions
 
     	switch(autoMode)
     	{
-        case HATCH_AUTO:
-            return new HatchAuto();
+        case FRONT_HATCH_AUTO:
+            return new FrontHatchAuto();
+			
+        case SIDE_HATCH_AUTO:
+            return new SideHatchAuto();
 			
     	case STAND_STILL:
             return new StandStillMode();

@@ -29,10 +29,10 @@ public class FieldDimensions
     // Robot starting poses
 	public static Pose centerLeftStartPose  = new Pose(kHab3DepthX + Constants.kCenterToFrontBumper, 0,                                             Math.PI);
 	public static Pose centerRightStartPose = new Pose(kHab3DepthX + Constants.kCenterToFrontBumper, 0,                                             Math.PI);	
-	public static Pose leftStartPose        = new Pose(kHab3DepthX + Constants.kCenterToFrontBumper, +kHabWidthY/2 - Constants.kCenterToSideBumper, Math.PI);  // side of robot aligned with edge of HAB
-	public static Pose rightStartPose       = new Pose(kHab3DepthX + Constants.kCenterToFrontBumper, -kHabWidthY/2 + Constants.kCenterToSideBumper, Math.PI);  // side of robot aligned with edge of HAB
-	public static Pose leftHab2StartPose    = new Pose(Constants.kCenterToFrontBumper, +kHabWidthY/2 - Constants.kCenterToSideBumper, Math.PI);  // side of robot aligned with edge of HAB
-	public static Pose rightHab2StartPose   = new Pose(Constants.kCenterToFrontBumper, -kHabWidthY/2 + Constants.kCenterToSideBumper, Math.PI);  // side of robot aligned with edge of HAB
+	public static Pose leftStartPose        = new Pose(kHab3DepthX + Constants.kCenterToFrontBumper, +kHabWidthY/2 - Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
+	public static Pose rightStartPose       = new Pose(kHab3DepthX + Constants.kCenterToFrontBumper, -kHabWidthY/2 + Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
+	public static Pose leftHab2StartPose    = new Pose(Constants.kCenterToFrontBumper, +kHabWidthY/2 - Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
+	public static Pose rightHab2StartPose   = new Pose(Constants.kCenterToFrontBumper, -kHabWidthY/2 + Constants.kCenterToSideBumper, 0);  // side of robot aligned with edge of HAB
 
     // Rocket
     private static Vector2d kRocketCenter = new Vector2d(229.1, 153.3);
@@ -122,9 +122,9 @@ public class FieldDimensions
     private static Vector2d kCargoSide2VisionPosition = kCargoSide2HatchPosition.add(  Vector2d.magnitudeAngle(kCargoVisionDist, kCargoSideAngleRad) );
     private static Vector2d kCargoSide3VisionPosition = kCargoSide3HatchPosition.add(  Vector2d.magnitudeAngle(kCargoVisionDist, kCargoSideAngleRad) );
     
-    private static Vector2d kCargoSide1TurnPosition   = kCargoSide1VisionPosition.add( Vector2d.magnitudeAngle(kCargoTurnDist,   kCargoSideAngleRad).add( new Vector2d(-12,24)) );
-    private static Vector2d kCargoSide2TurnPosition   = kCargoSide2VisionPosition.add( Vector2d.magnitudeAngle(kCargoTurnDist,   kCargoSideAngleRad).add( new Vector2d(-12,24)) );
-    private static Vector2d kCargoSide3TurnPosition   = kCargoSide3VisionPosition.add( Vector2d.magnitudeAngle(kCargoTurnDist,   kCargoSideAngleRad).add( new Vector2d(-12,24)) );
+    private static Vector2d kCargoSide1TurnPosition   = kCargoSide1VisionPosition.add( Vector2d.magnitudeAngle(kCargoTurnDist,   kCargoSideAngleRad));
+    private static Vector2d kCargoSide2TurnPosition   = kCargoSide2VisionPosition.add( Vector2d.magnitudeAngle(kCargoTurnDist,   kCargoSideAngleRad));
+    private static Vector2d kCargoSide3TurnPosition   = kCargoSide3VisionPosition.add( Vector2d.magnitudeAngle(kCargoTurnDist,   kCargoSideAngleRad));
     
     private static Vector2d kCargoSide1BackupTurnPosition   = kCargoSide1TurnPosition.add( Vector2d.magnitudeAngle(kCargoBackupTurnDist,   kCargoSideBackupTurnAngleRad) );
     private static Vector2d kCargoSide2BackupTurnPosition   = kCargoSide2TurnPosition.add( Vector2d.magnitudeAngle(kCargoBackupTurnDist,   kCargoSideBackupTurnAngleRad) );
