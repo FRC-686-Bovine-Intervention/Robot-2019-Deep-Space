@@ -30,7 +30,7 @@ public class HatchDeploy implements Loop
     public TalonSRX dropMotor;
     public Solenoid hatchSolenoid;
     public final double zeroingSpeed = -0.15;
-    public static final int bumperAngle = 250;
+    public static final int bumperAngle = 300;
     public static final int collisionAngle = 400;
     public static final int groundAngle = 1249;
     public static final int defenseAngle = 0;
@@ -220,7 +220,7 @@ public class HatchDeploy implements Loop
             {
                 state = HatchDeployStateEnum.DEFENSE;
             }
-
+            break;
 
         case DEFENSE:
            setTarget(defenseAngle);
@@ -332,6 +332,7 @@ private final DataLogger logger = new DataLogger()
             put("HatchDeploy/revSoftLimit", getReverseSoftLimit());
             put("HatchDeploy/motorCurrent", dropMotor.getOutputCurrent());
             put("HatchDeploy/pidError", dropMotor.getClosedLoopError(kSlotIdx));
+            put("HatchDeploy/hatchAngle", getHatchAngle());
 		}
 	};
     
