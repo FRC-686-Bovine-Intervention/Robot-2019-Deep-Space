@@ -73,30 +73,28 @@ public class RobotState
     private double lPrevDistance = 0;
     private double rPrevDistance = 0;
     
-    public RobotState() { reset( 0, 0, 0, new Pose() ); }
+    public RobotState() { reset( new Pose() ); }
 
-	public synchronized void reset(double _startTime, double _lEncoderDistance, double _rEncoderDistance,
-			Pose _initialFieldToRobot) {
+	public synchronized void reset(Pose _newPose)
+	{
+		double currentTime = Timer.getFPGATimestamp();
+		DriveState driveState = DriveState.getInstance();
+
 		// calibrate initial position to initial pose (set by autonomous mode)
-        setFieldToVehicle(_startTime, _initialFieldToRobot);
+		fieldToRobot = new InterpolatingTreeMap<>(kObservationBufferSize);
+		fieldToRobot.put(new InterpolatingDouble(currentTime), _newPose);
 
-		// calculate gyro heading correction for the desired initial pose (as set by
-		// autonomous mode)
+		// calculate gyro heading correction for the desired initial pose (as set by autonomous mode)
 		double desiredHeading = _initialFieldToRobot.getHeading();
-		double gyroHeading = DriveState.getInstance().getHeading();
-		gyroCorrection = gyroHeading - desiredHeading; // subtract gyroCorrection from actual gyro heading to get
+		double gyroHeading = driveState.getHeading();
+		gyroCorrection = gyroHeading - desiredHeading; 	// subtract gyroCorrection from actual gyro heading to get
 														// desired orientation
 
 		robotSpeed = new Kinematics.LinearAngularSpeed(0, 0);
 
-		setPrevEncoderDistance(_lEncoderDistance, _rEncoderDistance);
+		setPrevEncoderDistance(driveState.getLeftDistanceInches(), driveState.getRightDistanceInches());
 	}
 
-	public synchronized void setFieldToVehicle(double _timestamp, Pose _pose) {
-		fieldToRobot = new InterpolatingTreeMap<>(kObservationBufferSize);
-		fieldToRobot.put(new InterpolatingDouble(_timestamp), _pose);
-	}
-	
 	public void setPrevEncoderDistance(double _lPrevDistance, double _rPrevDistance)
 	{
         lPrevDistance = _lPrevDistance;
