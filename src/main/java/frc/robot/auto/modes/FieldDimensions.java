@@ -86,8 +86,8 @@ public class FieldDimensions
 
 
     // Cargo Ship
-    private static double   kCargoVisionDist = 30.0;                      // distance from which to turn turn on cameras (desired target should be mostly centered)
-    private static double   kCargoTurnDist   = 40.0;                      // distance from which to turn towards cargo bay
+    private static double   kCargoVisionDist = 48.0;                      // distance from which to turn turn on cameras (desired target should be mostly centered)
+    private static double   kCargoTurnDist   = 30.0;                      // distance from which to turn towards cargo bay
     private static double   kCargoBackupTurnDist   = 30.0;                      // distance from which to turn towards cargo bay
 
     // Cargo Ship Front Bay
@@ -99,7 +99,7 @@ public class FieldDimensions
     private static Vector2d kCargoFrontTurnPosition    = kCargoFrontVisionPosition.add( Vector2d.magnitudeAngle(kCargoTurnDist,  kCargoFrontAngleRad) );
     private static Vector2d kCargoFrontBackupTurnPosition   = kCargoFrontTurnPosition.add( Vector2d.magnitudeAngle(kCargoBackupTurnDist,   kCargoFrontBackupTurnAngleRad) );
     
-    private static double   kCargoFrontBackupDist1   = 6.0;                  // backup1: just back up a little away from hatch
+    private static double   kCargoFrontBackupDist1   = 48.0;                  // backup1: just back up a little away from hatch
     private static double   kCargoFrontBackupAngle1  = kCargoFrontAngleRad; 
     private static double   kCargoFrontBackupDist2   = 72.0;                 // backup2: fast backup 6 ft towards center of field
     private static double   kCargoFrontBackupAngle2  = +Math.PI/2;                           
@@ -153,7 +153,7 @@ public class FieldDimensions
 
 
     // Human Station
-    private static Vector2d kHumanStationHatchPosition = new Vector2d(0.0, 136.3);
+    private static Vector2d kHumanStationHatchPosition = new Vector2d(-4.0, 136.3); //0.0
     private static double   kHumanStationAngleRad = 0.0;
 
     private static double   kHumanStationVisionDist = 96.0;                      // distance from which to turn turn on cameras (desired target should be mostly centered)
