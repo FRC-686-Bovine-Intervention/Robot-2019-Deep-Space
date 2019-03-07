@@ -32,9 +32,7 @@ public class DebugAuto extends AutoModeBase {
         PathSegment.Options visionOptions	= new PathSegment.Options(vel, accel, 24, true);
 
         // override initial position from SmartDashboardInteractions
-        RobotState.getInstance().reset(Timer.getFPGATimestamp(), 
-            DriveState.getInstance().getLeftDistanceInches(), DriveState.getInstance().getRightDistanceInches(), 
-            new Pose(0,0,Math.PI));
+        RobotState.getInstance().reset(new Pose(0,0,Math.PI));
     
 
         Path path1= new Path(vel);

@@ -6,13 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.SmartDashboardInteractions;
 import frc.robot.auto.AutoModeBase;
 import frc.robot.auto.AutoModeEndedException;
-import frc.robot.auto.actions.Action;
-import frc.robot.auto.actions.HatchEjectAction;
-import frc.robot.auto.actions.HatchResetAction;
-import frc.robot.auto.actions.ParallelAction;
-import frc.robot.auto.actions.PathFollowerAction;
-import frc.robot.auto.actions.SeriesAction;
-import frc.robot.auto.actions.WaitAction;
+import frc.robot.auto.actions.*;
 import frc.robot.command_status.DriveState;
 import frc.robot.command_status.RobotState;
 import frc.robot.lib.sensors.Limelight;
@@ -241,7 +235,7 @@ public class SideHatchAuto extends AutoModeBase {
         Vector2d currentPosition = FieldDimensions.getRobotPositionAtTarget(_target);
         double currentHeading = driveState.getHeading();
 
-        robotState.setFieldToVehicle(currentTime, new Pose(currentPosition, currentHeading));
+        robotState.reset(new Pose(currentPosition, currentHeading));
     }
 
     void setRobotPositionAtHumanStation()
@@ -253,7 +247,7 @@ public class SideHatchAuto extends AutoModeBase {
         Vector2d currentPosition = FieldDimensions.getRobotPositionAtHumanStation();
         double currentHeading = driveState.getHeading();
 
-        robotState.setFieldToVehicle(currentTime, new Pose(currentPosition, currentHeading));
+        robotState.reset(new Pose(currentPosition, currentHeading));
     }
 
 }

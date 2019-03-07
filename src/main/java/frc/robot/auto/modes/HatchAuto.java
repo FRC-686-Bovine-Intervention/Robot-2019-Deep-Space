@@ -7,7 +7,7 @@ import frc.robot.SmartDashboardInteractions;
 import frc.robot.auto.AutoModeBase;
 import frc.robot.auto.AutoModeEndedException;
 import frc.robot.auto.actions.Action;
-import frc.robot.auto.actions.HatchEjectAction;
+import frc.robot.auto.actions.*;
 import frc.robot.auto.actions.HatchResetAction;
 import frc.robot.auto.actions.ParallelAction;
 import frc.robot.auto.actions.PathFollowerAction;
@@ -218,7 +218,7 @@ public class HatchAuto extends AutoModeBase {
         runAction(new WaitAction(startDelaySec));               // initial delay (optional)
         
         // At Starting Position: Go to Target 1
-        if (target1 == FieldDimensions.TargetPositionEnum.CARGO_FRONT)
+        if (target1 != FieldDimensions.TargetPositionEnum.CARGO_FRONT)
         {
             runAction(new PathFollowerAction(firstTargetPathB1));
         }
@@ -263,7 +263,7 @@ public class HatchAuto extends AutoModeBase {
         Vector2d currentPosition = FieldDimensions.getRobotPositionAtTarget(_target);
         double currentHeading = driveState.getHeading();
 
-        robotState.setFieldToVehicle(currentTime, new Pose(currentPosition, currentHeading));
+        robotState.reset(new Pose(currentPosition, currentHeading));
     }
 
     void setRobotPositionAtHumanStation()
@@ -275,7 +275,7 @@ public class HatchAuto extends AutoModeBase {
         Vector2d currentPosition = FieldDimensions.getRobotPositionAtHumanStation();
         double currentHeading = driveState.getHeading();
 
-        robotState.setFieldToVehicle(currentTime, new Pose(currentPosition, currentHeading));
+        robotState.reset(new Pose(currentPosition, currentHeading));
     }
 
 }

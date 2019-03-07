@@ -2,13 +2,14 @@ package frc.robot.auto.modes;
 
 import java.util.Arrays;
 
-import edu.wpi.first.wpilibj.Timer;
 import frc.robot.SmartDashboardInteractions;
 import frc.robot.auto.AutoModeBase;
 import frc.robot.auto.AutoModeEndedException;
 import frc.robot.auto.actions.Action;
+import frc.robot.auto.actions.HatchCollisionDetectionAction;
 import frc.robot.auto.actions.HatchEjectAction;
 import frc.robot.auto.actions.HatchResetAction;
+import frc.robot.auto.actions.InterruptableAction;
 import frc.robot.auto.actions.ParallelAction;
 import frc.robot.auto.actions.PathFollowerAction;
 import frc.robot.auto.actions.SeriesAction;
@@ -27,9 +28,9 @@ import frc.robot.loops.DriveLoop;
  * 2-Hatch Autonomous mode for Sandstorm period
  */
 
-public class HatchAuto extends AutoModeBase {
+public class FrontHatchAuto extends AutoModeBase {
 
-    public HatchAuto() 
+    public FrontHatchAuto() 
     { 
     }
 
@@ -45,7 +46,8 @@ public class HatchAuto extends AutoModeBase {
 
 
         PathSegment.Options fastOptions =     new PathSegment.Options(72, accel, 72, false);
-        PathSegment.Options medOptions =     new PathSegment.Options(speed, accel, 24, false);
+        PathSegment.Options medOptions =     new PathSegment.Options(speed, accel, 48, false);
+        PathSegment.Options slowOptions =     new PathSegment.Options(speed, accel, 24, false);
         PathSegment.Options visionOptions =     new PathSegment.Options(visionSpeed, accel, 24, true);
 
         SmartDashboardInteractions smartDashboardInteractions = SmartDashboardInteractions.getInstance();

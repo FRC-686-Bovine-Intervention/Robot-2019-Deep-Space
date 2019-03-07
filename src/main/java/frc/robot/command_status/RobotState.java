@@ -1,13 +1,13 @@
 package frc.robot.command_status;
 
-import frc.robot.command_status.DriveState;
+import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Constants;
 import frc.robot.lib.joystick.SelectedJoystick;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.InterpolatingDouble;
 import frc.robot.lib.util.InterpolatingTreeMap;
 import frc.robot.lib.util.Kinematics;
 import frc.robot.lib.util.Pose;
-import frc.robot.Constants;
 
 /**
  * RobotState keeps track of the poses of various coordinate frames throughout
@@ -85,7 +85,7 @@ public class RobotState
 		fieldToRobot.put(new InterpolatingDouble(currentTime), _newPose);
 
 		// calculate gyro heading correction for the desired initial pose (as set by autonomous mode)
-		double desiredHeading = _initialFieldToRobot.getHeading();
+		double desiredHeading = _newPose.getHeading();
 		double gyroHeading = driveState.getHeading();
 		gyroCorrection = gyroHeading - desiredHeading; 	// subtract gyroCorrection from actual gyro heading to get
 														// desired orientation

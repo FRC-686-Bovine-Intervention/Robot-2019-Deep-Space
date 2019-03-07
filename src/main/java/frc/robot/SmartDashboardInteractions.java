@@ -5,8 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.auto.AutoModeBase;
 import frc.robot.auto.modes.DebugAuto;
 import frc.robot.auto.modes.FieldDimensions;
-import frc.robot.auto.modes.FrontHatchAuto;
-import frc.robot.auto.modes.SideHatchAuto;
+import frc.robot.auto.modes.HatchAuto;
 import frc.robot.auto.modes.StandStillMode;
 import frc.robot.lib.joystick.JoystickControlsBase;
 import frc.robot.lib.joystick.ReversibleArcadeDriveJoystick;
@@ -48,7 +47,7 @@ public class SmartDashboardInteractions
     	SmartDashboard.putData("Joystick Chooser", joystickModeChooser);
 
         autoModeChooser = new SendableChooser<AutoModeOption>();
-        autoModeChooser.setDefaultOption(AutoModeOption.HATCH_PANEL_AUTO.name, AutoModeOption.HATCH_PANEL_AUTO);
+        autoModeChooser.setDefaultOption(AutoModeOption.HATCH_AUTO.name, AutoModeOption.HATCH_AUTO);
         autoModeChooser.addOption(AutoModeOption.STAND_STILL.name, AutoModeOption.STAND_STILL);
         autoModeChooser.addOption(AutoModeOption.DEBUG_AUTO.name, AutoModeOption.DEBUG_AUTO);
         // autoModeChooser.setDefaultOption(AutoModeOption.DEBUG_AUTO.name, AutoModeOption.DEBUG_AUTO);
