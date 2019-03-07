@@ -250,26 +250,18 @@ public class HatchAuto extends AutoModeBase {
 
     void setRobotPosition(FieldDimensions.TargetPositionEnum _target)
     {
-        RobotState robotState = RobotState.getInstance();
-        DriveState driveState = DriveState.getInstance();
-        double currentTime = Timer.getFPGATimestamp();
-        
         Vector2d currentPosition = FieldDimensions.getRobotPositionAtTarget(_target);
-        double currentHeading = driveState.getHeading();
+        double currentHeading = DriveState.getInstance().getHeading();
 
-        robotState.setFieldToVehicle(currentTime, new Pose(currentPosition, currentHeading));
+        RobotState.getInstance().reset(new Pose(currentPosition, currentHeading));
     }
 
     void setRobotPositionAtHumanStation()
     {
-        RobotState robotState = RobotState.getInstance();
-        DriveState driveState = DriveState.getInstance();
-        double currentTime = Timer.getFPGATimestamp();
-        
         Vector2d currentPosition = FieldDimensions.getRobotPositionAtHumanStation();
-        double currentHeading = driveState.getHeading();
+        double currentHeading = DriveState.getInstance().getHeading();
 
-        robotState.setFieldToVehicle(currentTime, new Pose(currentPosition, currentHeading));
+        RobotState.getInstance().reset(new Pose(currentPosition, currentHeading));
     }
 
 }
