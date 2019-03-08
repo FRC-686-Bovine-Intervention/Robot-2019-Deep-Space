@@ -14,7 +14,7 @@ public class HatchCollisionDetectionAction implements Action
     double hatchAngle = Double.MAX_VALUE;
     boolean enable = false;
     boolean collisionDetected = false;
-    public static double kEnableAngleThreshold = HatchDeploy.collisionAngle - 50;		// we have to reach this angle before collision detection is enabled
+    public static double kEnableAngleThreshold = HatchDeploy.collisionAngle + 50;		// we have to reach this angle before collision detection is enabled
     public static double kCollisionAngleThreshold = HatchDeploy.bumperAngle -  0;		// encoder reading when hatch panel is forced vertical
 
     public HatchCollisionDetectionAction() 

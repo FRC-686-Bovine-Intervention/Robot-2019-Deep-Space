@@ -7,8 +7,10 @@ import frc.robot.SmartDashboardInteractions;
 import frc.robot.auto.AutoModeBase;
 import frc.robot.auto.AutoModeEndedException;
 import frc.robot.auto.actions.Action;
-import frc.robot.auto.actions.*;
+import frc.robot.auto.actions.HatchCollisionDetectionAction;
+import frc.robot.auto.actions.HatchEjectAction;
 import frc.robot.auto.actions.HatchResetAction;
+import frc.robot.auto.actions.InterruptableAction;
 import frc.robot.auto.actions.ParallelAction;
 import frc.robot.auto.actions.PathFollowerAction;
 import frc.robot.auto.actions.SeriesAction;
@@ -21,7 +23,6 @@ import frc.robot.lib.util.Path.Waypoint;
 import frc.robot.lib.util.PathSegment;
 import frc.robot.lib.util.Pose;
 import frc.robot.lib.util.Vector2d;
-import frc.robot.loops.DriveLoop;
 
 /**
  * 2-Hatch Autonomous mode for Sandstorm period
@@ -82,10 +83,12 @@ public class HatchAuto extends AutoModeBase {
         {
             firstTargetPathB1 = new Path();    // no backup
 
-            firstTargetPathF = new Path(visionSpeed);
+            // firstTargetPathF = new Path(visionSpeed);
+            firstTargetPathF = new Path();
             firstTargetPathF.add(new Waypoint(target1StartPos,  medOptions));       // drive slowly off of hab
             firstTargetPathF.add(new Waypoint(target1TurnPos,   medOptions));
             firstTargetPathF.add(new Waypoint(target1VisionPos, visionOptions));    // turn on leds, use vision
+            firstTargetPathF.add(new Waypoint(target1HatchPos,  visionOptions));    // target hatch
             firstTargetPathF.setReverseDirection();
         }
         else    // side cargo
@@ -120,7 +123,8 @@ public class HatchAuto extends AutoModeBase {
         Vector2d humanStationVisionPos = FieldDimensions.getHumanStationVisionPosition();
         Vector2d humanStationHatchPos =  FieldDimensions.getHumanStationHatchPosition();
         
-        Path humanStationPathF = new Path(visionSpeed);
+        // Path humanStationPathF = new Path(visionSpeed);
+        Path humanStationPathF = new Path();
         humanStationPathF.add(new Waypoint(target1BackupPos3, fastOptions));
         if(target1 == FieldDimensions.TargetPositionEnum.ROCKET_FAR)
         {
@@ -187,7 +191,8 @@ public class HatchAuto extends AutoModeBase {
         }
         secondTargetPathB1.add(new Waypoint(target2BackupTurnPos, fastOptions));
 
-        Path secondTargetPathF = new Path(visionSpeed);
+        // Path secondTargetPathF = new Path(visionSpeed);
+        Path secondTargetPathF = new Path();
         secondTargetPathF.add(new Waypoint(target2BackupTurnPos, medOptions));
         secondTargetPathF.add(new Waypoint(target2TurnPos,       medOptions));
         secondTargetPathF.add(new Waypoint(target2VisionPos,     visionOptions));
@@ -222,11 +227,11 @@ public class HatchAuto extends AutoModeBase {
         {
             runAction(new PathFollowerAction(firstTargetPathB1));
         }
-        runAction(new PathFollowerAction(firstTargetPathF));    // drive off platform towards first target
-        runAction(new InterruptableAction(new HatchCollisionDetectionAction(), new PathFollowerAction(firstTargetPathV)));    // score
+        // runAction(new PathFollowerAction(firstTargetPathF));    // drive off platform towards first target
+        runAction(new InterruptableAction(new HatchCollisionDetectionAction(), new PathFollowerAction(firstTargetPathF)));    // score
 
         // At Target 1:  Save position, Place Hatch, then backup from target
-        setRobotPosition(target1);
+        // setRobotPosition(target1);
         runAction(new HatchEjectAction()); //eject hatch action
         Action waitAndRetractAction = new SeriesAction(Arrays.asList(new WaitAction(retractDelay), new HatchResetAction()));
         runAction(new ParallelAction(Arrays.asList(new PathFollowerAction(firstTargetPathB), waitAndRetractAction)));   // reverse away from target
@@ -236,7 +241,7 @@ public class HatchAuto extends AutoModeBase {
         runAction(new PathFollowerAction(humanStationPathF));
         runAction(new InterruptableAction(new HatchCollisionDetectionAction(), new PathFollowerAction(humanStationPathV)));
         runAction(new WaitAction(0.25));
-        setRobotPositionAtHumanStation();
+        // setRobot PositionAtHumanStation();
 
 
         // At Human Station: Backup to Target 2
