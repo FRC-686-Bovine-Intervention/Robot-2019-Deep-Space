@@ -105,7 +105,7 @@ public class CargoIntake implements Loop
     public final double kAccel = kCruiseVelocity / kTimeToCruiseVelocity; 
     
 	public final double kKf = kCalMaxPercentOutput * 1023.0 / kCalMaxEncoderPulsePer100ms;
-	public final double kKp = 32.0;	   
+	public final double kKp = 8.0;	   
 	public final double kKd = 0.0;	// to resolve any overshoot, start at 10*Kp 
 	public final double kKi = 0.0;    
 
