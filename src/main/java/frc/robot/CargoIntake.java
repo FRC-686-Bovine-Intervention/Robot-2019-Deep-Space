@@ -62,7 +62,7 @@ public class CargoIntake implements Loop
         GROUND(-8.7), 
         DEPOT_LEVEL(-2),
         PUSHUP(-14.3),
-        LEVEL2_APPROACH(10.0);
+        LEVEL2_APPROACH(-8.7);
         
         public final double angleDeg;
         
@@ -105,7 +105,7 @@ public class CargoIntake implements Loop
     public final double kAccel = kCruiseVelocity / kTimeToCruiseVelocity; 
     
 	public final double kKf = kCalMaxPercentOutput * 1023.0 / kCalMaxEncoderPulsePer100ms;
-	public final double kKp = 8.0;	   
+	public final double kKp = 16.0;	   
 	public final double kKd = 0.0;	// to resolve any overshoot, start at 10*Kp 
 	public final double kKi = 0.0;    
 

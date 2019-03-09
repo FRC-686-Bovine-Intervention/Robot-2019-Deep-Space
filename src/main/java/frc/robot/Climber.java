@@ -195,7 +195,7 @@ public class Climber implements Loop
                 // once arms are down, move on
                 if (arm.getArmAngleDeg() <= pushUpThresholdLevel2)
                 {
-                    arm.setPercentOutput(0.0);
+                    // arm.setPercentOutput(0.0);
                     climberState = ClimberStateEnum.LEVEL2_DRIVE_ONTO_PLATFORM;
                     level2ChangeAngleStartTime = Timer.getFPGATimestamp();
                 }
@@ -208,7 +208,7 @@ public class Climber implements Loop
                 climberDriveMotor.set(ControlMode.PercentOutput, kClimberMotorAtTopPercentOutput);
                 
                 arm.turnOffSoftLimits(); // turn of soft limits so we can do a pushup
-//              arm.setTarget(CargoDeployPositionEnum.LEVEL2_APPROACH);    // push arm until level with frame
+                arm.setTarget(CargoDeployPositionEnum.LEVEL2_APPROACH);    // push arm until level with frame
                 
                 
                 // the piston dance
