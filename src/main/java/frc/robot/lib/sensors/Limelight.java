@@ -77,7 +77,7 @@ public class Limelight
      */
     public void disabledPeriodic()
     {
-        boolean debuggingWhileDisabled = true;
+        boolean debuggingWhileDisabled = false;
 
         if (debuggingWhileDisabled)
         {
