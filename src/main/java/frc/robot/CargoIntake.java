@@ -82,8 +82,8 @@ public class CargoIntake implements Loop
     
     public RisingEdgeDetector ballDetectRisingEdge = new RisingEdgeDetector();
     boolean startCargoRetract = false;
-    final int kIntakeNumPulses = 4;
-    final double kIntakePulseOnTime = 0.10;
+    final int kIntakeNumPulses = 2;
+    final double kIntakePulseOnTime = 0.25; //0.10
     final double kIntakePulseOffTime = 0.25;
     PulseTrain intakePulseTrain = new PulseTrain(kIntakeNumPulses, kIntakePulseOnTime, kIntakePulseOffTime);
     
@@ -92,8 +92,8 @@ public class CargoIntake implements Loop
 
     public final double kMinFwdOutput = +0;
     public final double kMinRevOutput = -0;
-    public final double kMaxFwdOutput = +0.5;
-    public final double kMaxRevOutput = -0.5;
+    public final double kMaxFwdOutput = +0.5;    // 0.5
+    public final double kMaxRevOutput = -0.5;    // 0.5
 
     public final int kSlotIdx = 0;
 
@@ -119,7 +119,7 @@ public class CargoIntake implements Loop
 
     public final int kPeakCurrentLimit = 50;
     public final int kPeakCurrentDuration = 200;
-    public final int kContinuousCurrentLimit = 40;
+    public final int kContinuousCurrentLimit = 30;
 
     public final int kDeployMotorForwardSoftLimit = angleDegToEncoderUnits(CargoDeployPositionEnum.GROUND.angleDeg);
     public final int kDeployMotorReverseSoftLimit = angleDegToEncoderUnits(CargoDeployPositionEnum.RETRACTED.angleDeg);

@@ -30,16 +30,19 @@ public class HatchDeploy implements Loop
     public TalonSRX dropMotor;
     public Solenoid hatchSolenoid;
     public final double zeroingSpeed = -0.15;
-    public static final int bumperAngle = 250;
+    public static final int bumperAngle = 275;
     public static final int collisionAngle = 400;
+    public static final int HumanStationAngle = 400;
     public static final int groundAngle = 1249;
     public static final int defenseAngle = 0;
     public RisingEdgeDetector hatchButtonRisingEdgeDetector = new RisingEdgeDetector();
+    public RisingEdgeDetector humanButtonRisingEdgeDetector = new RisingEdgeDetector();
     public FallingEdgeDetector hatchButtonFallingEdgeDetector = new FallingEdgeDetector();
     public RisingEdgeDetector ejectButtonRisingEdgeDetector = new RisingEdgeDetector();
     public FallingEdgeDetector ejectButtonFallingEdgeDetector = new FallingEdgeDetector();
     public boolean zeroed  = false; 
-    private double mTimeToWait = 2;
+    private double mTimeToWait = 1;
+    private double hTimeToWait = 0.5;
     private double mStartTime;
     public double targetPosition;
     public ButtonBoard buttonBoard = ButtonBoard.getInstance();
@@ -84,7 +87,7 @@ public class HatchDeploy implements Loop
     
     
     public enum HatchDeployStateEnum {
-        INIT, DEFENSE, AUTO_COLLISION, TO_BUMPER, GROUND;
+        INIT, DEFENSE, AUTO_COLLISION, TO_BUMPER, HUMAN_STATION, GROUND;
     }
 
     public HatchDeployStateEnum state = HatchDeployStateEnum.INIT;
@@ -178,6 +181,9 @@ public class HatchDeploy implements Loop
         boolean ejectButtonPush = ejectButtonRisingEdgeDetector.update(ejectButton);
         boolean ejectButtonUnpush = ejectButtonFallingEdgeDetector.update(ejectButton);
 
+        boolean humanBtnIsPushed = controls.getButton(Constants.kHumanStationBttn) && drivingHatch;
+        boolean humanButtonPush = humanButtonRisingEdgeDetector.update(humanBtnIsPushed);
+
         getLimitSwitches();
 
 
@@ -204,8 +210,13 @@ public class HatchDeploy implements Loop
             {
                 state = HatchDeployStateEnum.DEFENSE;
             }
+            if (humanButtonPush)  
+            {    
+                mStartTime = Timer.getFPGATimestamp();
+                 
+                state = HatchDeployStateEnum.HUMAN_STATION;
+            }
             break;
-
 
         case AUTO_COLLISION:
             setTarget(collisionAngle);
@@ -235,6 +246,14 @@ public class HatchDeploy implements Loop
         case GROUND:
             setTarget(groundAngle);
             if ( Timer.getFPGATimestamp() - mStartTime >= mTimeToWait)    
+            {
+                state = HatchDeployStateEnum.TO_BUMPER;
+            }
+            break;
+
+            case HUMAN_STATION:
+            setTarget(HumanStationAngle);
+            if ( Timer.getFPGATimestamp() - mStartTime >= hTimeToWait)    
             {
                 state = HatchDeployStateEnum.TO_BUMPER;
             }

@@ -212,7 +212,7 @@ public class FrontHatchAuto extends AutoModeBase {
 
         // optional start delay
         runAction(new WaitAction(startDelaySec));               // initial delay (optional)
-        
+        runAction(new WaitAction(0.5));
         // At Starting Position: Go to Target 1
         if (target1 == FieldDimensions.TargetPositionEnum.CARGO_FRONT)
         {

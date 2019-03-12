@@ -75,7 +75,9 @@ public class Constants extends ConstantsBase {
     public static int kVisionAssistanceButton = kXboxButtonA;
     public static int kQuickTurnButton =        kXboxButtonY; // bogus setting to make TriggerDrive Joysticks happy
     public static int kCargoIntakeDepotHeight = kXboxButtonX;
+    public static int kHumanStationBttn = kXboxButtonB;
   
+
 
     // Operator Button Board Configuration
     public static int kCargoIntakeRocketButton =    ButtonBoard.kButtonBoardB;
