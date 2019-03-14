@@ -47,7 +47,7 @@ public class Climber implements Loop
 
     public double startRetractTime;
     public final double kRetractTimePeriod = 2.0;
-    public final double kFinishTimePeriod = .5;
+    public final double kFinishTimePeriod = 0.5;
 
     // gyro to get tilt of robot
     public Pigeon pigeon = (Pigeon)Pigeon.getInstance();
@@ -322,6 +322,27 @@ public class Climber implements Loop
             put("Climber/derror", dError);
             put("Climber/iError", iError);
             put("Climber/pidOutput", pidOutput);
+
+            boolean climbing = (arm.state == CargoDeployStateEnum.CLIMBING);
+            boolean finished = climbing && (climberState == ClimberStateEnum.FINISHED);
+            boolean retract =  climbing && (climberState == ClimberStateEnum.RETRACT_CYLINDERS);
+            boolean l3Drive = climbing && (climberState == ClimberStateEnum.LEVEL3_DRIVE_ONTO_PLATFORM);
+            boolean l3Climb = climbing && (climberState == ClimberStateEnum.LEVEL3_CLIMB);
+            boolean l3Arms  = climbing && (climberState == ClimberStateEnum.LEVEL3_ARMS_ON_PLATFORM);
+            boolean l2Drive = climbing && (climberState == ClimberStateEnum.LEVEL2_DRIVE_ONTO_PLATFORM);
+            boolean l2Climb = climbing && (climberState == ClimberStateEnum.LEVEL2_CLIMB);
+            boolean l2Arms  = climbing && (climberState == ClimberStateEnum.LEVEL2_ARMS_ON_PLATFORM);
+
+            put("Climber/climbMode", climbing);
+            put("Climber/l3Arms",   l3Arms);
+            put("Climber/l3Climb",  l3Climb);
+            put("Climber/l3Drive",  l3Drive);
+            put("Climber/l2Arms",   l2Arms);
+            put("Climber/l2Climb",  l2Climb);
+            put("Climber/l2Drive",  l2Drive);
+            put("Climber/retract",  retract);
+            put("Climber/finished", finished);
+
 		}
 	};
     
