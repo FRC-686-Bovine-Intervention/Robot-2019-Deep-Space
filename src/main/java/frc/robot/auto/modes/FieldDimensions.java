@@ -38,7 +38,8 @@ public class FieldDimensions
     private static Vector2d kRocketCenter = new Vector2d(229.1, 153.3);
     private static double   kRocketCenterToHatch = 17.0;                         // distance from rocket center to center of hatches on diagonal
     private static double   kRocketAngleRad = 30.0*Vector2d.degreesToRadians ;   // angle from center to hatch, relative to back
-    private static double   kRocketVisionDist = 40.0;                            // distance from which to turn on cameras
+    private static double   kRocketVisionDist1 = 60.0;                            // distance from which to turn on cameras
+    private static double   kRocketVisionDist2 = 30.0;                            // distance from which to turn on cameras
     private static double   kRocketTurnDist   = 30.0;                            // distance from which to turn towards rocket
     private static double   kRocketBackupTurnDist   = 30.0;                      
     
@@ -49,8 +50,9 @@ public class FieldDimensions
 
     // Near Rocket
     private static Vector2d kNearRocketHatchPosition  = kRocketCenter.add( Vector2d.magnitudeAngle(kRocketCenterToHatch, kNearRocketAngleRad) );
-    private static Vector2d kNearRocketVisionPosition = kNearRocketHatchPosition.add(  Vector2d.magnitudeAngle(kRocketVisionDist, kNearRocketAngleRad) );
-    private static Vector2d kNearRocketTurnPosition   = kNearRocketVisionPosition.add( Vector2d.magnitudeAngle(kRocketTurnDist,   kNearRocketAngleRad) );
+    private static Vector2d kNearRocketVisionPosition2 = kNearRocketHatchPosition.add(  Vector2d.magnitudeAngle(kRocketVisionDist2, kNearRocketAngleRad) );
+    private static Vector2d kNearRocketVisionPosition1 = kNearRocketHatchPosition.add(  Vector2d.magnitudeAngle(kRocketVisionDist1, kNearRocketAngleRad) );
+    private static Vector2d kNearRocketTurnPosition   = kNearRocketVisionPosition1.add( Vector2d.magnitudeAngle(kRocketTurnDist,   kNearRocketAngleRad) );
     private static Vector2d kNearRocketBackupTurnPosition   = kNearRocketTurnPosition.add( Vector2d.magnitudeAngle(kRocketBackupTurnDist,   kNearRocketBackupTurnAngleRad) );
  
     private static double   kNearRocketBackupDist1   = 6.0;                  // backup1: just back up a little away from hatch
@@ -66,8 +68,9 @@ public class FieldDimensions
 
     // Far Rocket
     private static Vector2d kFarRocketHatchPosition  = kRocketCenter.add( Vector2d.magnitudeAngle(kRocketCenterToHatch, kFarRocketAngleRad) );
-    private static Vector2d kFarRocketVisionPosition = kFarRocketHatchPosition.add(  Vector2d.magnitudeAngle(kRocketVisionDist, kFarRocketAngleRad) );
-    private static Vector2d kFarRocketTurnPosition   = kFarRocketVisionPosition.add( Vector2d.magnitudeAngle(kRocketTurnDist,   kFarRocketAngleRad) );
+    private static Vector2d kFarRocketVisionPosition2 = kFarRocketHatchPosition.add(  Vector2d.magnitudeAngle(kRocketVisionDist2, kFarRocketAngleRad) );
+    private static Vector2d kFarRocketVisionPosition1 = kFarRocketHatchPosition.add(  Vector2d.magnitudeAngle(kRocketVisionDist1, kFarRocketAngleRad) );
+    private static Vector2d kFarRocketTurnPosition   = kFarRocketVisionPosition1.add( Vector2d.magnitudeAngle(kRocketTurnDist,   kFarRocketAngleRad) );
     private static Vector2d kFarRocketBackupTurnPosition   = kFarRocketTurnPosition.add( Vector2d.magnitudeAngle(kRocketBackupTurnDist,   kFarRocketBackupTurnAngleRad) );
  
     private static double   kFarRocketBackupDist1   = 6.0;                  // backup1: just back up a little away from hatch
@@ -86,8 +89,9 @@ public class FieldDimensions
 
 
     // Cargo Ship
-    private static double   kCargoVisionDist = 60.0;                      // distance from which to turn turn on cameras (desired target should be mostly centered)
-    private static double   kCargoTurnDist   = 30.0;                      // distance from which to turn towards cargo bay
+    private static double   kCargoVisionDist1 = 60.0;                      // distance from which to turn on cameras (desired target should be mostly centered)
+    private static double   kCargoVisionDist2 = 30.0;                      // midway point from hatch to Vision1
+    private static double   kCargoTurnDist    = 30.0;                      // distance from which to turn towards cargo bay
     private static double   kCargoBackupTurnDist   = 30.0;                      // distance from which to turn towards cargo bay
 
     // Cargo Ship Front Bay
@@ -95,8 +99,9 @@ public class FieldDimensions
     private static double   kCargoFrontAngleRad = -Math.PI;
     private static double   kCargoFrontBackupTurnAngleRad = -Math.PI/2;
 
-    private static Vector2d kCargoFrontVisionPosition  = kCargoFrontHatchPosition.add( Vector2d.magnitudeAngle(kCargoVisionDist, kCargoFrontAngleRad) );
-    private static Vector2d kCargoFrontTurnPosition    = kCargoFrontVisionPosition.add( Vector2d.magnitudeAngle(kCargoTurnDist,  kCargoFrontAngleRad) );
+    private static Vector2d kCargoFrontVisionPosition2  = kCargoFrontHatchPosition.add( Vector2d.magnitudeAngle(kCargoVisionDist2, kCargoFrontAngleRad) );
+    private static Vector2d kCargoFrontVisionPosition1  = kCargoFrontHatchPosition.add( Vector2d.magnitudeAngle(kCargoVisionDist1, kCargoFrontAngleRad) );
+    private static Vector2d kCargoFrontTurnPosition    = kCargoFrontVisionPosition1.add( Vector2d.magnitudeAngle(kCargoTurnDist,  kCargoFrontAngleRad) );
     private static Vector2d kCargoFrontBackupTurnPosition   = kCargoFrontTurnPosition.add( Vector2d.magnitudeAngle(kCargoBackupTurnDist,   kCargoFrontBackupTurnAngleRad) );
     
     private static double   kCargoFrontBackupDist1   = 48.0;                  // backup1: just back up a little away from hatch
@@ -118,13 +123,17 @@ public class FieldDimensions
     private static double   kCargoSideAngleRad = +Math.PI/2;
     private static double   kCargoSideBackupTurnAngleRad = 0;
     
-    private static Vector2d kCargoSide1VisionPosition = kCargoSide1HatchPosition.add(  Vector2d.magnitudeAngle(kCargoVisionDist, kCargoSideAngleRad) );
-    private static Vector2d kCargoSide2VisionPosition = kCargoSide2HatchPosition.add(  Vector2d.magnitudeAngle(kCargoVisionDist, kCargoSideAngleRad) );
-    private static Vector2d kCargoSide3VisionPosition = kCargoSide3HatchPosition.add(  Vector2d.magnitudeAngle(kCargoVisionDist, kCargoSideAngleRad) );
+    private static Vector2d kCargoSide1VisionPosition2 = kCargoSide1HatchPosition.add(  Vector2d.magnitudeAngle(kCargoVisionDist2, kCargoSideAngleRad) );
+    private static Vector2d kCargoSide2VisionPosition2 = kCargoSide2HatchPosition.add(  Vector2d.magnitudeAngle(kCargoVisionDist2, kCargoSideAngleRad) );
+    private static Vector2d kCargoSide3VisionPosition2 = kCargoSide3HatchPosition.add(  Vector2d.magnitudeAngle(kCargoVisionDist2, kCargoSideAngleRad) );
     
-    private static Vector2d kCargoSide1TurnPosition   = kCargoSide1VisionPosition.add( Vector2d.magnitudeAngle(kCargoTurnDist,   kCargoSideAngleRad));
-    private static Vector2d kCargoSide2TurnPosition   = kCargoSide2VisionPosition.add( Vector2d.magnitudeAngle(kCargoTurnDist,   kCargoSideAngleRad));
-    private static Vector2d kCargoSide3TurnPosition   = kCargoSide3VisionPosition.add( Vector2d.magnitudeAngle(kCargoTurnDist,   kCargoSideAngleRad));
+    private static Vector2d kCargoSide1VisionPosition1 = kCargoSide1HatchPosition.add(  Vector2d.magnitudeAngle(kCargoVisionDist1, kCargoSideAngleRad) );
+    private static Vector2d kCargoSide2VisionPosition1 = kCargoSide2HatchPosition.add(  Vector2d.magnitudeAngle(kCargoVisionDist1, kCargoSideAngleRad) );
+    private static Vector2d kCargoSide3VisionPosition1 = kCargoSide3HatchPosition.add(  Vector2d.magnitudeAngle(kCargoVisionDist1, kCargoSideAngleRad) );
+    
+    private static Vector2d kCargoSide1TurnPosition   = kCargoSide1VisionPosition1.add( Vector2d.magnitudeAngle(kCargoTurnDist,   kCargoSideAngleRad));
+    private static Vector2d kCargoSide2TurnPosition   = kCargoSide2VisionPosition1.add( Vector2d.magnitudeAngle(kCargoTurnDist,   kCargoSideAngleRad));
+    private static Vector2d kCargoSide3TurnPosition   = kCargoSide3VisionPosition1.add( Vector2d.magnitudeAngle(kCargoTurnDist,   kCargoSideAngleRad));
     
     private static Vector2d kCargoSide1BackupTurnPosition   = kCargoSide1TurnPosition.add( Vector2d.magnitudeAngle(kCargoBackupTurnDist,   kCargoSideBackupTurnAngleRad) );
     private static Vector2d kCargoSide2BackupTurnPosition   = kCargoSide2TurnPosition.add( Vector2d.magnitudeAngle(kCargoBackupTurnDist,   kCargoSideBackupTurnAngleRad) );
@@ -156,15 +165,17 @@ public class FieldDimensions
     private static Vector2d kHumanStationHatchPosition = new Vector2d(-4.0, 136.3); //0.0
     private static double   kHumanStationAngleRad = 0.0;
 
-    private static double   kHumanStationVisionDist = 72.0;                      // distance from which to turn turn on cameras (desired target should be mostly centered)
+    private static double   kHumanStationVisionDist1 = 60.0;                      // distance from which to turn turn on cameras (desired target should be mostly centered)
+    private static double   kHumanStationVisionDist2 = 30.0;                      // distance from which to turn turn on cameras (desired target should be mostly centered)
     private static double   kHumanStationTurnDist   = 48.0;                      // distance from which to turn towards human station
     
     private static Vector2d kHumanStationFarRocketMidPosition  = new Vector2d(200, 110);     // position to pass through when going FarRocket<-->HumanStation
     private static Vector2d kHumanStationSideCargoMidPosition  = new Vector2d(200, 110);     // position to pass through when going CargoSide<-->HumanStation
     private static Vector2d kHumanStationFrontCargoMidPosition = new Vector2d(130, 100);     // position to pass through when going HumanStation-->CargoFront
 
-    private static Vector2d kHumanStationVisionPosition = kHumanStationHatchPosition.add(  Vector2d.magnitudeAngle(kHumanStationVisionDist, kHumanStationAngleRad) );
-    private static Vector2d kHumanStationTurnPosition =   kHumanStationVisionPosition.add( Vector2d.magnitudeAngle(kHumanStationTurnDist,   kHumanStationAngleRad-20*Math.PI/180) );
+    private static Vector2d kHumanStationVisionPosition2 = kHumanStationHatchPosition.add(  Vector2d.magnitudeAngle(kHumanStationVisionDist2, kHumanStationAngleRad) );
+    private static Vector2d kHumanStationVisionPosition1 = kHumanStationHatchPosition.add(  Vector2d.magnitudeAngle(kHumanStationVisionDist1, kHumanStationAngleRad) );
+    private static Vector2d kHumanStationTurnPosition =   kHumanStationVisionPosition1.add( Vector2d.magnitudeAngle(kHumanStationTurnDist,   kHumanStationAngleRad-20*Math.PI/180) );
 
 
 
@@ -188,7 +199,8 @@ public class FieldDimensions
     }
     
     public static Vector2d getHumanStationTurnPosition()   { return (!rightSide ? kHumanStationTurnPosition   : kHumanStationTurnPosition.conj()); }
-    public static Vector2d getHumanStationVisionPosition() { return (!rightSide ? kHumanStationVisionPosition : kHumanStationVisionPosition.conj()); }
+    public static Vector2d getHumanStationVisionPosition1() { return (!rightSide ? kHumanStationVisionPosition1 : kHumanStationVisionPosition1.conj()); }
+    public static Vector2d getHumanStationVisionPosition2() { return (!rightSide ? kHumanStationVisionPosition1 : kHumanStationVisionPosition2.conj()); }
     public static Vector2d getHumanStationHatchPosition()  { return (!rightSide ? kHumanStationHatchPosition  : kHumanStationHatchPosition.conj()); }
 
     public static Vector2d getHumanStationFarRocketMidPosition()  { return (!rightSide ? kHumanStationFarRocketMidPosition  : kHumanStationFarRocketMidPosition.conj()); }
@@ -236,18 +248,38 @@ public class FieldDimensions
         return rv;
     }
 
-    public static Vector2d getTargetVisionPosition(TargetPositionEnum _target)
+    public static Vector2d getTargetVisionPosition1(TargetPositionEnum _target)
     {
         Vector2d rv = new Vector2d();
         
         switch (_target)
         {
-            case CARGO_FRONT:   rv = kCargoFrontVisionPosition; break;
-            case CARGO_SIDE1:   rv = kCargoSide1VisionPosition; break;
-            case CARGO_SIDE2:   rv = kCargoSide2VisionPosition; break;
-            case CARGO_SIDE3:   rv = kCargoSide3VisionPosition; break;
-            case ROCKET_NEAR:   rv = kNearRocketVisionPosition; break;
-            case ROCKET_FAR:    rv =  kFarRocketVisionPosition; break;
+            case CARGO_FRONT:   rv = kCargoFrontVisionPosition1; break;
+            case CARGO_SIDE1:   rv = kCargoSide1VisionPosition1; break;
+            case CARGO_SIDE2:   rv = kCargoSide2VisionPosition1; break;
+            case CARGO_SIDE3:   rv = kCargoSide3VisionPosition1; break;
+            case ROCKET_NEAR:   rv = kNearRocketVisionPosition1; break;
+            case ROCKET_FAR:    rv =  kFarRocketVisionPosition1; break;
+        }
+        if (rightSide)
+        {
+            rv = rv.conj();
+        }
+        return rv;
+    }
+
+    public static Vector2d getTargetVisionPosition2(TargetPositionEnum _target)
+    {
+        Vector2d rv = new Vector2d();
+        
+        switch (_target)
+        {
+            case CARGO_FRONT:   rv = kCargoFrontVisionPosition2; break;
+            case CARGO_SIDE1:   rv = kCargoSide1VisionPosition2; break;
+            case CARGO_SIDE2:   rv = kCargoSide2VisionPosition2; break;
+            case CARGO_SIDE3:   rv = kCargoSide3VisionPosition2; break;
+            case ROCKET_NEAR:   rv = kNearRocketVisionPosition2; break;
+            case ROCKET_FAR:    rv =  kFarRocketVisionPosition2; break;
         }
         if (rightSide)
         {
