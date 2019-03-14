@@ -320,14 +320,17 @@ public class Robot extends TimedRobot {
 		}
 	}
 	
+	boolean ledsOnlyWhenActive = true;
+
 	@Override
 	public void teleopPeriodic() 
 	{
 		try
 		{
+			boolean visionButton = selectedJoystick.getButton(Constants.kVisionAssistanceButton);
+
 			DriveCommand driveCmd = selectedJoystick.getDriveCommand();
-			drive.setOpenLoop(driveCmd);
-			driveCmd = visionDriveAssistant.assist(driveCmd, selectedJoystick.getButton(Constants.kVisionAssistanceButton));
+			driveCmd = visionDriveAssistant.assist(driveCmd, visionButton);
 
 			//modify drive controls based on buttons
 			// DriveCommand driveCmdReverse = controlsReverse.run( driveCmd, Constants.kControlsReverseButton);
@@ -339,21 +342,26 @@ public class Robot extends TimedRobot {
 				 cargoCamera.setLEDMode(Limelight.LedMode.kBlink);
 				 hatchCamera.setLEDMode(Limelight.LedMode.kBlink);
 			}
-			else if (selectedJoystick.getDrivingCargo())
+			else if (selectedJoystick.getDrivingCargo() && (!ledsOnlyWhenActive || (ledsOnlyWhenActive && visionButton)))
 			{
 				cargoCamera.setLEDMode(Limelight.LedMode.kOn);
 				hatchCamera.setLEDMode(Limelight.LedMode.kOff);
-				if(CargoIntake.getInstance().state != CargoIntake.CargoDeployStateEnum.CLIMBING){
-
-					Shuffleboard.selectTab(cargoCamera.getTableName());     // select cargo camera tab in Shuffleboard
-				}
 			}
-			else
+			else if (!ledsOnlyWhenActive || (ledsOnlyWhenActive && visionButton))
 			{
 				cargoCamera.setLEDMode(Limelight.LedMode.kOff);
 				hatchCamera.setLEDMode(Limelight.LedMode.kOn);
-				if(CargoIntake.getInstance().state != CargoIntake.CargoDeployStateEnum.CLIMBING){
+			}
 
+			// change shuffleboard tabs
+			if(CargoIntake.getInstance().state != CargoIntake.CargoDeployStateEnum.CLIMBING)
+			{
+				if (selectedJoystick.getDrivingCargo())
+				{
+					Shuffleboard.selectTab(cargoCamera.getTableName());     // select cargo camera tab in Shuffleboard
+				}
+				else
+				{
 					Shuffleboard.selectTab(hatchCamera.getTableName());     // select hatch camera tab in Shuffleboard
 				}
 			}

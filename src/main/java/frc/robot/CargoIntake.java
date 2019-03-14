@@ -102,7 +102,7 @@ public class CargoIntake implements Loop
     public final double kCalMaxEncoderPulsePer100ms = 60;	// velocity at a max throttle (measured using Phoenix Tuner)
     public final double kCalMaxPercentOutput 		= 1.0;	// percent output of motor at above throttle (using Phoenix Tuner)
 
-    public final double kCruiseVelocity = 0.70 * kCalMaxEncoderPulsePer100ms;		// cruise below top speed
+    public final double kCruiseVelocity = 0.80 * kCalMaxEncoderPulsePer100ms;		// cruise below top speed
     public final double kTimeToCruiseVelocity = 0.1;				// seconds to reach cruise velocity
     public final double kAccel = kCruiseVelocity / kTimeToCruiseVelocity; 
     
