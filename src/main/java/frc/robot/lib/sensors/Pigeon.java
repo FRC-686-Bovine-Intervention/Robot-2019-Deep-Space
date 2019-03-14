@@ -47,7 +47,7 @@ public class Pigeon extends GyroBase
         }
 
         public double getPitchDeg()
-         {
+        {
                 double[] ypr = new double[kYPR_SIZE]; // yaw/pitch/roll array
                 pigeon.getYawPitchRoll(ypr); // fill array
                 double pitch = ypr[kPITCH];
@@ -55,7 +55,7 @@ public class Pigeon extends GyroBase
         }
 
         public double getRollDeg()
-         {
+        {
                 double[] ypr = new double[kYPR_SIZE]; // yaw/pitch/roll array
                 pigeon.getYawPitchRoll(ypr); // fill array
                 double roll = ypr[kROLL];
