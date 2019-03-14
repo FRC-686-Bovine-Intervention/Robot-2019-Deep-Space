@@ -66,7 +66,7 @@ public class FrontHatchAuto extends AutoModeBase {
         Vector2d target1StartPos =      startPosition;
         Vector2d target1BackupTurnPos = FieldDimensions.getTargetBackupTurnPosition(target1);
         Vector2d target1TurnPos =       FieldDimensions.getTargetTurnPosition(target1);
-        Vector2d target1VisionPos =     FieldDimensions.getTargetVisionPosition(target1);
+        Vector2d target1VisionPos =     FieldDimensions.getTargetVisionPosition1(target1);
         Vector2d target1HatchPos =      FieldDimensions.getTargetHatchPosition(target1);
         Vector2d target1BackupPos1 =    FieldDimensions.getTargetBackupPosition1(target1);
         Vector2d target1BackupPos2 =    FieldDimensions.getTargetBackupPosition2(target1);
@@ -113,7 +113,7 @@ public class FrontHatchAuto extends AutoModeBase {
         //============================================================================
 
         Vector2d humanStationTurnPos =   FieldDimensions.getHumanStationTurnPosition();
-        Vector2d humanStationVisionPos = FieldDimensions.getHumanStationVisionPosition();
+        Vector2d humanStationVisionPos = FieldDimensions.getHumanStationVisionPosition1();
         Vector2d humanStationHatchPos =  FieldDimensions.getHumanStationHatchPosition();
         
         Path humanStationPathF = new Path(visionSpeed);
@@ -144,7 +144,7 @@ public class FrontHatchAuto extends AutoModeBase {
         Vector2d target2StartPos =      humanStationHatchPos;
         Vector2d target2BackupTurnPos = FieldDimensions.getTargetBackupTurnPosition(target2);
         Vector2d target2TurnPos =       FieldDimensions.getTargetTurnPosition(target2);
-        Vector2d target2VisionPos =     FieldDimensions.getTargetVisionPosition(target2);
+        Vector2d target2VisionPos =     FieldDimensions.getTargetVisionPosition1(target2);
         Vector2d target2HatchPos =      FieldDimensions.getTargetHatchPosition(target2);
         Vector2d target2BackupPos1 =    FieldDimensions.getTargetBackupPosition1(target2);
         Vector2d target2BackupPos2 =    FieldDimensions.getTargetBackupPosition2(target2);
