@@ -55,9 +55,11 @@ public class SmartDashboardInteractions
     	
         startPositionChooser = new SendableChooser<StartPositionOption>();
         startPositionChooser.addOption(StartPositionOption.LEFT_START.toString(),    StartPositionOption.LEFT_START);
+        startPositionChooser.addOption(StartPositionOption.HAB2_LEFT_START.toString(),    StartPositionOption.HAB2_LEFT_START);
         startPositionChooser.addOption(StartPositionOption.CENTER_LEFT_START.toString(),    StartPositionOption.CENTER_LEFT_START);
         startPositionChooser.setDefaultOption(StartPositionOption.CENTER_RIGHT_START.toString(),    StartPositionOption.CENTER_RIGHT_START);
         startPositionChooser.addOption(StartPositionOption.RIGHT_START.toString(),    StartPositionOption.RIGHT_START);
+        startPositionChooser.addOption(StartPositionOption.HAB2_RIGHT_START.toString(),    StartPositionOption.HAB2_RIGHT_START);
         SmartDashboard.putData("Start Position", startPositionChooser);
 
         startDelayChooser = new SendableChooser<StartDelayOption>();

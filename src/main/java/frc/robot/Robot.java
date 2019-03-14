@@ -11,11 +11,9 @@ import java.util.TimeZone;
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.auto.AutoModeExecuter;
-import frc.robot.auto.modes.FieldDimensions;
 import frc.robot.command_status.DriveCommand;
 import frc.robot.command_status.DriveState;
 import frc.robot.command_status.GoalStates;
@@ -345,13 +343,19 @@ public class Robot extends TimedRobot {
 			{
 				cargoCamera.setLEDMode(Limelight.LedMode.kOn);
 				hatchCamera.setLEDMode(Limelight.LedMode.kOff);
-                Shuffleboard.selectTab(cargoCamera.getTableName());     // select cargo camera tab in Shuffleboard
+				if(CargoIntake.getInstance().state != CargoIntake.CargoDeployStateEnum.CLIMBING){
+
+					Shuffleboard.selectTab(cargoCamera.getTableName());     // select cargo camera tab in Shuffleboard
+				}
 			}
 			else
 			{
 				cargoCamera.setLEDMode(Limelight.LedMode.kOff);
 				hatchCamera.setLEDMode(Limelight.LedMode.kOn);
-                Shuffleboard.selectTab(hatchCamera.getTableName());     // select hatch camera tab in Shuffleboard
+				if(CargoIntake.getInstance().state != CargoIntake.CargoDeployStateEnum.CLIMBING){
+
+					Shuffleboard.selectTab(hatchCamera.getTableName());     // select hatch camera tab in Shuffleboard
+				}
 			}
 		}
 		catch (Throwable t)
