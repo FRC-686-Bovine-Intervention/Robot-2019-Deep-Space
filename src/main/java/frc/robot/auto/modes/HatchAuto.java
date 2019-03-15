@@ -84,7 +84,7 @@ public class HatchAuto extends AutoModeBase {
         {
             firstTargetPathB1 = new Path();    // no backup
 
-            firstTargetPathF = new Path(visionSpeed);
+            firstTargetPathF = new Path();
             firstTargetPathF.add(new Waypoint(target1StartPos,   medOptions));       // drive slowly off of hab
             firstTargetPathF.add(new Waypoint(target1TurnPos,    medOptions));
             firstTargetPathF.add(new Waypoint(target1VisionPos1, medOptions));
@@ -101,7 +101,7 @@ public class HatchAuto extends AutoModeBase {
             firstTargetPathF.add(new Waypoint(target1TurnPos,           medOptions));
             firstTargetPathF.add(new Waypoint(target1VisionPos1,      visionOptions));    // turn on leds, use vision
             firstTargetPathF.setReverseDirection();
-}
+        }
 
         Path firstTargetPathV = new Path();
         firstTargetPathV.add(new Waypoint(target1VisionPos2, visionOptions));    // turn on leds, use vision
@@ -123,7 +123,7 @@ public class HatchAuto extends AutoModeBase {
         Vector2d humanStationVisionPos2 = FieldDimensions.getHumanStationVisionPosition2();
         Vector2d humanStationHatchPos =  FieldDimensions.getHumanStationHatchPosition();
         
-        Path humanStationPathF = new Path(visionSpeed);
+        Path humanStationPathF = new Path();
         humanStationPathF.add(new Waypoint(target1BackupPos3, fastOptions));
         if(target1 == FieldDimensions.TargetPositionEnum.ROCKET_FAR)
         {
@@ -144,71 +144,9 @@ public class HatchAuto extends AutoModeBase {
         humanStationPathV.add(new Waypoint(humanStationHatchPos,   visionOptions));
         humanStationPathV.setReverseDirection();
 
-        //============================================================================
-        // Target 2
-        //============================================================================  
-
-        Vector2d target2StartPos =      humanStationHatchPos;
-        Vector2d target2BackupTurnPos = FieldDimensions.getTargetBackupTurnPosition(target2);
-        Vector2d target2TurnPos =       FieldDimensions.getTargetTurnPosition(target2);
-        Vector2d target2VisionPos1 =    FieldDimensions.getTargetVisionPosition1(target2);
-        Vector2d target2VisionPos2 =    FieldDimensions.getTargetVisionPosition2(target2);
-        Vector2d target2HatchPos =      FieldDimensions.getTargetHatchPosition(target2);
-        Vector2d target2BackupPos1 =    FieldDimensions.getTargetBackupPosition1(target2);
-        Vector2d target2BackupPos2 =    FieldDimensions.getTargetBackupPosition2(target2);
-        Vector2d target2BackupPos3 =    FieldDimensions.getTargetBackupPosition3(target2);
-
-        if (target1 == FieldDimensions.TargetPositionEnum.CARGO_FRONT && target2 == FieldDimensions.TargetPositionEnum.CARGO_FRONT)
-        {
-            // if both targets are CARGO_FRONT, there are issues with the above code because the positions cross the y=0 line
-            // so we'll get target2's positions by applying an offset to target1's positions
-            Vector2d offset = FieldDimensions.getCargoFrontSpacing();   // (0, +/-21.75)
-            target2BackupTurnPos = target1BackupTurnPos.add(offset);
-            target2TurnPos =       target1TurnPos.add(offset);
-            target2VisionPos1 =    target1VisionPos1.add(offset);
-            target2VisionPos2 =    target1VisionPos2.add(offset);
-            target2HatchPos =      target1HatchPos.add(offset);
-            target2BackupPos1 =    target1BackupPos1.add(offset);
-            target2BackupPos2 =    target1BackupPos2.add(offset);
-            target2BackupPos3 =    target1BackupPos3.add(offset);
-        }
+  
 
 
-        Path secondTargetPathB1 = new Path();
-        secondTargetPathB1.add(new Waypoint(target2StartPos, fastOptions));
-        if (target2 == FieldDimensions.TargetPositionEnum.ROCKET_FAR)
-        {
-            secondTargetPathB1.add(new Waypoint(FieldDimensions.getHumanStationFarRocketMidPosition(), fastOptions));
-        }
-        if (target2 == FieldDimensions.TargetPositionEnum.CARGO_SIDE1 ||
-            target2 == FieldDimensions.TargetPositionEnum.CARGO_SIDE2 || 
-            target2 == FieldDimensions.TargetPositionEnum.CARGO_SIDE3 )
-        {
-            secondTargetPathB1.add(new Waypoint(FieldDimensions.getHumanStationSideCargoMidPosition(), fastOptions));
-        }
-        if (target2 == FieldDimensions.TargetPositionEnum.CARGO_FRONT)
-        {
-            secondTargetPathB1.add(new Waypoint(FieldDimensions.getHumanStationFrontCargoMidPosition(), fastOptions));
-        }
-        secondTargetPathB1.add(new Waypoint(target2BackupTurnPos, fastOptions));
-
-        // Path secondTargetPathF = new Path(visionSpeed);
-        Path secondTargetPathF = new Path();
-        secondTargetPathF.add(new Waypoint(target2BackupTurnPos, medOptions));
-        secondTargetPathF.add(new Waypoint(target2TurnPos,       medOptions));
-        secondTargetPathF.add(new Waypoint(target2VisionPos1,    medOptions));
-        secondTargetPathF.setReverseDirection();
-
-        Path secondTargetPathV = new Path();
-        secondTargetPathV.add(new Waypoint(target2VisionPos2,    visionOptions));
-        secondTargetPathV.add(new Waypoint(target2HatchPos,      visionOptions));
-        secondTargetPathV.setReverseDirection();
-
-        Path secondTargetPathB2 = new Path();
-        secondTargetPathB2.add(new Waypoint(target2HatchPos,   fastOptions));
-        secondTargetPathB2.add(new Waypoint(target2BackupPos1, fastOptions));
-        secondTargetPathB2.add(new Waypoint(target2BackupPos2, fastOptions));
-        secondTargetPathB2.add(new Waypoint(target2BackupPos3, fastOptions));
 
 
 
@@ -243,18 +181,6 @@ public class HatchAuto extends AutoModeBase {
         runAction(new InterruptableAction(new HatchCollisionDetectionAction(), new PathFollowerAction(humanStationPathV)));
         runAction(new WaitAction(0.25));
         // setRobot PositionAtHumanStation();
-
-
-        // At Human Station: Backup to Target 2
-        runAction(new PathFollowerAction(secondTargetPathB1));
-        runAction(new PathFollowerAction(secondTargetPathF));
-        runAction(new InterruptableAction(new HatchCollisionDetectionAction(), new PathFollowerAction(secondTargetPathV)));    // score
-
-        // At Target 2: Place Hatch, then backup from target
-        runAction(new HatchEjectAction());
-        waitAndRetractAction = new SeriesAction(Arrays.asList(new WaitAction(retractDelay), new HatchResetAction()));
-        runAction(new ParallelAction(Arrays.asList(new PathFollowerAction(secondTargetPathB2), waitAndRetractAction)));   // reverse away from target
-
 
         // Done!
 
