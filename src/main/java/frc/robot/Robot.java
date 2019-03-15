@@ -328,6 +328,7 @@ public class Robot extends TimedRobot {
 		try
 		{
 			boolean visionButton = selectedJoystick.getButton(Constants.kVisionAssistanceButton);
+			boolean ledsActive = !ledsOnlyWhenActive || (ledsOnlyWhenActive && visionButton);
 
 			DriveCommand driveCmd = selectedJoystick.getDriveCommand();
 			driveCmd = visionDriveAssistant.assist(driveCmd, visionButton);
@@ -342,15 +343,20 @@ public class Robot extends TimedRobot {
 				 cargoCamera.setLEDMode(Limelight.LedMode.kBlink);
 				 hatchCamera.setLEDMode(Limelight.LedMode.kBlink);
 			}
-			else if (selectedJoystick.getDrivingCargo() && (!ledsOnlyWhenActive || (ledsOnlyWhenActive && visionButton)))
+			else if (selectedJoystick.getDrivingCargo() && ledsActive)
 			{
 				cargoCamera.setLEDMode(Limelight.LedMode.kOn);
 				hatchCamera.setLEDMode(Limelight.LedMode.kOff);
 			}
-			else if (!ledsOnlyWhenActive || (ledsOnlyWhenActive && visionButton))
+			else if (ledsActive)
 			{
 				cargoCamera.setLEDMode(Limelight.LedMode.kOff);
 				hatchCamera.setLEDMode(Limelight.LedMode.kOn);
+			}
+			else
+			{
+				cargoCamera.setLEDMode(Limelight.LedMode.kOff);
+				hatchCamera.setLEDMode(Limelight.LedMode.kOff);
 			}
 
 			// change shuffleboard tabs
