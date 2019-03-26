@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import frc.robot.Climber.ClimberStateEnum;
 import frc.robot.lib.joystick.ButtonBoard;
 import frc.robot.lib.joystick.SelectedJoystick;
 import frc.robot.lib.util.DataLogger;
@@ -290,6 +291,7 @@ public class CargoIntake implements Loop
             if (buttonBoard.getButton(Constants.kDefenseButton))
             {
                 state = CargoDeployStateEnum.OPERATIONAL;
+                Climber.startOver(); // emergency retract cylinders
                 // will go to retracted posistion on next cycle
             }
             break;

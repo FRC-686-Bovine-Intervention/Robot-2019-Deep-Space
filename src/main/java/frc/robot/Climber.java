@@ -117,6 +117,7 @@ public class Climber implements Loop
             {
             case INIT:
                 climberState = ClimberStateEnum.LEVEL3_ARMS_ON_PLATFORM;
+                cylinders.retract();//retract cylinders for climber abort
                 break;
 
             case LEVEL3_ARMS_ON_PLATFORM:
