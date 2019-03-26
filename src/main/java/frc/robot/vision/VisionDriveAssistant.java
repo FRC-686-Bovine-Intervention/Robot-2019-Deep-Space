@@ -101,6 +101,7 @@ public class VisionDriveAssistant
             double remainingDistance = Math.max(distanceToTargetInches, 0.0);   // keep maxSpeed = 0 when we pass the target
             maxSpeed = calcSpeedLimit(currentTime, remainingDistance, kMaxSpeed, kMaxAccel);
             maxSpeed = maxSpeed / kFullThrottleSpeed;   // convert from inches/sec to percentage
+            maxSpeed = Math.max(maxSpeed, 0.2);
 
             // Get forward speed
             joystickSpeed = driveCmd.getSpeed(); // in percentage
