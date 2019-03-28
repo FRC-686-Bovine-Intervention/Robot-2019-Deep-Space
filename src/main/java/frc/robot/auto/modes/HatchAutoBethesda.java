@@ -7,6 +7,7 @@ import frc.robot.SmartDashboardInteractions;
 import frc.robot.auto.AutoModeBase;
 import frc.robot.auto.AutoModeEndedException;
 import frc.robot.auto.actions.Action;
+import frc.robot.auto.actions.HatchActionExtend;
 import frc.robot.auto.actions.HatchCollisionDetectionAction;
 import frc.robot.auto.actions.HatchEjectAction;
 import frc.robot.auto.actions.HatchResetAction;
@@ -235,7 +236,8 @@ public class HatchAutoBethesda extends AutoModeBase {
         runAction(new HatchEjectAction()); //eject hatch action
         Action waitAndRetractAction = new SeriesAction(Arrays.asList(new WaitAction(retractDelay), new HatchResetAction()));
         runAction(new ParallelAction(Arrays.asList(new PathFollowerAction(firstTargetPathB), waitAndRetractAction)));   // reverse away from target
-
+        // runAction(new SeriesAction(Arrays.asList(new HatchActionClose(), new WaitAction(retractDelay), new HatchActionRetract())));
+        // runAction(new HatchActionExtend());
 
         // Backed up from Target 1: Drive to Human Station
         runAction(new PathFollowerAction(humanStationPathF));
@@ -253,6 +255,8 @@ public class HatchAutoBethesda extends AutoModeBase {
         runAction(new HatchEjectAction());
         waitAndRetractAction = new SeriesAction(Arrays.asList(new WaitAction(retractDelay), new HatchResetAction()));
         runAction(new ParallelAction(Arrays.asList(new PathFollowerAction(secondTargetPathB2), waitAndRetractAction)));   // reverse away from target
+        // runAction(new SeriesAction(Arrays.asList(new HatchActionClose(), new WaitAction(retractDelay), new HatchActionRetract())));
+        // runAction(new HatchActionExtend());
 
 
         // Done!
