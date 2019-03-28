@@ -28,9 +28,9 @@ import frc.robot.lib.util.Vector2d;
  * 2-Hatch Autonomous mode for Sandstorm period
  */
 
-public class HatchAuto extends AutoModeBase {
+public class HatchAutoBethesda extends AutoModeBase {
 
-    public HatchAuto() 
+    public HatchAutoBethesda() 
     { 
     }
 
