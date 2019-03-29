@@ -49,7 +49,9 @@ public class Constants extends ConstantsBase {
     public static int kLeftClimberForwardChannel =  1;
     public static int kRightClimberReverseChannel = 2;
     public static int kRightClimberForwardChannel = 3;
-    public static int kHatchEjectChannel =          4;
+    public static int kHatchEjectChannel =          4;  // old stuff
+    public static int kHatchExtendChannel =         4;
+    public static int kHatchGrabChannel =           5;
 
 
     // Joystick Control Constants

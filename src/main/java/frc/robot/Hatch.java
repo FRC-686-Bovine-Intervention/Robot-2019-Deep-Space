@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.lib.joystick.ArcadeDriveJoystick;
 import frc.robot.lib.joystick.ButtonBoard;
 import frc.robot.lib.joystick.JoystickControlsBase;
@@ -17,40 +18,35 @@ public class Hatch implements Loop
         return mInstance;
     }
 
-    public Solenoid hatchShootSolenoid;
+    public Solenoid hatchGrabSolenoid;
     public Solenoid hatchExtendSolenoid;
-    public RisingEdgeDetector hatchButtonRisingEdgeDetector = new RisingEdgeDetector();
-    public FallingEdgeDetector hatchButtonFallingEdgeDetector = new FallingEdgeDetector();
-    public RisingEdgeDetector ejectButtonRisingEdgeDetector = new RisingEdgeDetector();
-    public FallingEdgeDetector ejectButtonFallingEdgeDetector = new FallingEdgeDetector();
+    private double mStartTime;
+    private double mTimeToWait = 0.25;
+    public RisingEdgeDetector grabButtonRisingEdgeDetector = new RisingEdgeDetector();
+    public FallingEdgeDetector grabButtonFallingEdgeDetector = new FallingEdgeDetector();
+    public RisingEdgeDetector extendButtonRisingEdgeDetector = new RisingEdgeDetector();
+    public FallingEdgeDetector extendButtonFallingEdgeDetector = new FallingEdgeDetector();
     public ButtonBoard buttonBoard = ButtonBoard.getInstance();
 
-    //====================================================
-    // Constants
-    //====================================================
-    public final int kSlotIdx = 0;
-    public final int kPeakCurrentLimit = 30;
-    public final int kPeakCurrentDuration = 200;
-    public final int kContinuousCurrentLimit = 20;
-    
     public enum HatchStateEnum {
-        INIT, ACQUIRE, HOLDHATCH, RELEASE, DEFENSE;
+        INIT, ACQUIRE, ACQUIRE_DELAY, HOLDHATCH, RELEASE, RELEASE_DELAY, DEFENSE;
     }
 
     public HatchStateEnum state = HatchStateEnum.INIT;
 
     public Hatch() {
         
-        hatchShootSolenoid = new Solenoid(0, Constants.kHatchEjectChannel);
-        hatchExtendSolenoid = new Solenoid(1, Constants.kHatchEjectChannel);
+        hatchGrabSolenoid   = new Solenoid(Constants.kHatchGrabChannel);
+        hatchExtendSolenoid = new Solenoid(Constants.kHatchExtendChannel);
         state = HatchStateEnum.INIT;       
     }
 
 	@Override
 	public void onStart() 
 	{
-            state = HatchStateEnum.INIT;
-        
+        state = HatchStateEnum.INIT;
+        open();
+        retract();
     }
 
     
@@ -67,96 +63,81 @@ public class Hatch implements Loop
         JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
         boolean dBtnIsPushed = buttonBoard.getButton(Constants.kDefenseButton);
         
-        boolean hBtnIsPushed = controls.getButton(Constants.kHatchDeployButton) && drivingHatch;
-        boolean hButtonPush = hatchButtonRisingEdgeDetector.update(hBtnIsPushed);
-        boolean hButtonRelease = hatchButtonFallingEdgeDetector.update(hBtnIsPushed);
+        boolean grabBtnIsPushed = controls.getButton(Constants.kHatchDeployButton) && drivingHatch;
+        boolean grabButtonPush = grabButtonRisingEdgeDetector.update(grabBtnIsPushed);
+        boolean grabButtonRelease = grabButtonFallingEdgeDetector.update(grabBtnIsPushed);
 
-        boolean ejectButton = controls.getAxisAsButton(Constants.kHatchShootAxis) && drivingHatch;
-        boolean ejectButtonPush = ejectButtonRisingEdgeDetector.update(ejectButton);
-        boolean ejectButtonRelease = ejectButtonFallingEdgeDetector.update(ejectButton);
+        boolean extendButton = controls.getAxisAsButton(Constants.kHatchShootAxis) && drivingHatch;
+        boolean extendButtonPush = extendButtonRisingEdgeDetector.update(extendButton);
+        boolean extendButtonRelease = extendButtonFallingEdgeDetector.update(extendButton);
         
+        if (grabButtonPush) {state = HatchStateEnum.ACQUIRE;}
+        if (extendButtonPush) {state = HatchStateEnum.HOLDHATCH;}
+        if (dBtnIsPushed) {state = HatchStateEnum.DEFENSE;}
+
         switch (state) {
         case INIT:
-            
-            hatchShootSolenoid.set(false);
-            hatchExtendSolenoid.set(true);
-            if (hButtonPush){
-            state = HatchStateEnum.ACQUIRE; 
-            }
-            if(ejectButtonPush){
-                state = HatchStateEnum.HOLDHATCH;
-            }
-            if (dBtnIsPushed){
-                state = HatchStateEnum.DEFENSE;
-            }
-        
+            open();
+            retract();
             break;
 
-
         case ACQUIRE:
-            hatchShootSolenoid.set(true);
-            hatchExtendSolenoid.set(false);
-            if(hButtonRelease){
-                state = HatchStateEnum.HOLDHATCH;
-            }
-            else if (ejectButtonPush){
-                state = HatchStateEnum.HOLDHATCH;
-            }
-            if (dBtnIsPushed){
-                state = HatchStateEnum.DEFENSE;
+            close();
+            extend();
+            if(grabButtonRelease){
+                mStartTime = Timer.getFPGATimestamp();
+                state = HatchStateEnum.ACQUIRE_DELAY;
             }
         break;
 
+        case ACQUIRE_DELAY: {
+            open();
+            if ( Timer.getFPGATimestamp() - mStartTime >= mTimeToWait)    
+            {
+                state = HatchStateEnum.HOLDHATCH;
+            }
+        }
+        break;
+
         case HOLDHATCH:
-            hatchShootSolenoid.set(true);
-            hatchExtendSolenoid.set(true);
-            if(ejectButtonRelease){
-                state = HatchStateEnum.RELEASE;
-            }
-            if (hButtonPush){
-                state = HatchStateEnum.ACQUIRE;
-            }
-            if (dBtnIsPushed){
-                state = HatchStateEnum.DEFENSE;
+            open();
+            extend();
+            if(extendButtonRelease){
+                mStartTime = Timer.getFPGATimestamp();
+                state = HatchStateEnum.RELEASE_DELAY;
             }
             break;
 
-        case RELEASE:
-            hatchShootSolenoid.set(false);
-            hatchExtendSolenoid.set(false);
-            if(ejectButtonPush){
-                state = HatchStateEnum.HOLDHATCH;
+            case RELEASE_DELAY: {
+                close();
+                if ( Timer.getFPGATimestamp() - mStartTime >= mTimeToWait)    
+                {
+                    state = HatchStateEnum.RELEASE;
+                }
             }
-            if (hButtonPush){
-                state = HatchStateEnum.ACQUIRE;
-            }
-            if (dBtnIsPushed){
-                state = HatchStateEnum.DEFENSE;
-            }
+            break;
+
+        case RELEASE:    
+            retract();
             break;
 
             case DEFENSE:
-                hatchShootSolenoid.set(false);
-                hatchExtendSolenoid.set(false);
-                if(ejectButtonPush){
-                    state = HatchStateEnum.HOLDHATCH;
-                }
-                if (hButtonPush){
-                    state = HatchStateEnum.ACQUIRE;
-                }
+               close();
+                retract();
              break;
         }
     }
+
     public void open() {
-        hatchShootSolenoid.set(true);
+        hatchGrabSolenoid.set(true);
     }
     public void close() {
-        hatchShootSolenoid.set(false);
+        hatchGrabSolenoid.set(false);
     }
-    public void extended() {
+    public void extend() {
         hatchExtendSolenoid.set(true);
     }
-    public void retracted() {
+    public void retract() {
         hatchExtendSolenoid.set(false);
     }
 
