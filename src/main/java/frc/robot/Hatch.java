@@ -1,6 +1,7 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.lib.joystick.ArcadeDriveJoystick;
 import frc.robot.lib.joystick.ButtonBoard;
@@ -10,16 +11,15 @@ import frc.robot.lib.util.FallingEdgeDetector;
 import frc.robot.lib.util.RisingEdgeDetector;
 import frc.robot.loops.Loop;
 
-public class Hatch implements Loop
-{
+public class Hatch implements Loop {
     public static Hatch mInstance = new Hatch();
 
     public static Hatch getInstance() {
         return mInstance;
     }
 
-    public Solenoid hatchGrabSolenoid;
-    public Solenoid hatchExtendSolenoid;
+    public DoubleSolenoid hatchGrabSolenoid;
+    public DoubleSolenoid hatchExtendSolenoid;
     private double mStartTime;
     private double mTimeToWait = 0.25;
     public RisingEdgeDetector grabButtonRisingEdgeDetector = new RisingEdgeDetector();
@@ -27,6 +27,11 @@ public class Hatch implements Loop
     public RisingEdgeDetector extendButtonRisingEdgeDetector = new RisingEdgeDetector();
     public FallingEdgeDetector extendButtonFallingEdgeDetector = new FallingEdgeDetector();
     public ButtonBoard buttonBoard = ButtonBoard.getInstance();
+    public int gFwdPort = 4;
+    public int gRvsPort = 5;
+    public int eFwdPort = 6;
+    public int eRvsPort = 7;
+
 
     public enum HatchStateEnum {
         INIT, ACQUIRE, ACQUIRE_DELAY, HOLDHATCH, RELEASE, RELEASE_DELAY, DEFENSE;
@@ -36,8 +41,8 @@ public class Hatch implements Loop
 
     public Hatch() {
         
-        hatchGrabSolenoid   = new Solenoid(Constants.kHatchGrabChannel);
-        hatchExtendSolenoid = new Solenoid(Constants.kHatchExtendChannel);
+        hatchGrabSolenoid   = new DoubleSolenoid(Constants.kHatchGrabChannel, gFwdPort, gRvsPort);
+        hatchExtendSolenoid = new DoubleSolenoid(Constants.kHatchExtendChannel, eFwdPort, eRvsPort);
         state = HatchStateEnum.INIT;       
     }
 
@@ -129,16 +134,16 @@ public class Hatch implements Loop
     }
 
     public void open() {
-        hatchGrabSolenoid.set(true);
+        hatchGrabSolenoid.set(Value.kForward);
     }
     public void close() {
-        hatchGrabSolenoid.set(false);
+        hatchGrabSolenoid.set(Value.kReverse);
     }
     public void extend() {
-        hatchExtendSolenoid.set(true);
+        hatchExtendSolenoid.set(Value.kForward);
     }
     public void retract() {
-        hatchExtendSolenoid.set(false);
+        hatchExtendSolenoid.set(Value.kReverse);
     }
 
     public void setState(HatchStateEnum _newState)
