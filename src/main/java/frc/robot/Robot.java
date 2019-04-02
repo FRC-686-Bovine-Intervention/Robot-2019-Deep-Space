@@ -58,12 +58,12 @@ public class Robot extends TimedRobot {
 	Limelight cargoCamera = Limelight.getCargoInstance();
 	Limelight hatchCamera = Limelight.getHatchInstance();
 
-	HatchDeploy hatchDeploy;
+	Hatch hatch;
 	ControlsReverse controlsReverse = ControlsReverse.getInstance();
 
 	OperationalMode operationalMode = OperationalMode.getInstance();
 
-	final boolean PRACTICE_BOT = false;		// set to true when running on practice bot without Cargo Intake / Climber
+	final boolean PRACTICE_BOT = true;		// set to true when running on practice bot without Cargo Intake / Climber
 
 
     public Robot() {
@@ -80,7 +80,7 @@ public class Robot extends TimedRobot {
 
 			LiveWindow.disableTelemetry(pdp);	// stops CAN error
 
-			hatchDeploy = HatchDeploy.getInstance();
+			hatch = Hatch.getInstance();
     		
     		loopController = new LoopController();
     		loopController.register(drive.getVelocityPIDLoop());
@@ -88,7 +88,7 @@ public class Robot extends TimedRobot {
        		loopController.register(RobotStateLoop.getInstance());
     		loopController.register(VisionLoop.getInstance());
 			loopController.register(GoalStateLoop.getInstance());
-			loopController.register(HatchDeploy.getInstance());
+			loopController.register(Hatch.getInstance());
 			if (!PRACTICE_BOT)
 			{
 				loopController.register(CargoIntake.getInstance());
@@ -112,7 +112,7 @@ public class Robot extends TimedRobot {
 			robotLogger.register(GoalStateLoop.getInstance().getGoalTracker().getLogger());
 			robotLogger.register(GoalStates.getInstance().getLogger());
 			robotLogger.register(VisionDriveAssistant.getInstance().getLogger());
-			robotLogger.register(HatchDeploy.getInstance().getLogger());
+			// robotLogger.register(Hatch.getInstance().getLogger());
 			if (!PRACTICE_BOT)
 			{
 				robotLogger.register(CargoIntake.getInstance().getLogger());

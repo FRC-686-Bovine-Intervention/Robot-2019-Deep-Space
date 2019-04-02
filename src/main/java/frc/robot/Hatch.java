@@ -1,12 +1,12 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.lib.joystick.ArcadeDriveJoystick;
 import frc.robot.lib.joystick.ButtonBoard;
 import frc.robot.lib.joystick.JoystickControlsBase;
 import frc.robot.lib.joystick.SelectedJoystick;
+import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.FallingEdgeDetector;
 import frc.robot.lib.util.RisingEdgeDetector;
 import frc.robot.loops.Loop;
@@ -18,8 +18,8 @@ public class Hatch implements Loop {
         return mInstance;
     }
 
-    public DoubleSolenoid hatchGrabSolenoid;
-    public DoubleSolenoid hatchExtendSolenoid;
+    public Solenoid hatchGrabSolenoid;
+    public Solenoid hatchExtendSolenoid;
     private double mStartTime;
     private double mTimeToWait = 0.25;
     public RisingEdgeDetector grabButtonRisingEdgeDetector = new RisingEdgeDetector();
@@ -27,10 +27,6 @@ public class Hatch implements Loop {
     public RisingEdgeDetector extendButtonRisingEdgeDetector = new RisingEdgeDetector();
     public FallingEdgeDetector extendButtonFallingEdgeDetector = new FallingEdgeDetector();
     public ButtonBoard buttonBoard = ButtonBoard.getInstance();
-    public int gFwdPort = 4;
-    public int gRvsPort = 5;
-    public int eFwdPort = 6;
-    public int eRvsPort = 7;
 
 
     public enum HatchStateEnum {
@@ -41,8 +37,8 @@ public class Hatch implements Loop {
 
     public Hatch() {
         
-        hatchGrabSolenoid   = new DoubleSolenoid(Constants.kHatchGrabChannel, gFwdPort, gRvsPort);
-        hatchExtendSolenoid = new DoubleSolenoid(Constants.kHatchExtendChannel, eFwdPort, eRvsPort);
+        hatchGrabSolenoid   = new Solenoid(0, Constants.kHatchGrabChannel);
+        hatchExtendSolenoid = new Solenoid(0, Constants.kHatchExtendChannel);
         state = HatchStateEnum.INIT;       
     }
 
@@ -60,21 +56,32 @@ public class Hatch implements Loop {
 	{
     }
 
+
+    boolean dBtnIsPushed = false;
+        
+    boolean grabBtnIsPushed =false;
+    boolean grabButtonPush = false;
+    boolean grabButtonRelease = false;
+
+    boolean extendButton = false ;
+    boolean extendButtonPush = false;
+    boolean extendButtonRelease = false;
+
     boolean drivingHatch;
     @Override
     public void onLoop() {
         drivingHatch = !SelectedJoystick.getInstance().getDrivingCargo();
 
         JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
-        boolean dBtnIsPushed = buttonBoard.getButton(Constants.kDefenseButton);
+         dBtnIsPushed = buttonBoard.getButton(Constants.kDefenseButton);
         
-        boolean grabBtnIsPushed = controls.getButton(Constants.kHatchDeployButton) && drivingHatch;
-        boolean grabButtonPush = grabButtonRisingEdgeDetector.update(grabBtnIsPushed);
-        boolean grabButtonRelease = grabButtonFallingEdgeDetector.update(grabBtnIsPushed);
+         grabBtnIsPushed = controls.getButton(Constants.kHatchDeployButton) && drivingHatch;
+         grabButtonPush = grabButtonRisingEdgeDetector.update(grabBtnIsPushed);
+         grabButtonRelease = grabButtonFallingEdgeDetector.update(grabBtnIsPushed);
 
-        boolean extendButton = controls.getAxisAsButton(Constants.kHatchShootAxis) && drivingHatch;
-        boolean extendButtonPush = extendButtonRisingEdgeDetector.update(extendButton);
-        boolean extendButtonRelease = extendButtonFallingEdgeDetector.update(extendButton);
+         extendButton = controls.getAxisAsButton(Constants.kHatchShootAxis) && drivingHatch;
+         extendButtonPush = extendButtonRisingEdgeDetector.update(extendButton);
+         extendButtonRelease = extendButtonFallingEdgeDetector.update(extendButton);
         
         if (grabButtonPush) {state = HatchStateEnum.ACQUIRE;}
         if (extendButtonPush) {state = HatchStateEnum.HOLDHATCH;}
@@ -134,20 +141,43 @@ public class Hatch implements Loop {
     }
 
     public void open() {
-        hatchGrabSolenoid.set(Value.kForward);
+        hatchGrabSolenoid.set(true);
     }
     public void close() {
-        hatchGrabSolenoid.set(Value.kReverse);
+        hatchGrabSolenoid.set(false);
     }
     public void extend() {
-        hatchExtendSolenoid.set(Value.kForward);
+        hatchExtendSolenoid.set(true);
     }
     public void retract() {
-        hatchExtendSolenoid.set(Value.kReverse);
+        hatchExtendSolenoid.set(false);
     }
 
     public void setState(HatchStateEnum _newState)
     {
         state = _newState;
     }
+        
+private final DataLogger logger = new DataLogger()
+{
+    @Override
+    public void log()
+    {
+        put("Hatch/state", state.toString());
+        put("Hatch/drivingHatch", drivingHatch);
+        put("Hatch/dBtnIsPushed", dBtnIsPushed);
+        put("Hatch/grabBtnIsPushed", grabBtnIsPushed);
+        put("Hatch/grabButtonPush", grabButtonPush);
+        put("Hatch/grabButtonRelease", grabButtonRelease);
+        put("Hatch/extendButton", extendButton);
+        put("Hatch/extendButtonPush", extendButtonPush);
+        put("Hatch/extendButtonRelease", extendButtonRelease);
+    }
+};
+
+public DataLogger getLogger()
+{
+    return logger;
+}    
+
 }
