@@ -30,7 +30,7 @@ public class Hatch implements Loop {
 
 
     public enum HatchStateEnum {
-        INIT, ACQUIRE, ACQUIRE_DELAY, HOLDHATCH, RELEASE, RELEASE_DELAY, DEFENSE;
+        INIT, ACQUIRE, PICKUP, HOLDHATCH, APPROACH, SCORE, RELEASE, DEFENSE;
     }
 
     public HatchStateEnum state = HatchStateEnum.INIT;
@@ -84,7 +84,7 @@ public class Hatch implements Loop {
          extendButtonRelease = extendButtonFallingEdgeDetector.update(extendButton);
         
         if (grabButtonPush) {state = HatchStateEnum.ACQUIRE;}
-        if (extendButtonPush) {state = HatchStateEnum.HOLDHATCH;}
+        if (extendButtonPush) {state = HatchStateEnum.APPROACH;}
         if (dBtnIsPushed) {state = HatchStateEnum.DEFENSE;}
 
         switch (state) {
@@ -97,39 +97,46 @@ public class Hatch implements Loop {
             close();
             extend();
             if(grabButtonRelease){
-                mStartTime = Timer.getFPGATimestamp();
-                state = HatchStateEnum.ACQUIRE_DELAY;
+               mStartTime = Timer.getFPGATimestamp();
+                state = HatchStateEnum.PICKUP;
             }
         break;
 
-        case ACQUIRE_DELAY: {
+        case PICKUP:
+            extend();
             open();
             if ( Timer.getFPGATimestamp() - mStartTime >= mTimeToWait)    
             {
                 state = HatchStateEnum.HOLDHATCH;
             }
-        }
         break;
 
         case HOLDHATCH:
             open();
-            extend();
-            if(extendButtonRelease){
-                mStartTime = Timer.getFPGATimestamp();
-                state = HatchStateEnum.RELEASE_DELAY;
-            }
+            retract();
             break;
 
-            case RELEASE_DELAY: {
-                close();
-                if ( Timer.getFPGATimestamp() - mStartTime >= mTimeToWait)    
+            case APPROACH: {
+                open();
+                extend();
+                if (extendButtonRelease)    
                 {
-                    state = HatchStateEnum.RELEASE;
+                    mStartTime = Timer.getFPGATimestamp();
+                    state = HatchStateEnum.SCORE;
                 }
             }
             break;
 
-        case RELEASE:    
+        case SCORE:
+         close();
+         extend();
+         if ( Timer.getFPGATimestamp() - mStartTime >= mTimeToWait)    
+            {
+                state = HatchStateEnum.RELEASE;
+            }
+
+        case RELEASE: 
+            close();
             retract();
             break;
 

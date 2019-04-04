@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.auto.AutoModeBase;
 import frc.robot.auto.modes.DebugAuto;
 import frc.robot.auto.modes.FieldDimensions;
-import frc.robot.auto.modes.HatchAutoBethesda;
+import frc.robot.auto.modes.HatchAutoChamps;
 import frc.robot.auto.modes.StandStillMode;
 import frc.robot.lib.joystick.JoystickControlsBase;
 import frc.robot.lib.joystick.ReversibleArcadeDriveJoystick;
@@ -172,7 +172,7 @@ public class SmartDashboardInteractions
     	switch(autoMode)
     	{
         case HATCH_AUTO:
-            return new HatchAutoBethesda(); //changed from HatchAuto 
+            return new HatchAutoChamps(); //changed from HatchAuto 
 			
     	case STAND_STILL:
             return new StandStillMode();
