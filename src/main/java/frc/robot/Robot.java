@@ -58,6 +58,7 @@ public class Robot extends TimedRobot {
 	Limelight cargoCamera = Limelight.getCargoInstance();
 	Limelight hatchCamera = Limelight.getHatchInstance();
 
+	// Hatch1Bttn hatch1Bttn;
 	Hatch hatch;
 	ControlsReverse controlsReverse = ControlsReverse.getInstance();
 
@@ -80,6 +81,7 @@ public class Robot extends TimedRobot {
 
 			LiveWindow.disableTelemetry(pdp);	// stops CAN error
 
+			// hatch1Bttn = Hatch1Bttn.getInstance();
 			hatch = Hatch.getInstance();
     		
     		loopController = new LoopController();
@@ -88,6 +90,7 @@ public class Robot extends TimedRobot {
        		loopController.register(RobotStateLoop.getInstance());
     		loopController.register(VisionLoop.getInstance());
 			loopController.register(GoalStateLoop.getInstance());
+			// loopController.register(Hatch1Bttn.getInstance());
 			loopController.register(Hatch.getInstance());
 			if (!PRACTICE_BOT)
 			{
@@ -112,7 +115,8 @@ public class Robot extends TimedRobot {
 			robotLogger.register(GoalStateLoop.getInstance().getGoalTracker().getLogger());
 			robotLogger.register(GoalStates.getInstance().getLogger());
 			robotLogger.register(VisionDriveAssistant.getInstance().getLogger());
-			// robotLogger.register(Hatch.getInstance().getLogger());
+			robotLogger.register(Hatch.getInstance().getLogger());
+			// robotLogger.register(Hatch1Bttn.getInstance().getLogger());
 			if (!PRACTICE_BOT)
 			{
 				robotLogger.register(CargoIntake.getInstance().getLogger());

@@ -141,7 +141,7 @@ public class Hatch implements Loop {
             break;
 
             case DEFENSE:
-               close();
+               open();
                 retract();
              break;
         }
