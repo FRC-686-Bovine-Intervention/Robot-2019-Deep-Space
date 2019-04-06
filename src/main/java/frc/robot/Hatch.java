@@ -89,8 +89,7 @@ public class Hatch implements Loop {
 
         switch (state) {
         case INIT:
-            open();
-            retract();
+            // don't do anything in this state -- it messes up autonomous
             break;
 
         case ACQUIRE:
@@ -141,10 +140,10 @@ public class Hatch implements Loop {
     }
 
     public void open() {
-        hatchGrabSolenoid.set(true);
+        hatchGrabSolenoid.set(false);
     }
     public void close() {
-        hatchGrabSolenoid.set(false);
+        hatchGrabSolenoid.set(true);
     }
     public void extend() {
         hatchExtendSolenoid.set(true);
