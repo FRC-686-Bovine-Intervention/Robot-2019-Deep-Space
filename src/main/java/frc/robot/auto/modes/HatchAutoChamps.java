@@ -8,7 +8,9 @@ import frc.robot.auto.actions.HatchActionClose;
 import frc.robot.auto.actions.HatchActionExtend;
 import frc.robot.auto.actions.HatchActionOpen;
 import frc.robot.auto.actions.HatchActionRetract;
+import frc.robot.auto.actions.InterruptableAction;
 import frc.robot.auto.actions.PathFollowerAction;
+import frc.robot.auto.actions.UltrasonicDetectionAction;
 import frc.robot.auto.actions.WaitAction;
 import frc.robot.command_status.DriveState;
 import frc.robot.command_status.RobotState;
@@ -237,6 +239,7 @@ public class HatchAutoChamps extends AutoModeBase {
         }
         runAction(new HatchActionExtend());
         runAction(new PathFollowerAction(firstTargetPathF));    // drive off platform towards first target
+        // runAction(new InterruptableAction(new UltrasonicDetectionAction(), new PathFollowerAction(firstTargetPathF)));    // score
 
         runAction(new WaitAction(.5));
         runAction(new HatchActionClose()); 

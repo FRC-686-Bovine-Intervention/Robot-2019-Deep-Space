@@ -39,7 +39,7 @@ public class HatchActionClose implements Action {
 	@Override
 	public void update() {
 		System.out.println("Starting HatchActionOpen");		
-        hatch.open(); 
+        hatch.close(); 
         finished = true;
 	}
 

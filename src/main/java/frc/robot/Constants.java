@@ -43,6 +43,7 @@ public class Constants extends ConstantsBase {
 
     // RoboRIO DIO ports
     public static int kBallDetectSensorPort = 0;  
+    public static int kUltrasonicSensorPort = 1;
     public static int kHatchDetectSensorPort = 1;  
 
     // Pnuematic Control Channels

@@ -95,7 +95,7 @@ public class DriveLoop implements Loop
     public static double kDriveVelocityKd = 5.0;
     public static double kDriveVelocityKf = kCalPercentOutput * 1023.0 / kCalEncoderPulsePer100ms;
     public static int    kDriveVelocityIZone = 0;
-    public static double kDriveVelocityRampRate = 0.375;
+    public static double kDriveVelocityRampRate = 0.25; //0.375 - time to get to full speed
     public static int    kDriveVelocityAllowableError = 0;
 
     // PID gains for drive base lock loop
