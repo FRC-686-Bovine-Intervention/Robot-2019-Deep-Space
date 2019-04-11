@@ -241,10 +241,10 @@ public class HatchAutoChamps extends AutoModeBase {
         runAction(new PathFollowerAction(firstTargetPathF));    // drive off platform towards first target
         // runAction(new InterruptableAction(new UltrasonicDetectionAction(), new PathFollowerAction(firstTargetPathF)));    // score
 
-        runAction(new WaitAction(.5));
-        runAction(new HatchActionClose()); 
-        runAction(new WaitAction(.25));
-        runAction(new HatchActionRetract());
+        // runAction(new WaitAction(.5));
+        // runAction(new HatchActionClose()); 
+        // runAction(new WaitAction(.25));
+        // runAction(new HatchActionRetract());
         // Done!
 
     }

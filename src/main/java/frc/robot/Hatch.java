@@ -145,18 +145,18 @@ public class Hatch implements Loop {
             break;
 
         case DEFENSE:
-            close();
+            open();
             retract();
             break;
         }
     }
 
     public void open() {
-        hatchGrabSolenoid.set(false);
+        hatchGrabSolenoid.set(false); 
     }
 
     public void close() {
-        hatchGrabSolenoid.set(true);
+        hatchGrabSolenoid.set(true); 
     }
 
     public void extend() {
