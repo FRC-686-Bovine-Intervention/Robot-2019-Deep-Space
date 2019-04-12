@@ -10,7 +10,7 @@ public class ClimberCylinders
     private DoubleSolenoid rSolenoid;
     private final DoubleSolenoid.Value kSolenoidStateWhenExtended = DoubleSolenoid.Value.kForward; // switch kForward<-->kReverse to reverse the controls polarity
     private DoubleSolenoid.Value kSolenoidStateWhenRetracted;
-    private DoubleSolenoid.Value direction;
+    public DoubleSolenoid.Value direction;
  
 
     public synchronized static ClimberCylinders getInstance()
@@ -53,6 +53,7 @@ public class ClimberCylinders
 
     public synchronized void retract()
     {
+        
         if (direction != kSolenoidStateWhenRetracted)
         {
             direction = kSolenoidStateWhenRetracted;

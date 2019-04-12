@@ -108,6 +108,11 @@ public class Climber implements Loop
     {
         tiltAngleDeg = pigeon.getPitchDeg();
         
+        if (arm.state == CargoDeployStateEnum.OPERATIONAL)
+        {
+            cylinders.retract();
+        }
+
         // do nothing unless Climber mode is enabled
         if (arm.state == CargoDeployStateEnum.CLIMBING)
         {
@@ -343,6 +348,7 @@ public class Climber implements Loop
             put("Climber/l2Drive",  l2Drive);
             put("Climber/retract",  retract);
             put("Climber/finished", finished);
+            put("Climber/CylinderDirection", cylinders.direction.toString());
 
 		}
 	};
