@@ -38,7 +38,7 @@ public class HatchActionExtend implements Action {
 
 	@Override
 	public void update() {
-		System.out.println("Starting HatchActionOpen");		
+		System.out.println("Starting HatchActionExtend");		
         hatch.extend(); 
         finished = true;
 	}

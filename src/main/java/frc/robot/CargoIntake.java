@@ -311,8 +311,7 @@ public class CargoIntake implements Loop
         if (buttonBoard.getButton(Constants.kCargoIntakeRocketButton))      { setTarget(CargoDeployPositionEnum.ROCKET); }      
         if (buttonBoard.getButton(Constants.kCargoIntakeCargoShipButton))   { setTarget(CargoDeployPositionEnum.CARGO_SHIP); }  
         if (buttonBoard.getButton(Constants.kDefenseButton))                { setTarget(CargoDeployPositionEnum.RETRACTED); }
-        if (buttonBoard.getButton(Constants.kEmergecyZeroingAxis))                { deployMotorMaster.set(ControlMode.PercentOutput, zeroingPercentOutput); }
-
+   
 
         // if in the ground state, turn off motor while riding on wheels
         if ((targetPosition == CargoDeployPositionEnum.GROUND) && (getArmAngleDeg() < kAllowableGroundAngleDeg))
@@ -328,15 +327,16 @@ public class CargoIntake implements Loop
             setTarget(CargoDeployPositionEnum.RETRACTED);
         }
 
-        
-       
-        
+            
         startCargoRetract = ballDetect() && (getArmAngleDeg() < kAllowableGroundAngleDeg);
         if (startCargoRetract)
         {
             // Successful ball intake.  Return to retracted position.  Driver can continue to center ball by holding down intake button.
             setTarget(CargoDeployPositionEnum.RETRACTED);
         }
+
+        if (buttonBoard.getButton(Constants.kEmergecyZeroingAxis))                { deployMotorMaster.set(ControlMode.PercentOutput, zeroingPercentOutput); }
+
     }
 
     

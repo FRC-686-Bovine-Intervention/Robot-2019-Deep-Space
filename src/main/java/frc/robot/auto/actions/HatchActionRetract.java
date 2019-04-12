@@ -38,14 +38,14 @@ public class HatchActionRetract implements Action {
 
 	@Override
 	public void update() {
-		System.out.println("Starting HatchActionOpen");		
+		System.out.println("Starting HatchActionRetract");		
         hatch.retract(); 
         finished = true;
 	}
 
 	@Override
 	public void done() {
-System.out.println("Done HatchActionOpen");		
+System.out.println("Done HatchActionRetract");		
 
 	}
 
