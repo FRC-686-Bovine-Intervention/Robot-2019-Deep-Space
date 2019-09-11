@@ -8,9 +8,8 @@ import frc.robot.auto.modes.FieldDimensions;
 import frc.robot.auto.modes.HatchAutoBethesda;
 import frc.robot.auto.modes.HatchAutoChamps;
 import frc.robot.auto.modes.StandStillMode;
-import frc.robot.lib.joystick.JoystickControlsBase;
-import frc.robot.lib.joystick.ReversibleArcadeDriveJoystick;
 import frc.robot.lib.util.Pose;
+import frc.robot.lib.joystick.*;
 
 /**
  * Controls the interactive elements of SmartDashboard.
@@ -44,7 +43,8 @@ public class SmartDashboardInteractions
     	// joystickModeChooser.addOption(JoystickOption.TANK_DRIVE.name, 	      JoystickOption.TANK_DRIVE);
      	// joystickModeChooser.addOption(JoystickOption.CHEESY_ARCADE_DRIVE.name,  JoystickOption.CHEESY_ARCADE_DRIVE);
     	// joystickModeChooser.addOption(JoystickOption.CHEESY_TRIGGER_DRIVE.name, JoystickOption.CHEESY_TRIGGER_DRIVE);
-    	// joystickModeChooser.addOption(JoystickOption.CHEESY_2STICK_DRIVE.name,  JoystickOption.CHEESY_2STICK_DRIVE);
+        // joystickModeChooser.addOption(JoystickOption.CHEESY_2STICK_DRIVE.name,  JoystickOption.CHEESY_2STICK_DRIVE);
+        joystickModeChooser.addOption(JoystickOption.THRUSTMASTER_TANK_DRIVE.name,  JoystickOption.THRUSTMASTER_TANK_DRIVE);
     	SmartDashboard.putData("Joystick Chooser", joystickModeChooser);
 
         autoModeChooser = new SendableChooser<AutoModeOption>();
@@ -105,6 +105,7 @@ public class SmartDashboardInteractions
         // CHEESY_ARCADE_DRIVE("Cheesy Arcade Drive"),
         // CHEESY_TRIGGER_DRIVE("Cheesy Trigger Drive"),
         // CHEESY_2STICK_DRIVE("Cheesy Two-Stick Drive");
+        THRUSTMASTER_TANK_DRIVE("Thrustmaster Tank Drive")
     	public final String name;
     	
         JoystickOption(String name) {
@@ -120,9 +121,12 @@ public class SmartDashboardInteractions
     	{
     	// case ARCADE_DRIVE:
 		// 	return ArcadeDriveJoystick.getInstance();
-			
+        
 		case REVERSIBLE_ARCADE_DRIVE:
-			return ReversibleArcadeDriveJoystick.getInstance();
+            return ReversibleArcadeDriveJoystick.getInstance();
+
+        case THRUSTMASTER_TANK_DRIVE:
+            return DualThrustmasterJoysticks.getInstance();
     
     	// case TRIGGER_DRIVE:
 		// 	return TriggerDriveJoystick.getInstance();

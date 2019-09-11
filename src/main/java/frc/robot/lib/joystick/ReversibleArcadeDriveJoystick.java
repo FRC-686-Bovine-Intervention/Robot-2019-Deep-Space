@@ -29,6 +29,15 @@ public class ReversibleArcadeDriveJoystick extends JoystickControlsBase
 		double lThrottle = -mStick.getRawAxis(Constants.kXboxLStickYAxis);
 		double lTurn     = -mStick.getRawAxis(Constants.kXboxLStickXAxis);
 
+		public static int kHatchDeployButton =      kXboxButtonRB;
+		public static int kHatchShootAxis =         kXboxRTriggerAxis;  
+		public static int kCargoIntakeButton =      kXboxButtonLB;
+		public static int kCargoOuttakeAxis =       kXboxLTriggerAxis;
+		public static int kVisionAssistanceButton = kXboxButtonA;
+		public static int kQuickTurnButton =        kXboxButtonY; // bogus setting to make TriggerDrive Joysticks happy
+		public static int kCargoIntakeDepotHeight = kXboxButtonX;
+		public static int kHumanStationBttn = 		kXboxButtonB;
+
 		double throttle = lThrottle;
 		double turn = lTurn;
 

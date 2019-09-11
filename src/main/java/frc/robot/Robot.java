@@ -34,6 +34,7 @@ import frc.robot.subsystems.Superstructure;
 import frc.robot.vision.VisionDriveAssistant;
 import frc.robot.vision.VisionLoop;
 import frc.robot.vision.VisionTargetList;
+import frc.robot.lib.joystick.DualThrustmasterJoysticks;
 
 public class Robot extends TimedRobot {
 
@@ -121,7 +122,7 @@ public class Robot extends TimedRobot {
     		
     		setInitialPose(new Pose());
 
-   		
+			joystick = new DualThrustmasterJoysticks();
     	}
     	catch(Throwable t)
     	{

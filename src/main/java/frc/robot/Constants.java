@@ -1,7 +1,7 @@
 package frc.robot;
 
 import frc.robot.lib.joystick.ButtonBoard;
-import frc.robot.lib.util.ConstantsBase;
+import frc.robot.ConstantsBase;
 
 /**
  * Attribution: adapted from FRC Team 254
@@ -80,8 +80,6 @@ public class Constants extends ConstantsBase {
     public static int kQuickTurnButton =        kXboxButtonY; // bogus setting to make TriggerDrive Joysticks happy
     public static int kCargoIntakeDepotHeight = kXboxButtonX;
     public static int kHumanStationBttn = kXboxButtonB;
-  
-
 
     // Operator Button Board Configuration
     public static int kCargoIntakeRocketButton =    ButtonBoard.kButtonBoardB;

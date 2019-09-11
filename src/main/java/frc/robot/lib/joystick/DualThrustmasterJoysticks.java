@@ -57,6 +57,11 @@ public class DualThrustmasterJoysticks extends JoystickControlsBase
     public static final double kThrottleDeadband = 0.02;
     private static final double kturnDeadband = 0.02;
 
+    double rThrottle = -mStick.getRawAxis(kRightStick, kXAxis);
+    double rTurn     = -mStick.getRawAxis(Constants.kXboxRStickXAxis);
+    double lThrottle = -mStick.getRawAxis(Constants.kXboxLStickYAxis);
+    double lTurn     = -mStick.getRawAxis(Constants.kXboxLStickXAxis);
+
     double throttle = 0.0;
     double turn = 0.0;
     
