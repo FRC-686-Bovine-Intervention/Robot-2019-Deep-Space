@@ -2,10 +2,11 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.lib.joystick.ArcadeDriveJoystick;
 import frc.robot.lib.joystick.ButtonBoard;
 import frc.robot.lib.joystick.JoystickControlsBase;
 import frc.robot.lib.joystick.SelectedJoystick;
+import frc.robot.lib.joystick.TmTankJoystick;
+import frc.robot.lib.joystick.TmTwoStickJoystick;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.FallingEdgeDetector;
 import frc.robot.lib.util.RisingEdgeDetector;
@@ -68,14 +69,14 @@ public class Hatch implements Loop {
     public void onLoop() {
         drivingHatch = !SelectedJoystick.getInstance().getDrivingCargo();
 
-        JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
+        JoystickControlsBase controls = TmTwoStickJoystick.getInstance();
         dBtnIsPushed = buttonBoard.getButton(Constants.kDefenseButton);
 
-        grabBtnIsPushed = controls.getButton(Constants.kHatchDeployButton) && drivingHatch;
+        grabBtnIsPushed = controls.getButton(Constants.kHatchDeployButtonStick, Constants.kHatchDeployButton) && drivingHatch;
         grabButtonPush = grabButtonRisingEdgeDetector.update(grabBtnIsPushed);
         grabButtonRelease = grabButtonFallingEdgeDetector.update(grabBtnIsPushed);
 
-        extendButton = controls.getAxisAsButton(Constants.kHatchShootAxis) && drivingHatch;
+        extendButton = controls.getButton(Constants.kHatchShootAxisStick, Constants.kHatchShootAxis) && drivingHatch;
         extendButtonPush = extendButtonRisingEdgeDetector.update(extendButton);
         extendButtonRelease = extendButtonFallingEdgeDetector.update(extendButton);
 

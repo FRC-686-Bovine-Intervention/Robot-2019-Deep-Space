@@ -19,7 +19,7 @@ public class SelectedJoystick
 		return instance;
     }    
 
-    JoystickControlsBase controls = ArcadeDriveJoystick.getInstance();
+    JoystickControlsBase controls = TmReversibleArcadeDriveJoystick.getInstance();
 
     public SelectedJoystick()
     {
@@ -38,8 +38,9 @@ public class SelectedJoystick
 
     // pass-thru gets
     public DriveCommand getDriveCommand()    { return controls.getDriveCommand(); }    
-    public boolean getButton(int _num)       { return controls.getButton(_num); }
-    public boolean getAxisAsButton(int _num) { return controls.getAxisAsButton(_num); }
+    public boolean getButton(int _joystickNum, int _buttonNum) { return controls.getButton(_joystickNum, _buttonNum); }
+    public int getPOV(int _joystickNum) { return controls.getPOV(_joystickNum); }    
+    public boolean getAxisAsButton(int _joystickNum, int _buttonNum) { return controls.getAxisAsButton(_joystickNum, _buttonNum); }
     public boolean getDrivingCargo()       { return controls.usingLeftStick(); }
     public void setRumble(GenericHID.RumbleType _rumbleType, double _value)       { controls.setRumble(_rumbleType, _value); }
     public boolean joystickActive() { return controls.joystickActive(); }

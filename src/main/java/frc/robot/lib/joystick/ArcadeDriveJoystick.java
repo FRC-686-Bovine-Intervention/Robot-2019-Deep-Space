@@ -22,8 +22,8 @@ public class ArcadeDriveJoystick extends JoystickControlsBase {
 	static double kDeadband = 0.05;
 
 	public DriveCommand getDriveCommand() {
-		double throttle = -mStick.getY(); 
-		double turn = -mStick.getX(); 
+		double throttle = -mStick[0].getY(); 
+		double turn =     -mStick[0].getX(); 
 
 		DriveCommand signal = throttleTurnToDriveCommand(throttle, turn);
 

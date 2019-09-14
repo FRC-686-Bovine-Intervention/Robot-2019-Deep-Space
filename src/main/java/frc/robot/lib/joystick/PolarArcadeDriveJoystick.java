@@ -27,22 +27,22 @@ public class PolarArcadeDriveJoystick extends JoystickControlsBase
 	    double turn = 0;
 	    double throttle = 0;
 	    
-    	if (-mStick.getY() > 0)
+    	if (-mStick[0].getY() > 0)
     	{
-    		double theta = Math.atan(-mStick.getX()/-mStick.getY());
-    		throttle = Math.sqrt(mStick.getY() * mStick.getY() + mStick.getX() * mStick.getX());
+    		double theta = Math.atan(-mStick[0].getX()/-mStick[0].getY());
+    		throttle = Math.sqrt(mStick[0].getY() * mStick[0].getY() + mStick[0].getX() * mStick[0].getX());
     		turn = theta*2/Math.PI;
     	}
-    	else if (-mStick.getY() < 0)
+    	else if (-mStick[0].getY() < 0)
     	{
-    		double theta = Math.atan(-(-mStick.getX()/-mStick.getY()));
-    		throttle = -Math.sqrt(mStick.getY() * mStick.getY() + mStick.getX() * mStick.getX());
+    		double theta = Math.atan(-(-mStick[0].getX()/-mStick[0].getY()));
+    		throttle = -Math.sqrt(mStick[0].getY() * mStick[0].getY() + mStick[0].getX() * mStick[0].getX());
     		turn = theta*2/Math.PI;
     	}
     	else
     	{
-    		throttle = Math.abs(mStick.getX());
-			turn = mStick.getX();
+    		throttle = Math.abs(mStick[0].getX());
+			turn = mStick[0].getX();
     	}
      
 	    double moveValue   = Util.limit(throttle, 1.0);

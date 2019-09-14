@@ -237,10 +237,10 @@ public class CargoIntake implements Loop
 
         drivingCargo = SelectedJoystick.getInstance().getDrivingCargo();
 
-        intakeButton = selectedJoystick.getButton(Constants.kCargoIntakeButton) && drivingCargo;
+        intakeButton = selectedJoystick.getButton(Constants.kCargoIntakeButtonStick, Constants.kCargoIntakeButton) && drivingCargo;
         intakeButtonPress = intakeButtonRisingEdgeDetector.update(intakeButton);
         intakeButtonUnpress = intakeButtonFallingEdgeDetector.update(intakeButton);
-        outtakeButton = selectedJoystick.getAxisAsButton(Constants.kCargoOuttakeAxis) && drivingCargo;
+        outtakeButton = selectedJoystick.getAxisAsButton(Constants.kCargoOuttakeAxisStick, Constants.kCargoOuttakeAxis) && drivingCargo;
 
         runDeploy();
         runIntake();
@@ -307,7 +307,7 @@ public class CargoIntake implements Loop
         
         // get current target angle from driver & operator
         if (intakeButtonPress)                                              { setTarget(CargoDeployPositionEnum.GROUND); }      // go to ground on driver button, not operator's button board
-        if (selectedJoystick.getButton(Constants.kCargoIntakeDepotHeight))  { setTarget(CargoDeployPositionEnum.DEPOT_LEVEL); }      
+        if (selectedJoystick.getButton(Constants.kCargoIntakeDepotHeightStick, Constants.kCargoIntakeDepotHeight))  { setTarget(CargoDeployPositionEnum.DEPOT_LEVEL); }      
         if (buttonBoard.getButton(Constants.kCargoIntakeRocketButton))      { setTarget(CargoDeployPositionEnum.ROCKET); }      
         if (buttonBoard.getButton(Constants.kCargoIntakeCargoShipButton))   { setTarget(CargoDeployPositionEnum.CARGO_SHIP); }  
         if (buttonBoard.getButton(Constants.kDefenseButton))                { setTarget(CargoDeployPositionEnum.RETRACTED); }
@@ -355,7 +355,7 @@ public class CargoIntake implements Loop
              intakePulseTrain.start(); }   
         
         boolean intakePulse = intakePulseTrain.update();
-        if (selectedJoystick.getAxisAsButton(Constants.kCargoOuttakeAxis) && drivingCargo) {
+        if (selectedJoystick.getAxisAsButton(Constants.kCargoOuttakeAxisStick, Constants.kCargoOuttakeAxis) && drivingCargo) {
             intakeMotor.set(ControlMode.PercentOutput, kOuttakePercentOutput); }
         else if ((getArmAngleDeg() < kspinIntakeAngleDeg) || intakePulse) {
             intakeMotor.set(ControlMode.PercentOutput, kIntakePercentOutput); 

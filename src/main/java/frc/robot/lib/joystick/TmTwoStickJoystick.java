@@ -5,19 +5,19 @@ import frc.robot.command_status.DriveCommand;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.Util;
 
-public class DualThrustmasterJoysticks extends JoystickControlsBase 
+public class TmTwoStickJoystick extends JoystickControlsBase 
 {
     // singleton class
      private static JoystickControlsBase instance = null;
      public static JoystickControlsBase getInstance() 
      { 
         if (instance == null) {
-            instance = new DualThrustmasterJoysticks();
+            instance = new TmTwoStickJoystick();
             }
         return instance;
     }
 
-    protected final Joystick[] mStick;
+    protected final Joystick[] mStick = new Joystick[2];
 
     public static int kLeftStick   =    0;
     public static int kRightStick  =    1;
@@ -47,20 +47,14 @@ public class DualThrustmasterJoysticks extends JoystickControlsBase
     public static int kBottomButton6 =  16;
 
 
-    public DualThrustmasterJoysticks() 
+    public TmTwoStickJoystick() 
     {
-        mStick = new Joystick[2];
         mStick[kLeftStick] = new Joystick(0);
         mStick[kRightStick] = new Joystick(1);
     }
 
     public static final double kThrottleDeadband = 0.02;
     private static final double kturnDeadband = 0.02;
-
-    double rThrottle = 0;
-    double rTurn     = 0;
-    double lThrottle = 0;
-    double lTurn     = 0;
 
     double throttle = 0.0;
     double turn = 0.0;
@@ -123,32 +117,28 @@ public class DualThrustmasterJoysticks extends JoystickControlsBase
         return (Math.abs(val) > Math.abs(deadband)) ? val : 0.0;
     }
 
-    public boolean getButton(int _buttonNum) { return getButton(kLeftStick, _buttonNum); }
-    public boolean getButton(int _joystickNum, int _buttonNum) { return mStick[_joystickNum].getRawButton(_buttonNum); }
-    public int getPOV(int _joystickNum) { return mStick[_joystickNum].getPOV(); }    
-
 
 	private final DataLogger logger = new DataLogger()
     {
         @Override
         public void log()
         {
-            put("DualThrustmaster/Throttle", throttle );
-            put("DualThrustmaster/Turn", turn );
+            put("TmJoystick/Throttle", throttle );
+            put("TmJoystick/Turn", turn );
             for (int stickNum = kLeftStick; stickNum <= kRightStick; stickNum++)
             {
                 String stickName = (stickNum == kLeftStick ? "LStick/" : "RStick/");
-	    		put("DualThrustmaster/" + stickName + "xAxis", mStick[stickNum].getRawAxis(kXAxis));
-                put("DualThrustmaster/" + stickName + "yAxis", mStick[stickNum].getRawAxis(kYAxis));
-	    		put("DualThrustmaster/" + stickName + "rotate", mStick[stickNum].getRawAxis(kZRotateAxis));
-                put("DualThrustmaster/" + stickName + "slider", mStick[stickNum].getRawAxis(kSliderAxis));
+	    		put("TmJoystick/" + stickName + "xAxis", mStick[stickNum].getRawAxis(kXAxis));
+                put("TmJoystick/" + stickName + "yAxis", mStick[stickNum].getRawAxis(kYAxis));
+	    		put("TmJoystick/" + stickName + "rotate", mStick[stickNum].getRawAxis(kZRotateAxis));
+                put("TmJoystick/" + stickName + "slider", mStick[stickNum].getRawAxis(kSliderAxis));
                 int buttons = 0;
                 for (int button=1; button<=16; button++)
                 {
                     buttons |= (getButton(stickNum, button) ? 1 : 0) << (button-1);
                 }
-                put("DualThrustmaster/" + stickName + "buttons", buttons);
-                put("DualThrustmaster/" + stickName + "pov", getPOV(stickNum));
+                put("TmJoystick/" + stickName + "buttons", buttons);
+                put("TmJoystick/" + stickName + "pov", getPOV(stickNum));
             }
         }
     };

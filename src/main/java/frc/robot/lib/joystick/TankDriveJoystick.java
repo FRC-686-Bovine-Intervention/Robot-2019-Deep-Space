@@ -22,8 +22,8 @@ public class TankDriveJoystick extends JoystickControlsBase
     
     public DriveCommand getDriveCommand()
     {
-    	double lMotorSpeed = -mStick.getRawAxis(Constants.kXboxLStickYAxis);
-        double rMotorSpeed = -mStick.getRawAxis(Constants.kXboxRStickYAxis);
+    	double lMotorSpeed = -mStick[0].getRawAxis(Constants.kXboxLStickYAxis);
+        double rMotorSpeed = -mStick[0].getRawAxis(Constants.kXboxRStickYAxis);
 	    
 	    DriveCommand signal = new DriveCommand(lMotorSpeed, rMotorSpeed);
 	   	    

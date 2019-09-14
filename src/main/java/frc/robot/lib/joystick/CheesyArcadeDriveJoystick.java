@@ -33,9 +33,9 @@ public class CheesyArcadeDriveJoystick extends JoystickControlsBase
     
     public DriveCommand getDriveCommand()
     {
-    	double throttle = -mStick.getY();	// TODO: figure out why Y-axis is negated
-        double turn     = +mStick.getX();
-        boolean isQuickTurn = mStick.getRawButton(Constants.kXboxButtonRB);
+    	double throttle = -mStick[0].getY();	// TODO: figure out why Y-axis is negated
+        double turn     = +mStick[0].getX();
+        boolean isQuickTurn = mStick[0].getRawButton(Constants.kXboxButtonRB);
         
         throttle = handleDeadband(throttle, kThrottleDeadband);
         turn     = handleDeadband(turn,     kturnDeadband);

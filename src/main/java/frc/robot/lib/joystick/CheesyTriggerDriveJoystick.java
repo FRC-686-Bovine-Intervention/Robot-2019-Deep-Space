@@ -33,9 +33,9 @@ public class CheesyTriggerDriveJoystick extends JoystickControlsBase
     
     public DriveCommand getDriveCommand()
     {
-    	double throttle = mStick.getRawAxis(Constants.kXboxRTriggerAxis) - mStick.getRawAxis(Constants.kXboxLTriggerAxis);
-        double turn     = mStick.getX();
-        boolean isQuickTurn = mStick.getRawButton(Constants.kQuickTurnButton);
+    	double throttle = mStick[0].getRawAxis(Constants.kXboxRTriggerAxis) - mStick[0].getRawAxis(Constants.kXboxLTriggerAxis);
+        double turn     = mStick[0].getX();
+        boolean isQuickTurn = mStick[0].getRawButton(Constants.kQuickTurnButton);
         
         throttle = handleDeadband(throttle, kThrottleDeadband);
         turn     = handleDeadband(turn,     kturnDeadband);

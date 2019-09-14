@@ -34,7 +34,6 @@ import frc.robot.subsystems.Superstructure;
 import frc.robot.vision.VisionDriveAssistant;
 import frc.robot.vision.VisionLoop;
 import frc.robot.vision.VisionTargetList;
-import frc.robot.lib.joystick.DualThrustmasterJoysticks;
 
 public class Robot extends TimedRobot {
 
@@ -64,7 +63,7 @@ public class Robot extends TimedRobot {
 
 	OperationalMode operationalMode = OperationalMode.getInstance();
 
-	final boolean PRACTICE_BOT = false;		// set to true when running on practice bot without Cargo Intake / Climber
+	final boolean PRACTICE_BOT = true;		// set to true when running on practice bot without Cargo Intake / Climber
 
 
     public Robot() {
@@ -113,7 +112,7 @@ public class Robot extends TimedRobot {
 			robotLogger.register(GoalStateLoop.getInstance().getGoalTracker().getLogger());
 			robotLogger.register(GoalStates.getInstance().getLogger());
 			robotLogger.register(VisionDriveAssistant.getInstance().getLogger());
-			robotLogger.register(Hatch.getInstance().getLogger());
+			// robotLogger.register(Hatch.getInstance().getLogger());
 			if (!PRACTICE_BOT)
 			{
 				robotLogger.register(CargoIntake.getInstance().getLogger());
@@ -122,7 +121,7 @@ public class Robot extends TimedRobot {
     		
     		setInitialPose(new Pose());
 
-			joystick = new DualThrustmasterJoysticks();
+   		
     	}
     	catch(Throwable t)
     	{
@@ -328,7 +327,7 @@ public class Robot extends TimedRobot {
 	{
 		try
 		{
-			boolean visionButton = selectedJoystick.getButton(Constants.kVisionAssistanceButton);
+			boolean visionButton = selectedJoystick.getButton(Constants.kVisionAssistanceButtonStick, Constants.kVisionAssistanceButton);
 			boolean ledsActive = !ledsOnlyWhenActive || (ledsOnlyWhenActive && visionButton);
 
 			DriveCommand driveCmd = selectedJoystick.getDriveCommand();

@@ -1,7 +1,8 @@
 package frc.robot;
 
 import frc.robot.lib.joystick.ButtonBoard;
-import frc.robot.ConstantsBase;
+import frc.robot.lib.joystick.TmArcadeJoystick;
+import frc.robot.lib.util.ConstantsBase;
 
 /**
  * Attribution: adapted from FRC Team 254
@@ -71,15 +72,33 @@ public class Constants extends ConstantsBase {
     public static int kXboxRStickXAxis = 4;
     public static int kXboxRStickYAxis = 5;
 
+    // // Driver Joystick Configuration    
+    // public static int kHatchDeployButton =      kXboxButtonRB;
+    // public static int kHatchShootAxis =         kXboxRTriggerAxis;  
+    // public static int kCargoIntakeButton =      kXboxButtonLB;
+    // public static int kCargoOuttakeAxis =       kXboxLTriggerAxis;
+    // public static int kVisionAssistanceButton = kXboxButtonA;
+    // public static int kQuickTurnButton =        kXboxButtonY; // bogus setting to make TriggerDrive Joysticks happy
+    // public static int kCargoIntakeDepotHeight = kXboxButtonX;
+    // public static int kHumanStationBttn = kXboxButtonB;
+
     // Driver Joystick Configuration    
-    public static int kHatchDeployButton =      kXboxButtonRB;
-    public static int kHatchShootAxis =         kXboxRTriggerAxis;  
-    public static int kCargoIntakeButton =      kXboxButtonLB;
-    public static int kCargoOuttakeAxis =       kXboxLTriggerAxis;
-    public static int kVisionAssistanceButton = kXboxButtonA;
-    public static int kQuickTurnButton =        kXboxButtonY; // bogus setting to make TriggerDrive Joysticks happy
-    public static int kCargoIntakeDepotHeight = kXboxButtonX;
-    public static int kHumanStationBttn = kXboxButtonB;
+    public static int kHatchDeployButtonStick =     TmArcadeJoystick.kLeftStick;
+    public static int kHatchDeployButton =          TmArcadeJoystick.kBottomThumbButton;
+    public static int kHatchShootAxisStick =        TmArcadeJoystick.kRightStick;  
+    public static int kHatchShootAxis =             TmArcadeJoystick.kBottomThumbButton;  
+    public static int kCargoIntakeButtonStick =     TmArcadeJoystick.kLeftStick;
+    public static int kCargoIntakeButton =          TmArcadeJoystick.kTriggerButton;
+    public static int kCargoOuttakeAxisStick =      TmArcadeJoystick.kRightStick;
+    public static int kCargoOuttakeAxis =           TmArcadeJoystick.kTriggerButton;
+    public static int kVisionAssistanceButtonStick =TmArcadeJoystick.kLeftStick;
+    public static int kVisionAssistanceButton =     TmArcadeJoystick.kLeftThumbButton;
+    public static int kQuickTurnButtonStick =       TmArcadeJoystick.kLeftStick; // bogus setting to make TriggerDrive Joysticks happy
+    public static int kQuickTurnButton =            99; // bogus setting to make TriggerDrive Joysticks happy
+    public static int kCargoIntakeDepotHeightStick =TmArcadeJoystick.kLeftStick;
+    public static int kCargoIntakeDepotHeight =     TmArcadeJoystick.kRightThumbButton;
+    public static int kHumanStationBttnStick =      TmArcadeJoystick.kLeftStick;            // not used
+    public static int kHumanStationBttn =           TmArcadeJoystick.kRightThumbButton;     // not used
 
     // Operator Button Board Configuration
     public static int kCargoIntakeRocketButton =    ButtonBoard.kButtonBoardB;
@@ -89,7 +108,7 @@ public class Constants extends ConstantsBase {
     public static int kClimbingExtendButton =       ButtonBoard.kButtonBoardX;
     public static int kClimbingRetractButton =      ButtonBoard.kButtonBoardY;
     public static int kControlsReverseButton =      ButtonBoard.kButtonBoardSL;
-    public static int kEmergecyZeroingAxis =      ButtonBoard.kButtonBoardSR;
+    public static int kEmergecyZeroingAxis =        ButtonBoard.kButtonBoardSR;
    
     
 
