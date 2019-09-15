@@ -20,8 +20,8 @@ public class ReversibleArcadeDriveJoystick extends JoystickControlsBase
     boolean usingLeftStick = false;     // default this way so autonomous uses hatch camera
 	double kCrossoverThreshold = 0.2;
     boolean leftStickActive = false;
-    boolean rightStickActive = false;
-
+	boolean rightStickActive = false;
+	
 	public DriveCommand getDriveCommand()
 	{
 		double rThrottle = -mStick[0].getRawAxis(Constants.kXboxRStickYAxis);

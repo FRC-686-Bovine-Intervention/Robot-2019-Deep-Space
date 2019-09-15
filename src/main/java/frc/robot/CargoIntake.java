@@ -118,7 +118,7 @@ public class CargoIntake implements Loop
 
     public final int    kAllowableError = (int)(0.25 * kEncoderUnitsPerDeg);
     public final double kAllowableGroundAngleDeg = CargoDeployPositionEnum.GROUND.angleDeg + 3.0;
-    public final double kspinIntakeAngleDeg = 0;
+    public final double kspinIntakeAngleDeg = 5; //0
 
     public final int kPeakCurrentLimit = 50;
     public final int kPeakCurrentDuration = 200;
@@ -263,7 +263,8 @@ public class CargoIntake implements Loop
                 
                 // the motor controller position will automatically be set to 0 when we hit the reverse limit switch
                 
-                turnOnSoftLimits();
+                // turnOnSoftLimits();
+                turnOffSoftLimits();
 
                 state = CargoDeployStateEnum.OPERATIONAL;
                 setTarget(CargoDeployPositionEnum.RETRACTED);

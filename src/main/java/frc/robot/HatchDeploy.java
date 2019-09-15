@@ -200,7 +200,7 @@ public class HatchDeploy implements Loop
 
         case TO_BUMPER:
             setTarget(bumperAngle);
-            if (hButtonPush)  
+            if (hButtonPush) 
             {    
                 mStartTime = Timer.getFPGATimestamp();
                  
