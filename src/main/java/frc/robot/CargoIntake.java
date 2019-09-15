@@ -13,7 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import frc.robot.Climber.ClimberStateEnum;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.lib.joystick.ButtonBoard;
 import frc.robot.lib.joystick.SelectedJoystick;
 import frc.robot.lib.util.DataLogger;
@@ -240,7 +240,7 @@ public class CargoIntake implements Loop
         intakeButton = selectedJoystick.getButton(Constants.kCargoIntakeButtonStick, Constants.kCargoIntakeButton) && drivingCargo;
         intakeButtonPress = intakeButtonRisingEdgeDetector.update(intakeButton);
         intakeButtonUnpress = intakeButtonFallingEdgeDetector.update(intakeButton);
-        outtakeButton = selectedJoystick.getAxisAsButton(Constants.kCargoOuttakeAxisStick, Constants.kCargoOuttakeAxis) && drivingCargo;
+        outtakeButton = selectedJoystick.getButton(Constants.kCargoOuttakeAxisStick, Constants.kCargoOuttakeAxis) && drivingCargo;
 
         runDeploy();
         runIntake();
@@ -312,7 +312,7 @@ public class CargoIntake implements Loop
         if (buttonBoard.getButton(Constants.kCargoIntakeRocketButton))      { setTarget(CargoDeployPositionEnum.ROCKET); }      
         if (buttonBoard.getButton(Constants.kCargoIntakeCargoShipButton))   { setTarget(CargoDeployPositionEnum.CARGO_SHIP); }  
         if (buttonBoard.getButton(Constants.kDefenseButton))                { setTarget(CargoDeployPositionEnum.RETRACTED); }
-   
+ 
 
         // if in the ground state, turn off motor while riding on wheels
         if ((targetPosition == CargoDeployPositionEnum.GROUND) && (getArmAngleDeg() < kAllowableGroundAngleDeg))
@@ -356,7 +356,7 @@ public class CargoIntake implements Loop
              intakePulseTrain.start(); }   
         
         boolean intakePulse = intakePulseTrain.update();
-        if (selectedJoystick.getAxisAsButton(Constants.kCargoOuttakeAxisStick, Constants.kCargoOuttakeAxis) && drivingCargo) {
+        if (outtakeButton && drivingCargo) {
             intakeMotor.set(ControlMode.PercentOutput, kOuttakePercentOutput); }
         else if ((getArmAngleDeg() < kspinIntakeAngleDeg) || intakePulse) {
             intakeMotor.set(ControlMode.PercentOutput, kIntakePercentOutput); 

@@ -19,6 +19,7 @@ import frc.robot.command_status.DriveState;
 import frc.robot.command_status.GoalStates;
 import frc.robot.command_status.RobotState;
 import frc.robot.lib.joystick.SelectedJoystick;
+import frc.robot.lib.joystick.TmReversibleArcadeDriveJoystick;
 import frc.robot.lib.sensors.Limelight;
 import frc.robot.lib.util.ControlsReverse;
 import frc.robot.lib.util.CrashTracker;
@@ -63,7 +64,7 @@ public class Robot extends TimedRobot {
 
 	OperationalMode operationalMode = OperationalMode.getInstance();
 
-	final boolean PRACTICE_BOT = true;		// set to true when running on practice bot without Cargo Intake / Climber
+	final boolean PRACTICE_BOT = false;		// set to true when running on practice bot without Cargo Intake / Climber
 
 
     public Robot() {
@@ -113,6 +114,7 @@ public class Robot extends TimedRobot {
 			robotLogger.register(GoalStates.getInstance().getLogger());
 			robotLogger.register(VisionDriveAssistant.getInstance().getLogger());
 			// robotLogger.register(Hatch.getInstance().getLogger());
+		
 			if (!PRACTICE_BOT)
 			{
 				robotLogger.register(CargoIntake.getInstance().getLogger());

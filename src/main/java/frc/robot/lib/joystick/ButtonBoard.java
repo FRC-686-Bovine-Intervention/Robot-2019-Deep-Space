@@ -32,7 +32,7 @@ public class ButtonBoard
 
     protected ButtonBoard() 
     {
-        mStick = new Joystick(1);
+        mStick = new Joystick(2);
     }
 
     public boolean getButton(int _num) { return mStick.getRawButton(_num); }

@@ -1,11 +1,11 @@
 package frc.robot.lib.joystick;
 
-import edu.wpi.first.wpilibj.Joystick;
-import frc.robot.Constants;
 import frc.robot.command_status.DriveCommand;
+import frc.robot.lib.util.DataLogger;
 
 /**
- * Implements a simple arcade drive, where single stick is used for throttle and turn.
+ * Implements a simple arcade drive, where single stick is used for throttle and
+ * turn.
  */
 public class TmReversibleArcadeDriveJoystick extends JoystickControlsBase 
 {
@@ -53,21 +53,26 @@ public class TmReversibleArcadeDriveJoystick extends JoystickControlsBase
     boolean leftStickActive = false;
     boolean rightStickActive = false;
 
+	double rThrottle;
+	double rTurn;
+	double lThrottle;
+	double lTurn;
+	double throttle;
+	double turn;
+
 	public DriveCommand getDriveCommand()
 	{      
-		double rThrottle = -mStick[kRightStick].getRawAxis(kYAxis);
-		double rTurn     = +mStick[kRightStick].getRawAxis(kXAxis);
-		double lThrottle = -mStick[kLeftStick].getRawAxis(kYAxis);
-		double lTurn     = +mStick[kLeftStick].getRawAxis(kXAxis);
+		rThrottle = -mStick[kRightStick].getRawAxis(kYAxis);
+		rTurn     = -mStick[kRightStick].getRawAxis(kXAxis);
+		lThrottle = -mStick[kLeftStick].getRawAxis(kYAxis);
+		lTurn     = -mStick[kLeftStick].getRawAxis(kXAxis);
 
-		double throttle = lThrottle;
-		double turn = lTurn;
+		throttle = lThrottle;
+		turn = lTurn;
 
 
         leftStickActive =  ((Math.abs(lThrottle) >= kCrossoverThreshold) || (Math.abs(lTurn) >= kCrossoverThreshold));
         rightStickActive = ((Math.abs(rThrottle) >= kCrossoverThreshold) || (Math.abs(rTurn) >= kCrossoverThreshold));
-
-System.out.printf("lThrottle: %5.3f, lTurn: %5.3f, rThrottle: %5.3f, rTurn: %5.3f, lActive:%b, rActive:%b\n", lThrottle, lTurn, rThrottle, rTurn, leftStickActive, rightStickActive);
 
 		// check to see if we are switching sticks
 		if (usingLeftStick)
@@ -119,4 +124,32 @@ System.out.printf("lThrottle: %5.3f, lTurn: %5.3f, rThrottle: %5.3f, rTurn: %5.3
 
         return leftStickActive || rightStickActive;
 	}
+
+	private final DataLogger logger = new DataLogger()
+    {
+        @Override
+        public void log()
+        {
+            put("TmJoystick/throttle", throttle );
+            put("TmJoystick/turn", turn );
+            for (int stickNum = kLeftStick; stickNum <= kRightStick; stickNum++)
+            {
+                String stickName = (stickNum == kLeftStick ? "LStick/" : "RStick/");
+	    		put("TmJoystick/" + stickName + "xAxis", getAxis(stickNum, kXAxis));
+                put("TmJoystick/" + stickName + "yAxis", getAxis(stickNum, kYAxis));
+	    		put("TmJoystick/" + stickName + "rotate", getAxis(stickNum, kZRotateAxis));
+                put("TmJoystick/" + stickName + "slider", getAxis(stickNum, kSliderAxis));
+                int buttons = 0;
+                for (int button=1; button<=16; button++)
+                {
+                    buttons |= (getButton(stickNum, button) ? 1 : 0) << (button-1);
+                }
+                put("TmJoystick/" + stickName + "buttons", buttons);
+                put("TmJoystick/" + stickName + "pov", getPOV(stickNum));
+            }
+        }
+    };
+	
+    public DataLogger getLogger() { return logger; }
+
 }

@@ -25,17 +25,20 @@ public abstract class JoystickControlsBase
     // DRIVER CONTROLS
     public abstract DriveCommand getDriveCommand();	// mapping from joystick controls to DriveSignal
  
-    public boolean getButton(int _joystickNum, int _buttonNum)      { return mStick[_joystickNum].getRawButton(_buttonNum); }
+    public double getAxis(int _joystickNum, int _axisNum)          { return mStick[_joystickNum].getRawAxis(_axisNum); }
     public boolean getAxisAsButton(int _joystickNum, int _axisNum)  { return mStick[_joystickNum].getRawAxis(_axisNum) > 0.5; }
+    public boolean getButton(int _joystickNum, int _buttonNum)      { return mStick[_joystickNum].getRawButton(_buttonNum); }
     public int getPOV(int _joystickNum)                             { return mStick[_joystickNum].getPOV(); }
 
-    public boolean getButton(int _buttonNum)       { return mStick[kLeftStick].getRawButton(_buttonNum); }
-    public boolean getAxisAsButton(int _axisNum)   { return mStick[kLeftStick].getRawAxis(_axisNum) > 0.5; }
-    public int getPOV()                            { return mStick[kLeftStick].getPOV(); }
+    public double getAxis(int _axisNum)           { return getAxis(kLeftStick, _axisNum); }
+    public boolean getAxisAsButton(int _axisNum)   { return getAxisAsButton(kLeftStick, _axisNum); }
+    public boolean getButton(int _buttonNum)       { return getButton(kLeftStick, _buttonNum); }
+    public int getPOV()                            { return getPOV(kLeftStick); }
 
     public boolean usingLeftStick() { return drivingForward; }
     public boolean joystickActive() { return true; }
 
     public void setRumble(GenericHID.RumbleType _rumbleType, double _value)       { mStick[kLeftStick].setRumble(_rumbleType, _value); }    
     
+
 }
