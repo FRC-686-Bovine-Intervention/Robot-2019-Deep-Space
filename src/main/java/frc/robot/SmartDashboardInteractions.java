@@ -5,11 +5,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.auto.AutoModeBase;
 import frc.robot.auto.modes.DebugAuto;
 import frc.robot.auto.modes.FieldDimensions;
-import frc.robot.auto.modes.HatchAutoBethesda;
 import frc.robot.auto.modes.HatchAutoChamps;
 import frc.robot.auto.modes.StandStillMode;
+import frc.robot.lib.joystick.JoystickControlsBase;
+import frc.robot.lib.joystick.TmReversibleArcadeDriveJoystick;
 import frc.robot.lib.util.Pose;
-import frc.robot.lib.joystick.*;
 
 /**
  * Controls the interactive elements of SmartDashboard.
@@ -133,7 +133,7 @@ public class SmartDashboardInteractions
         //    return ReversibleArcadeDriveJoystick.getInstance();
 
         case THRUSTMASTER_REVERSIBLE_ARCADE_DRIVE:
-            return TmArcadeJoystick.getInstance();
+            return TmReversibleArcadeDriveJoystick.getInstance();
     
         // case THRUSTMASTER_ARCADE_DRIVE:
         //     return TmArcadeJoystick.getInstance();

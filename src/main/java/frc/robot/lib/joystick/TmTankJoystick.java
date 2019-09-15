@@ -17,8 +17,6 @@ public class TmTankJoystick extends JoystickControlsBase
         return instance;
     }
 
-    protected final Joystick[] mStick;
-
     public static int kXAxis  =         0;
     public static int kYAxis=           1;
     public static int kZRotateAxis =    2;
@@ -46,9 +44,6 @@ public class TmTankJoystick extends JoystickControlsBase
 
     public TmTankJoystick() 
     {
-        mStick = new Joystick[2];
-        mStick[kLeftStick] = new Joystick(0);
-        mStick[kRightStick] = new Joystick(1);
     }
 
     public static final double kDeadband = 0.02;

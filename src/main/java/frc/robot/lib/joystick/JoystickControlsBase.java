@@ -9,7 +9,7 @@ import frc.robot.command_status.DriveCommand;
  */
 public abstract class JoystickControlsBase 
 {    
-    protected final Joystick[] mStick;
+    protected final Joystick[] mStick = new Joystick[2];
     protected boolean drivingForward = true;
     public static double kJoystickDeadzone = 0.2;   // deadzone at center of joystick extends from +/-kJoystickDeadzone
 
@@ -18,7 +18,6 @@ public abstract class JoystickControlsBase
 
     protected JoystickControlsBase() 
     {
-        mStick = new Joystick[2];
         mStick[kLeftStick] = new Joystick(0);
         mStick[kRightStick] = new Joystick(1);
     }

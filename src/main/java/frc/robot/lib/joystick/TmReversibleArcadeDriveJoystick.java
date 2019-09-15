@@ -9,14 +9,12 @@ import frc.robot.command_status.DriveCommand;
  */
 public class TmReversibleArcadeDriveJoystick extends JoystickControlsBase 
 {
-    private static JoystickControlsBase mInstance = new ReversibleArcadeDriveJoystick();
+    private static JoystickControlsBase mInstance = new TmReversibleArcadeDriveJoystick();
 
     public static JoystickControlsBase getInstance() 
     {
         return mInstance;
     }
-
-    protected final Joystick[] mStick;
 
     public static int kLeftStick   =    0;
     public static int kRightStick  =    1;
@@ -47,9 +45,6 @@ public class TmReversibleArcadeDriveJoystick extends JoystickControlsBase
 
     public TmReversibleArcadeDriveJoystick() 
     {
-        mStick = new Joystick[2];
-        mStick[kLeftStick] = new Joystick(0);
-        mStick[kRightStick] = new Joystick(1);
     }
 
 
@@ -59,7 +54,7 @@ public class TmReversibleArcadeDriveJoystick extends JoystickControlsBase
     boolean rightStickActive = false;
 
 	public DriveCommand getDriveCommand()
-	{
+	{      
 		double rThrottle = -mStick[kRightStick].getRawAxis(kYAxis);
 		double rTurn     = -mStick[kRightStick].getRawAxis(kXAxis);
 		double lThrottle = -mStick[kLeftStick].getRawAxis(kYAxis);
@@ -67,8 +62,6 @@ public class TmReversibleArcadeDriveJoystick extends JoystickControlsBase
 
 		double throttle = lThrottle;
 		double turn = lTurn;
-
-// System.out.printf("lThrottle: %5.3f, lTurn: %5.3f, rThrottle: %5.3f, rTurn: %5.3f\n", lThrottle, lTurn, rThrottle, rTurn);
 
         leftStickActive =  ((Math.abs(lThrottle) >= kCrossoverThreshold) || (Math.abs(lTurn) >= kCrossoverThreshold));
         rightStickActive = ((Math.abs(rThrottle) >= kCrossoverThreshold) || (Math.abs(rTurn) >= kCrossoverThreshold));
@@ -93,6 +86,8 @@ public class TmReversibleArcadeDriveJoystick extends JoystickControlsBase
 			throttle = -rThrottle;
 			turn = +rTurn;
 		}
+
+System.out.printf("lThrottle: %5.3f, lTurn: %5.3f, rThrottle: %5.3f, rTurn: %5.3f, lAct:%b, rAct:%b, usingLeft:%b\n", lThrottle, lTurn, rThrottle, rTurn, leftStickActive, rightStickActive, usingLeftStick);
 
 		DriveCommand signal = ArcadeDriveJoystick.throttleTurnToDriveCommand(throttle, turn);
 		

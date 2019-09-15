@@ -17,8 +17,6 @@ public class TmArcadeJoystick extends JoystickControlsBase
         return instance;
     }
 
-    protected final Joystick[] mStick = new Joystick[2];
-
     public static int kLeftStick   =    0;
     public static int kRightStick  =    1;
 
@@ -49,8 +47,6 @@ public class TmArcadeJoystick extends JoystickControlsBase
 
     public TmArcadeJoystick() 
     {
-        mStick[kLeftStick] = new Joystick(0);
-        mStick[kRightStick] = new Joystick(1);
     }
 
     double throttle = 0.0;
