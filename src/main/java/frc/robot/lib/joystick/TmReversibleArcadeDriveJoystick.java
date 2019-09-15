@@ -56,15 +56,18 @@ public class TmReversibleArcadeDriveJoystick extends JoystickControlsBase
 	public DriveCommand getDriveCommand()
 	{      
 		double rThrottle = -mStick[kRightStick].getRawAxis(kYAxis);
-		double rTurn     = -mStick[kRightStick].getRawAxis(kXAxis);
+		double rTurn     = +mStick[kRightStick].getRawAxis(kXAxis);
 		double lThrottle = -mStick[kLeftStick].getRawAxis(kYAxis);
-		double lTurn     = -mStick[kLeftStick].getRawAxis(kXAxis);
+		double lTurn     = +mStick[kLeftStick].getRawAxis(kXAxis);
 
 		double throttle = lThrottle;
 		double turn = lTurn;
 
+
         leftStickActive =  ((Math.abs(lThrottle) >= kCrossoverThreshold) || (Math.abs(lTurn) >= kCrossoverThreshold));
         rightStickActive = ((Math.abs(rThrottle) >= kCrossoverThreshold) || (Math.abs(rTurn) >= kCrossoverThreshold));
+
+System.out.printf("lThrottle: %5.3f, lTurn: %5.3f, rThrottle: %5.3f, rTurn: %5.3f, lActive:%b, rActive:%b\n", lThrottle, lTurn, rThrottle, rTurn, leftStickActive, rightStickActive);
 
 		// check to see if we are switching sticks
 		if (usingLeftStick)
@@ -87,7 +90,7 @@ public class TmReversibleArcadeDriveJoystick extends JoystickControlsBase
 			turn = +rTurn;
 		}
 
-System.out.printf("lThrottle: %5.3f, lTurn: %5.3f, rThrottle: %5.3f, rTurn: %5.3f, lAct:%b, rAct:%b, usingLeft:%b\n", lThrottle, lTurn, rThrottle, rTurn, leftStickActive, rightStickActive, usingLeftStick);
+// System.out.printf("lThrottle: %5.3f, lTurn: %5.3f, rThrottle: %5.3f, rTurn: %5.3f, lAct:%b, rAct:%b, usingLeft:%b\n", lThrottle, lTurn, rThrottle, rTurn, leftStickActive, rightStickActive, usingLeftStick);
 
 		DriveCommand signal = ArcadeDriveJoystick.throttleTurnToDriveCommand(throttle, turn);
 		
