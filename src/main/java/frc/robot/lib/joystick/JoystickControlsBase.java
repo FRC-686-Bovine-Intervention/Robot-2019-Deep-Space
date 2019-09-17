@@ -15,10 +15,10 @@ public abstract class JoystickControlsBase
 
     protected JoystickControlsBase() 
     {
-        mStick = new Joystick(0);
+        mStick = new Joystick(3);
     }
 
-    // DRIVER CONTROLS
+    // DRIVER CONTROLSssss
     public abstract DriveCommand getDriveCommand();	// mapping from joystick controls to DriveSignal
     
     public boolean getButton(int _num) { return mStick.getRawButton(_num); }
