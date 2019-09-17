@@ -15,7 +15,7 @@ public abstract class JoystickControlsBase
 
     protected JoystickControlsBase() 
     {
-        mStick = new Joystick(3);
+        mStick = new Joystick(0);
     }
 
     // DRIVER CONTROLSssss
