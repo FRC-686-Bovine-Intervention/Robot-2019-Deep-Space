@@ -83,13 +83,13 @@ public class Constants extends ConstantsBase {
     // public static int kHumanStationBttn = kXboxButtonB;
 
     // Driver Joystick Configuration    
-    public static int kHatchDeployButtonStick =     TmArcadeJoystick.kLeftStick;
+    public static int kHatchDeployButtonStick =     TmArcadeJoystick.kRightStick;
     public static int kHatchDeployButton =          TmArcadeJoystick.kBottomThumbButton;
     public static int kHatchShootAxisStick =        TmArcadeJoystick.kRightStick;  
-    public static int kHatchShootAxis =             TmArcadeJoystick.kBottomThumbButton;  
+    public static int kHatchShootAxis =             TmArcadeJoystick.kTriggerButton;  
     public static int kCargoIntakeButtonStick =     TmArcadeJoystick.kLeftStick;
-    public static int kCargoIntakeButton =          TmArcadeJoystick.kTriggerButton;
-    public static int kCargoOuttakeAxisStick =      TmArcadeJoystick.kRightStick;
+    public static int kCargoIntakeButton =          TmArcadeJoystick.kBottomThumbButton;
+    public static int kCargoOuttakeAxisStick =      TmArcadeJoystick.kLeftStick;
     public static int kCargoOuttakeAxis =           TmArcadeJoystick.kTriggerButton;
     public static int kVisionAssistanceButtonStick =TmArcadeJoystick.kLeftStick;
     public static int kVisionAssistanceButton =     TmArcadeJoystick.kLeftThumbButton;
