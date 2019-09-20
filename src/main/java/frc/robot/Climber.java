@@ -43,7 +43,7 @@ public class Climber implements Loop
 
     public final double kDriveMotorPercentOutput = 0.3;
     public final double kClimberMotorWhenExtendingPercentOutput = 0.2;
-    public final double kClimberMotorAtTopPercentOutput = 0.5; 
+    public final double kClimberMotorAtTopPercentOutput = -0.5; 
 
     public double startRetractTime;
     public final double kRetractTimePeriod = 2.0;
