@@ -100,6 +100,13 @@ public class Constants extends ConstantsBase {
     public static int kHumanStationBttnStick =      TmArcadeJoystick.kLeftStick;            // not used
     public static int kHumanStationBttn =           TmArcadeJoystick.kRightThumbButton;     // not used
 
+    public static enum ControlTypeEnum {
+        DEFAULT,TYLER,BEN;
+    }
+
+    public static ControlTypeEnum kControlType = ControlTypeEnum.DEFAULT;
+
+
     // Operator Button Board Configuration
     public static int kCargoIntakeRocketButton =    ButtonBoard.kButtonBoardB;
     public static int kCargoIntakeCargoShipButton = ButtonBoard.kButtonBoardA;

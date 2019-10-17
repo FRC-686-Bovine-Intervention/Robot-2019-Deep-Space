@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.lib.joystick.ButtonBoard;
 import frc.robot.lib.joystick.JoystickControlsBase;
 import frc.robot.lib.joystick.SelectedJoystick;
+import frc.robot.lib.joystick.TmArcadeJoystick;
 import frc.robot.lib.joystick.TmTankJoystick;
 import frc.robot.lib.joystick.TmTwoStickJoystick;
 import frc.robot.lib.util.DataLogger;
@@ -76,7 +77,8 @@ public class Hatch implements Loop {
         grabButtonPush = grabButtonRisingEdgeDetector.update(grabBtnIsPushed);
         grabButtonRelease = grabButtonFallingEdgeDetector.update(grabBtnIsPushed);
 
-        extendButton = controls.getButton(Constants.kHatchShootAxisStick, Constants.kHatchShootAxis) && drivingHatch;
+        // extendButton = controls.getButton(Constants.kHatchShootAxisStick, Constants.kHatchShootAxis) && drivingHatch;
+        extendButton = getHatchDeploy() && drivingHatch;
         extendButtonPush = extendButtonRisingEdgeDetector.update(extendButton);
         extendButtonRelease = extendButtonFallingEdgeDetector.update(extendButton);
 
@@ -170,6 +172,18 @@ public class Hatch implements Loop {
 
     public void setState(HatchStateEnum _newState) {
         state = _newState;
+    }
+
+    public boolean getHatchDeploy()
+    {
+        JoystickControlsBase controls = TmTwoStickJoystick.getInstance();
+
+        switch (Constants.kControlType)
+        {
+            case DEFAULT:
+            default:
+                return controls.getButton(Constants.kHatchShootAxisStick, Constants.kHatchShootAxis);
+        }
     }
 
     private final DataLogger logger = new DataLogger() {

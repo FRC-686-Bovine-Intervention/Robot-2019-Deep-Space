@@ -59,8 +59,8 @@ public class TmTwoStickJoystick extends JoystickControlsBase
     {
 	    boolean squaredInputs = false;	// set to true to increase fine control while permitting full power
 
-    	throttle = -mStick[kLeftStick].getRawAxis(kYAxis);
-        turn     = +mStick[kRightStick].getRawAxis(kXAxis);
+    	throttle = -mStick[kLeftStick].getRawAxis(kYAxis) *0.8;
+        turn     = +mStick[kRightStick].getRawAxis(kXAxis)*0.8;
         
         throttle = handleDeadband(throttle, kThrottleDeadband);
         turn     = handleDeadband(turn,     kturnDeadband);
