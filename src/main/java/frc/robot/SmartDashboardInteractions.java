@@ -59,8 +59,8 @@ public class SmartDashboardInteractions
             } else {
                 driverControlsChooser.addOption(scheme.name, scheme);
             }
-
         }
+        SmartDashboard.putData("Driver Scheme", driverControlsChooser);
 
 
         autoModeChooser = new SendableChooser<AutoModeOption>();

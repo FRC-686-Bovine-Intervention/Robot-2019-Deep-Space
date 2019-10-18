@@ -11,7 +11,7 @@ public abstract class JoystickControlsBase
 {    
     protected final Joystick[] mStick = new Joystick[2];
     protected boolean drivingForward = true;
-    public static double kJoystickDeadzone = 0.2;   // deadzone at center of joystick extends from +/-kJoystickDeadzone
+    public static double kJoystickDeadzone = 0.1;   // deadzone at center of joystick extends from +/-kJoystickDeadzone
 
     public static int kLeftStick   =    0;
     public static int kRightStick  =    1;

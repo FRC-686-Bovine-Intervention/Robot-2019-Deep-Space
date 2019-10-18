@@ -67,9 +67,9 @@ public class ArcadeDriveJoystick extends JoystickControlsBase {
 				moveValue = (moveValue * moveValue*moveValue);
 			}
 			if (rotateValue >= 0.0) {
-				rotateValue = (rotateValue * rotateValue*rotateValue);
+				rotateValue = (rotateValue * rotateValue/*rotateValue*/);
 			} else {
-				rotateValue = (rotateValue * rotateValue*rotateValue);
+				rotateValue = (rotateValue * rotateValue/*rotateValue*/);
 			}
 		}
 
