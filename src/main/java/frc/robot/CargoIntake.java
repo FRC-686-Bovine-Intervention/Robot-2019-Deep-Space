@@ -376,6 +376,11 @@ public class CargoIntake implements Loop
         setTargetAngleDeg(targetPosition.angleDeg);
     }
     
+    public  CargoDeployPositionEnum getTarget()
+    {
+        return targetPosition;
+    }
+
     public void setTargetAngleDeg(double _angleDeg)
     {
         targetAngleDeg = _angleDeg;

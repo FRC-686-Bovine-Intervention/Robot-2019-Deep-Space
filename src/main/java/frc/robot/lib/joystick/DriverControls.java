@@ -98,8 +98,25 @@ public class DriverControls
                 }
                 // end case THRUSTMASTER
 
-                case MICHAEL:   return false;
-                    // TODO: replace above 'return false' with modified copy of above
+                case MICHAEL:
+                switch (_control)
+                {
+                    case VISION_ASSIST:                 return controls.getButton(ThrustMasterConstants.kLeftStick,  ThrustMasterConstants.kLeftThumbButton);
+                    case HATCH_DEPLOY:                  return controls.getPOV(ThrustMasterConstants.kRightStick) == 180;
+                    case HATCH_SHOOT:                   return controls.getPOV(ThrustMasterConstants.kRightStick) == 0;
+                    case CARGO_INTAKE:                  return controls.getPOV(ThrustMasterConstants.kLeftStick) == 180;
+                    case CARGO_OUTTAKE:                 return controls.getPOV(ThrustMasterConstants.kLeftStick) == 0;
+                    case CARGO_INTAKE_DEPOT_HEIGHT:     return controls.getButton(ThrustMasterConstants.kLeftStick,  ThrustMasterConstants.kTriggerButton);
+                    case CARGO_INTAKE_ROCKET_HEIGHT:    return controls.getButton(ThrustMasterConstants.kLeftStick, ThrustMasterConstants.kRightThumbButton);
+                    case CARGO_INTAKE_CARGO_HEIGHT:     return controls.getButton(ThrustMasterConstants.kLeftStick, ThrustMasterConstants.kBottomThumbButton);
+                    case DEFENSE:                       return controls.getButton(ThrustMasterConstants.kRightStick, ThrustMasterConstants.kTriggerButton);
+                    case CLIMB_PREPARE:                 return controls.getButton(ThrustMasterConstants.kRightStick, ThrustMasterConstants.kTopButton4);
+                    case CLIMB_EXTEND:                  return controls.getButton(ThrustMasterConstants.kRightStick, ThrustMasterConstants.kTopButton5);
+                    case CLIMB_RETRACT:                 return controls.getButton(ThrustMasterConstants.kRightStick, ThrustMasterConstants.kTopButton6);
+                    case EMERGENCY_ZEROING:             return buttonBoard.getButton(kEmergencyZeroingAxis);
+                    case QUICK_TURN:                    return false;
+                    default:                            return false;
+                }
                 // end case MICHAEL
 
                 case TYLER:   return false;
