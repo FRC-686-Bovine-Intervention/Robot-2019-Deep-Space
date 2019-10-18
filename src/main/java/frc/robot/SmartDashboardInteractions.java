@@ -7,10 +7,7 @@ import frc.robot.auto.modes.FieldDimensions;
 import frc.robot.auto.modes.HatchAutoChamps;
 import frc.robot.auto.modes.StandStillMode;
 import frc.robot.lib.joystick.DriverControls;
-import frc.robot.lib.joystick.DriverControlsEnum;
 import frc.robot.lib.joystick.JoystickControlsBase;
-import frc.robot.lib.joystick.ReversibleArcadeDriveJoystick;
-import frc.robot.lib.joystick.TmArcadeJoystick;
 import frc.robot.lib.joystick.TmReversibleArcadeDriveJoystick;
 import frc.robot.lib.util.Pose;
 
@@ -53,11 +50,17 @@ public class SmartDashboardInteractions
         // joystickModeChooser.addOption(JoystickOption.THRUSTMASTER_2STICK_DRIVE.name,  JoystickOption.THRUSTMASTER_2STICK_DRIVE);
     	SmartDashboard.putData("Joystick Chooser", joystickModeChooser);
 
-    	driverControlsChooser = new SendableChooser<DriverControlsOption>();
-    	// joystickModeChooser.addOption(JoystickOption.ARCADE_DRIVE.name,        JoystickOption.ARCADE_DRIVE);
-    	//joystickModeChooser.setDefaultOption(JoystickOption.REVERSIBLE_ARCADE_DRIVE.toString(),        JoystickOption.REVERSIBLE_ARCADE_DRIVE);
-		// joystickModeChooser.addOption(JoystickOption.TRIGGER_DRIVE.name,        JoystickOption.TRIGGER_DRIVE);
-    	// joystickModeChooser.addOption(JoystickOption.TANK_DRIVE.name, 	      JoystickOption.TANK_DRIVE);
+        // automatically list all driver control schemes
+        driverControlsChooser = new SendableChooser<DriverControls.SchemeEnum>();
+        for (DriverControls.SchemeEnum scheme : DriverControls.SchemeEnum.values())
+        {
+            if (scheme == DriverControls.SchemeEnum.THRUSTMASTER) {
+                driverControlsChooser.setDefaultOption(scheme.name, scheme);
+            } else {
+                driverControlsChooser.addOption(scheme.name, scheme);
+            }
+
+        }
 
 
         autoModeChooser = new SendableChooser<AutoModeOption>();
@@ -178,38 +181,15 @@ public class SmartDashboardInteractions
     
     
         
-    SendableChooser<DriverControlsOption> driverControlsChooser;
+    SendableChooser<DriverControls.SchemeEnum> driverControlsChooser;
     
-    enum DriverControlsOption 
-    {
-        NORMAL("Normal"),
-        MICHAEL("Michael"),
-        TYLER("Tyler"),				
-        BEN("Ben");
-
-    	public final String name;
-    	
-        DriverControlsOption(String name) {
-    		this.name= name;
-    	}
-    }
           
 
-    public DriverControls.ControlSchemeEnum getDriverControlsScheme() 
+    public DriverControls.SchemeEnum getDriverControlsScheme() 
     {
-    	DriverControlsOption selMode = (DriverControlsOption)driverControlsChooser.getSelected(); 
+    	DriverControls.SchemeEnum selMode = (DriverControls.SchemeEnum)driverControlsChooser.getSelected(); 
     
-    	switch (selMode)
-    	{
-    	case NORMAL:        return DriverControls.ControlSchemeEnum.NORMAL;
-		case MICHAEL:       return DriverControls.ControlSchemeEnum.MICHAEL;
-        case TYLER:         return DriverControls.ControlSchemeEnum.TYLER;
-        case BEN:           return DriverControls.ControlSchemeEnum.BEN;
-    	default:
-            System.out.println("ERROR: unexpected DriverControlsScheme selection: " + selMode);
-			return DriverControls.ControlSchemeEnum.NORMAL;
-        }
-    
+        return selMode;
     }
     
     

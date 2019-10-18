@@ -13,8 +13,19 @@ public class DriverControls
         return mInstance;
     }
 
-    public enum ControlSchemeEnum {
-        NORMAL, MICHAEL, TYLER, BEN;
+    public enum SchemeEnum 
+    {
+        XBOX("XBox"),
+        THRUSTMASTER("ThrustMaster"),
+        MICHAEL("Michael"),
+        TYLER("Tyler"),				
+        BEN("Ben");
+ 
+    	public final String name;
+    	
+        SchemeEnum(String name) {
+    		this.name= name;
+    	}
     }
 
     // button board constants
@@ -26,7 +37,7 @@ public class DriverControls
     public static int kClimbingRetractButton =      ButtonBoard.kButtonBoardY;
     public static int kEmergencyZeroingAxis =       ButtonBoard.kButtonBoardSR;
 
-    public ControlSchemeEnum controlScheme;
+    public SchemeEnum controlScheme;
 
     public DriverControls() 
     {
@@ -44,8 +55,29 @@ public class DriverControls
 
         switch (controlScheme)  // control scheme selected in SmartDashboard
         {
-            case NORMAL:
+            case XBOX:
             default:
+                switch (_control)
+                {
+                    case VISION_ASSIST:                 return controls.getButton(XboxConstants.kXboxButtonA);
+                    case HATCH_DEPLOY:                  return controls.getButton(XboxConstants.kXboxButtonRB);
+                    case HATCH_SHOOT:                   return controls.getButton(XboxConstants.kXboxRTriggerAxis);
+                    case CARGO_INTAKE:                  return controls.getButton(XboxConstants.kXboxButtonLB);
+                    case CARGO_OUTTAKE:                 return controls.getButton(XboxConstants.kXboxLTriggerAxis);
+                    case CARGO_INTAKE_DEPOT_HEIGHT:     return controls.getButton(XboxConstants.kXboxButtonX);
+                    case CARGO_INTAKE_ROCKET_HEIGHT:    return buttonBoard.getButton(kCargoIntakeRocketButton);
+                    case CARGO_INTAKE_CARGO_HEIGHT:     return buttonBoard.getButton(kCargoIntakeCargoShipButton);
+                    case DEFENSE:                       return buttonBoard.getButton(kDefenseButton);
+                    case CLIMB_PREPARE:                 return buttonBoard.getButton(kClimbingStartButton);
+                    case CLIMB_EXTEND:                  return buttonBoard.getButton(kClimbingExtendButton);
+                    case CLIMB_RETRACT:                 return buttonBoard.getButton(kClimbingRetractButton);
+                    case EMERGENCY_ZEROING:             return buttonBoard.getButton(kEmergencyZeroingAxis);
+                    case QUICK_TURN:                    return false;
+                    default:                            return false;
+                }
+                // end case XBOX
+    
+                case THRUSTMASTER:
                 switch (_control)
                 {
                     case VISION_ASSIST:                 return controls.getButton(ThrustMasterConstants.kLeftStick,  ThrustMasterConstants.kLeftThumbButton);
@@ -61,10 +93,10 @@ public class DriverControls
                     case CLIMB_EXTEND:                  return buttonBoard.getButton(kClimbingExtendButton);
                     case CLIMB_RETRACT:                 return buttonBoard.getButton(kClimbingRetractButton);
                     case EMERGENCY_ZEROING:             return buttonBoard.getButton(kEmergencyZeroingAxis);
-                    case QUICK_TURN:                    return controls.getButton(0,0); // bogus control, but it's OK
+                    case QUICK_TURN:                    return false;
                     default:                            return false;
                 }
-                // end case NORMAL
+                // end case THRUSTMASTER
 
                 case MICHAEL:   return false;
                     // TODO: replace above 'return false' with modified copy of above

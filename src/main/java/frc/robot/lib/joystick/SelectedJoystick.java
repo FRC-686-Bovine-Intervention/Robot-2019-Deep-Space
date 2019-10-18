@@ -44,4 +44,9 @@ public class SelectedJoystick
     public boolean getDrivingCargo()       { return controls.usingLeftStick(); }
     public void setRumble(GenericHID.RumbleType _rumbleType, double _value)       { controls.setRumble(_rumbleType, _value); }
     public boolean joystickActive() { return controls.joystickActive(); }
+
+    // default to joystick 0 if not provided
+    public boolean getButton( int _buttonNum) { return controls.getButton(0, _buttonNum); }
+    public int getPOV() { return controls.getPOV(0); }    
+    public boolean getAxisAsButton(int _buttonNum) { return controls.getAxisAsButton(0, _buttonNum); }
 }

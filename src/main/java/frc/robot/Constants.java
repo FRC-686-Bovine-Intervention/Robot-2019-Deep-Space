@@ -61,26 +61,10 @@ public class Constants extends ConstantsBase {
  
 
 
-    // // Driver Joystick Configuration    
-    // public static int kHatchDeployButton =      XboxConstants.kXboxButtonRB;
-    // public static int kHatchShootAxis =         XboxConstants.kXboxRTriggerAxis;  
-    // public static int kCargoIntakeButton =      XboxConstants.kXboxButtonLB;
-    // public static int kCargoOuttakeAxis =       XboxConstants.kXboxLTriggerAxis;
-    // public static int kVisionAssistanceButton = XboxConstants.kXboxButtonA;
-    // public static int kQuickTurnButton =        XboxConstants.kXboxButtonY; // bogus setting to make TriggerDrive Joysticks happy
-    // public static int kCargoIntakeDepotHeight = XboxConstants.kXboxButtonX;
-    // public static int kHumanStationBttn = XboxConstants.kXboxButtonB;
+
 
  
- 
-    // Operator Button Board Configuration
-    public static int kCargoIntakeRocketButton =    ButtonBoard.kButtonBoardB;
-    public static int kCargoIntakeCargoShipButton = ButtonBoard.kButtonBoardA;
-    public static int kDefenseButton =              ButtonBoard.kButtonBoardRB;
-    public static int kClimbingStartButton =        ButtonBoard.kButtonBoardLB;
-    public static int kClimbingExtendButton =       ButtonBoard.kButtonBoardX;
-    public static int kClimbingRetractButton =      ButtonBoard.kButtonBoardY;
-     public static int kEmergencyZeroingAxis =        ButtonBoard.kButtonBoardSR;
+
    
     
 
