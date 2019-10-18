@@ -18,10 +18,10 @@ import frc.robot.command_status.DriveCommand;
 import frc.robot.command_status.DriveState;
 import frc.robot.command_status.GoalStates;
 import frc.robot.command_status.RobotState;
+import frc.robot.lib.joystick.DriverControls;
+import frc.robot.lib.joystick.DriverControlsEnum;
 import frc.robot.lib.joystick.SelectedJoystick;
-import frc.robot.lib.joystick.TmReversibleArcadeDriveJoystick;
 import frc.robot.lib.sensors.Limelight;
-import frc.robot.lib.util.ControlsReverse;
 import frc.robot.lib.util.CrashTracker;
 import frc.robot.lib.util.DataLogController;
 import frc.robot.lib.util.DataLogger;
@@ -60,8 +60,7 @@ public class Robot extends TimedRobot {
 	Limelight hatchCamera = Limelight.getHatchInstance();
 
 	Hatch hatch;
-	ControlsReverse controlsReverse = ControlsReverse.getInstance();
-
+	
 	OperationalMode operationalMode = OperationalMode.getInstance();
 
 	final boolean PRACTICE_BOT = false;		// set to true when running on practice bot without Cargo Intake / Climber
@@ -301,7 +300,8 @@ public class Robot extends TimedRobot {
 			CrashTracker.logTeleopInit();
 			
 			// Select joystick control method
-			selectedJoystick.update();
+            selectedJoystick.update();
+            DriverControls.getInstance().updateDriverControlScheme();
 			cargoCamera.teleopInit();
 			hatchCamera.teleopInit();
 			
@@ -329,14 +329,13 @@ public class Robot extends TimedRobot {
 	{
 		try
 		{
-			boolean visionButton = selectedJoystick.getButton(Constants.kVisionAssistanceButtonStick, Constants.kVisionAssistanceButton);
+			boolean visionButton = DriverControls.getInstance().getBoolean(DriverControlsEnum.VISION_ASSIST);
 			boolean ledsActive = !ledsOnlyWhenActive || (ledsOnlyWhenActive && visionButton);
 
 			DriveCommand driveCmd = selectedJoystick.getDriveCommand();
 			driveCmd = visionDriveAssistant.assist(driveCmd, visionButton);
 
 			//modify drive controls based on buttons
-			// DriveCommand driveCmdReverse = controlsReverse.run( driveCmd, Constants.kControlsReverseButton);
 			drive.setOpenLoop(driveCmd);
 
 			// turn on LEDs in direction of forward travel

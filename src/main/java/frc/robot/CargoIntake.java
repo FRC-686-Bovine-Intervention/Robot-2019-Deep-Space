@@ -13,8 +13,8 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.lib.joystick.ButtonBoard;
+import frc.robot.lib.joystick.DriverControls;
+import frc.robot.lib.joystick.DriverControlsEnum;
 import frc.robot.lib.joystick.SelectedJoystick;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.FallingEdgeDetector;
@@ -43,9 +43,7 @@ public class CargoIntake implements Loop
     public VictorSPX intakeMotor;
     public DigitalInput ballDetectSensor;
 
-    SelectedJoystick selectedJoystick = SelectedJoystick.getInstance();
-    public ButtonBoard buttonBoard = ButtonBoard.getInstance();
-
+    public DriverControls driverControls = DriverControls.getInstance();
     public RisingEdgeDetector  intakeButtonRisingEdgeDetector = new RisingEdgeDetector();
     public FallingEdgeDetector intakeButtonFallingEdgeDetector = new FallingEdgeDetector();
     public RisingEdgeDetector onDefenseButtonPress = new RisingEdgeDetector();
@@ -237,10 +235,10 @@ public class CargoIntake implements Loop
 
         drivingCargo = SelectedJoystick.getInstance().getDrivingCargo();
 
-        intakeButton = selectedJoystick.getButton(Constants.kCargoIntakeButtonStick, Constants.kCargoIntakeButton) && drivingCargo;
+        intakeButton = driverControls.getBoolean(DriverControlsEnum.CARGO_INTAKE) && drivingCargo;
         intakeButtonPress = intakeButtonRisingEdgeDetector.update(intakeButton);
         intakeButtonUnpress = intakeButtonFallingEdgeDetector.update(intakeButton);
-        outtakeButton = selectedJoystick.getButton(Constants.kCargoOuttakeAxisStick, Constants.kCargoOuttakeAxis) && drivingCargo;
+        outtakeButton = driverControls.getBoolean(DriverControlsEnum.CARGO_OUTTAKE) && drivingCargo;
 
         runDeploy();
         runIntake();
@@ -249,7 +247,7 @@ public class CargoIntake implements Loop
 
     public void runDeploy()
     {
-        climbingStartEdgeDetector.update(buttonBoard.getButton(Constants.kClimbingStartButton));
+        climbingStartEdgeDetector.update(driverControls.getBoolean(DriverControlsEnum.CLIMB_PREPARE));
 
         switch (state) 
         {
@@ -276,7 +274,7 @@ public class CargoIntake implements Loop
             // button board controls are enabled
             runOperational();
 
-            // if (buttonBoard.getButton(Constants.kClimbingStartButton) && (Timer.getMatchTime() < 30))
+            // if (driverControls.getBoolean(DriverControlsEnum.CLIMB_PREPARE) && (Timer.getMatchTime() < 30))
             if (climbingStartEdgeDetector.get()) // TODO: add code to only allow in last 30 seconds???
             {
                 state = CargoDeployStateEnum.CLIMBING;
@@ -289,7 +287,7 @@ public class CargoIntake implements Loop
             // Do nothing in this file -- see Climber.java
 
             // can get out of climbing mode only by hitting retract button
-            if (buttonBoard.getButton(Constants.kDefenseButton))
+            if (driverControls.getBoolean(DriverControlsEnum.DEFENSE))
             {
                 state = CargoDeployStateEnum.OPERATIONAL;
                 Climber.startOver(); // emergency retract cylinders
@@ -308,10 +306,10 @@ public class CargoIntake implements Loop
         
         // get current target angle from driver & operator
         if (intakeButtonPress)                                              { setTarget(CargoDeployPositionEnum.GROUND); }      // go to ground on driver button, not operator's button board
-        if (selectedJoystick.getButton(Constants.kCargoIntakeDepotHeightStick, Constants.kCargoIntakeDepotHeight))  { setTarget(CargoDeployPositionEnum.DEPOT_LEVEL); }      
-        if (buttonBoard.getButton(Constants.kCargoIntakeRocketButton))      { setTarget(CargoDeployPositionEnum.ROCKET); }      
-        if (buttonBoard.getButton(Constants.kCargoIntakeCargoShipButton))   { setTarget(CargoDeployPositionEnum.CARGO_SHIP); }  
-        if (buttonBoard.getButton(Constants.kDefenseButton))                { setTarget(CargoDeployPositionEnum.RETRACTED); }
+        if (driverControls.getBoolean(DriverControlsEnum.CARGO_INTAKE_DEPOT_HEIGHT))  { setTarget(CargoDeployPositionEnum.DEPOT_LEVEL); }      
+        if (driverControls.getBoolean(DriverControlsEnum.CARGO_INTAKE_ROCKET_HEIGHT))      { setTarget(CargoDeployPositionEnum.ROCKET); }      
+        if (driverControls.getBoolean(DriverControlsEnum.CARGO_INTAKE_CARGO_HEIGHT))   { setTarget(CargoDeployPositionEnum.CARGO_SHIP); }  
+        if (driverControls.getBoolean(DriverControlsEnum.DEFENSE))                { setTarget(CargoDeployPositionEnum.RETRACTED); }
  
 
         // if in the ground state, turn off motor while riding on wheels
@@ -336,7 +334,7 @@ public class CargoIntake implements Loop
             setTarget(CargoDeployPositionEnum.RETRACTED);
         }
 
-        if (buttonBoard.getButton(Constants.kEmergecyZeroingAxis))                { deployMotorMaster.set(ControlMode.PercentOutput, zeroingPercentOutput); }
+        if (driverControls.getBoolean(DriverControlsEnum.EMERGENCY_ZEROING))                { deployMotorMaster.set(ControlMode.PercentOutput, zeroingPercentOutput); }
 
     }
 

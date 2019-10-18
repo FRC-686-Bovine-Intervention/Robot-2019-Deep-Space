@@ -1,6 +1,5 @@
 package frc.robot.lib.joystick;
 
-import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.command_status.DriveCommand;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.Util;
@@ -17,32 +16,6 @@ public class TmArcadeJoystick extends JoystickControlsBase
         return instance;
     }
 
-    public static int kLeftStick   =    0;
-    public static int kRightStick  =    1;
-
-    public static int kXAxis  =         0;
-    public static int kYAxis=           1;
-    public static int kZRotateAxis =    2;
-    public static int kSliderAxis =     3;
-
-    public static int kTriggerButton =      1;
-    public static int kBottomThumbButton =  2;
-    public static int kLeftThumbButton =    3;
-    public static int kRightThumbButton =   4;
-
-    // counting from inner (or thumb) side
-    public static int kTopButton1 =      5;
-    public static int kTopButton2 =      6;
-    public static int kTopButton3 =      7;
-    public static int kBottomButton3 =   8;
-    public static int kBottomButton2 =   9;
-    public static int kBottomButton1 =  10;
-    public static int kTopButton6 =     11;
-    public static int kTopButton5 =     12;
-    public static int kTopButton4 =     13;
-    public static int kBottomButton4 =  14;
-    public static int kBottomButton5 =  15;
-    public static int kBottomButton6 =  16;
 
 
     public TmArcadeJoystick() 
@@ -57,8 +30,8 @@ public class TmArcadeJoystick extends JoystickControlsBase
     {
 	    boolean squaredInputs = false;	// set to true to increase fine control while permitting full power
 
-    	throttle = -mStick[kLeftStick].getRawAxis(kYAxis);
-        turn     = +mStick[kLeftStick].getRawAxis(kXAxis);
+    	throttle = -mStick[kLeftStick].getRawAxis(ThrustMasterConstants.kYAxis);
+        turn     = +mStick[kLeftStick].getRawAxis(ThrustMasterConstants.kXAxis);
  
         DriveCommand signal = throttleTurnToDriveCommand(throttle, turn);
 
@@ -152,10 +125,10 @@ public class TmArcadeJoystick extends JoystickControlsBase
             for (int stickNum = kLeftStick; stickNum <= kRightStick; stickNum++)
             {
                 String stickName = (stickNum == kLeftStick ? "LStick/" : "RStick/");
-	    		put("TmJoystick/" + stickName + "xAxis", mStick[stickNum].getRawAxis(kXAxis));
-                put("TmJoystick/" + stickName + "yAxis", mStick[stickNum].getRawAxis(kYAxis));
-	    		put("TmJoystick/" + stickName + "rotate", mStick[stickNum].getRawAxis(kZRotateAxis));
-                put("TmJoystick/" + stickName + "slider", mStick[stickNum].getRawAxis(kSliderAxis));
+	    		put("TmJoystick/" + stickName + "xAxis", mStick[stickNum].getRawAxis(ThrustMasterConstants.kXAxis));
+                put("TmJoystick/" + stickName + "yAxis", mStick[stickNum].getRawAxis(ThrustMasterConstants.kYAxis));
+	    		put("TmJoystick/" + stickName + "rotate", mStick[stickNum].getRawAxis(ThrustMasterConstants.kZRotateAxis));
+                put("TmJoystick/" + stickName + "slider", mStick[stickNum].getRawAxis(ThrustMasterConstants.kSliderAxis));
                 int buttons = 0;
                 for (int button=1; button<=16; button++)
                 {

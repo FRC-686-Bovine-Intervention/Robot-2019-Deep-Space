@@ -57,56 +57,22 @@ public class Constants extends ConstantsBase {
     public static int kHatchGrabChannel =           5;
 
 
-    // Joystick Control Constants
-    public static int kXboxButtonA = 1;
-    public static int kXboxButtonB = 2;
-    public static int kXboxButtonX = 3;
-    public static int kXboxButtonY = 4;
-    public static int kXboxButtonLB = 5;
-    public static int kXboxButtonRB = 6;
+ 
+ 
 
-    public static int kXboxLStickXAxis = 0;
-    public static int kXboxLStickYAxis = 1;
-    public static int kXboxLTriggerAxis = 2;
-    public static int kXboxRTriggerAxis = 3;
-    public static int kXboxRStickXAxis = 4;
-    public static int kXboxRStickYAxis = 5;
 
     // // Driver Joystick Configuration    
-    // public static int kHatchDeployButton =      kXboxButtonRB;
-    // public static int kHatchShootAxis =         kXboxRTriggerAxis;  
-    // public static int kCargoIntakeButton =      kXboxButtonLB;
-    // public static int kCargoOuttakeAxis =       kXboxLTriggerAxis;
-    // public static int kVisionAssistanceButton = kXboxButtonA;
-    // public static int kQuickTurnButton =        kXboxButtonY; // bogus setting to make TriggerDrive Joysticks happy
-    // public static int kCargoIntakeDepotHeight = kXboxButtonX;
-    // public static int kHumanStationBttn = kXboxButtonB;
+    // public static int kHatchDeployButton =      XboxConstants.kXboxButtonRB;
+    // public static int kHatchShootAxis =         XboxConstants.kXboxRTriggerAxis;  
+    // public static int kCargoIntakeButton =      XboxConstants.kXboxButtonLB;
+    // public static int kCargoOuttakeAxis =       XboxConstants.kXboxLTriggerAxis;
+    // public static int kVisionAssistanceButton = XboxConstants.kXboxButtonA;
+    // public static int kQuickTurnButton =        XboxConstants.kXboxButtonY; // bogus setting to make TriggerDrive Joysticks happy
+    // public static int kCargoIntakeDepotHeight = XboxConstants.kXboxButtonX;
+    // public static int kHumanStationBttn = XboxConstants.kXboxButtonB;
 
-    // Driver Joystick Configuration    
-    public static int kHatchDeployButtonStick =     TmArcadeJoystick.kRightStick;
-    public static int kHatchDeployButton =          TmArcadeJoystick.kBottomThumbButton;
-    public static int kHatchShootAxisStick =        TmArcadeJoystick.kRightStick;  
-    public static int kHatchShootAxis =             TmArcadeJoystick.kTriggerButton;  
-    public static int kCargoIntakeButtonStick =     TmArcadeJoystick.kLeftStick;
-    public static int kCargoIntakeButton =          TmArcadeJoystick.kBottomThumbButton;
-    public static int kCargoOuttakeAxisStick =      TmArcadeJoystick.kLeftStick;
-    public static int kCargoOuttakeAxis =           TmArcadeJoystick.kTriggerButton;
-    public static int kVisionAssistanceButtonStick =TmArcadeJoystick.kLeftStick;
-    public static int kVisionAssistanceButton =     TmArcadeJoystick.kLeftThumbButton;
-    public static int kQuickTurnButtonStick =       TmArcadeJoystick.kLeftStick; // bogus setting to make TriggerDrive Joysticks happy
-    public static int kQuickTurnButton =            99; // bogus setting to make TriggerDrive Joysticks happy
-    public static int kCargoIntakeDepotHeightStick =TmArcadeJoystick.kLeftStick;
-    public static int kCargoIntakeDepotHeight =     TmArcadeJoystick.kRightThumbButton;
-    public static int kHumanStationBttnStick =      TmArcadeJoystick.kLeftStick;            // not used
-    public static int kHumanStationBttn =           TmArcadeJoystick.kRightThumbButton;     // not used
-
-    public static enum ControlTypeEnum {
-        DEFAULT,TYLER,BEN;
-    }
-
-    public static ControlTypeEnum kControlType = ControlTypeEnum.DEFAULT;
-
-
+ 
+ 
     // Operator Button Board Configuration
     public static int kCargoIntakeRocketButton =    ButtonBoard.kButtonBoardB;
     public static int kCargoIntakeCargoShipButton = ButtonBoard.kButtonBoardA;
@@ -114,8 +80,7 @@ public class Constants extends ConstantsBase {
     public static int kClimbingStartButton =        ButtonBoard.kButtonBoardLB;
     public static int kClimbingExtendButton =       ButtonBoard.kButtonBoardX;
     public static int kClimbingRetractButton =      ButtonBoard.kButtonBoardY;
-    public static int kControlsReverseButton =      ButtonBoard.kButtonBoardSL;
-    public static int kEmergecyZeroingAxis =        ButtonBoard.kButtonBoardSR;
+     public static int kEmergencyZeroingAxis =        ButtonBoard.kButtonBoardSR;
    
     
 

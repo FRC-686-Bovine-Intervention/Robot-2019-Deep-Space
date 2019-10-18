@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.CargoIntake.CargoDeployPositionEnum;
 import frc.robot.CargoIntake.CargoDeployStateEnum;
 import frc.robot.command_status.DriveCommand;
-import frc.robot.lib.joystick.ButtonBoard;
+import frc.robot.lib.joystick.DriverControls;
+import frc.robot.lib.joystick.DriverControlsEnum;
 import frc.robot.lib.sensors.Pigeon;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.Util;
@@ -30,7 +31,7 @@ public class Climber implements Loop
     public VictorSPX climberDriveMotor;
     public CargoIntake arm = CargoIntake.getInstance();
     public ClimberCylinders cylinders = ClimberCylinders.getInstance();
-    public ButtonBoard buttonBoard = ButtonBoard.getInstance();
+    public DriverControls driverControls = DriverControls.getInstance();
     public double pushUpThresholdLevel2 = -5;
     public double pushUpThresholdLevel3 = 5;
     public double level2ChangeAngleStartTime;
@@ -138,7 +139,7 @@ public class Climber implements Loop
                     // if climb button is pressed a 2nd time, move on to Level2
                     climberState = ClimberStateEnum.LEVEL2_ARMS_ON_PLATFORM;
                 }
-                if (buttonBoard.getButton(Constants.kClimbingExtendButton))
+                if (driverControls.getBoolean(DriverControlsEnum.CLIMB_EXTEND))
                 {
                     climberState = ClimberStateEnum.LEVEL3_CLIMB;
                 }
@@ -157,7 +158,7 @@ public class Climber implements Loop
                     arm.setTarget(CargoDeployPositionEnum.RETRACTED);
                     startOver();   
                 }
-                if (buttonBoard.getButton(Constants.kClimbingExtendButton))
+                if (driverControls.getBoolean(DriverControlsEnum.CLIMB_EXTEND))
                 {
                     climberState = ClimberStateEnum.LEVEL2_CLIMB;
                     level2LastTimer = Timer.getFPGATimestamp();
@@ -268,7 +269,7 @@ public class Climber implements Loop
                 arm.turnOffSoftLimits(); // turn of soft limits so we can do a pushup
                 arm.setTarget(CargoDeployPositionEnum.PUSHUP);    // push arm past soft limit to hard limit
                 
-                if (buttonBoard.getButton(Constants.kClimbingRetractButton))
+                if (driverControls.getBoolean(DriverControlsEnum.CLIMB_RETRACT))
                 {
                     startRetractTime = currentTime;
                     climberState = ClimberStateEnum.RETRACT_CYLINDERS;

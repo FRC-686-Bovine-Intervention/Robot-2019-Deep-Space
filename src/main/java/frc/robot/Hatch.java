@@ -3,11 +3,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.lib.joystick.ButtonBoard;
-import frc.robot.lib.joystick.JoystickControlsBase;
+import frc.robot.lib.joystick.DriverControls;
+import frc.robot.lib.joystick.DriverControlsEnum;
 import frc.robot.lib.joystick.SelectedJoystick;
-import frc.robot.lib.joystick.TmArcadeJoystick;
-import frc.robot.lib.joystick.TmTankJoystick;
-import frc.robot.lib.joystick.TmTwoStickJoystick;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.FallingEdgeDetector;
 import frc.robot.lib.util.RisingEdgeDetector;
@@ -24,6 +22,7 @@ public class Hatch implements Loop {
     public Solenoid hatchExtendSolenoid;
     private double mStartTime;
     private double mTimeToWait = 0.25;
+    DriverControls driverControls = DriverControls.getInstance();
     public RisingEdgeDetector grabButtonRisingEdgeDetector = new RisingEdgeDetector();
     public FallingEdgeDetector grabButtonFallingEdgeDetector = new FallingEdgeDetector();
     public RisingEdgeDetector extendButtonRisingEdgeDetector = new RisingEdgeDetector();
@@ -66,19 +65,18 @@ public class Hatch implements Loop {
 
     boolean drivingHatch;
 
+
     @Override
     public void onLoop() {
         drivingHatch = !SelectedJoystick.getInstance().getDrivingCargo();
 
-        JoystickControlsBase controls = TmTwoStickJoystick.getInstance();
-        dBtnIsPushed = buttonBoard.getButton(Constants.kDefenseButton);
+        dBtnIsPushed = driverControls.getBoolean(DriverControlsEnum.DEFENSE);
 
-        grabBtnIsPushed = controls.getButton(Constants.kHatchDeployButtonStick, Constants.kHatchDeployButton) && drivingHatch;
+        grabBtnIsPushed = driverControls.getBoolean(DriverControlsEnum.HATCH_DEPLOY) && drivingHatch;
         grabButtonPush = grabButtonRisingEdgeDetector.update(grabBtnIsPushed);
         grabButtonRelease = grabButtonFallingEdgeDetector.update(grabBtnIsPushed);
 
-        // extendButton = controls.getButton(Constants.kHatchShootAxisStick, Constants.kHatchShootAxis) && drivingHatch;
-        extendButton = getHatchDeploy() && drivingHatch;
+        extendButton = driverControls.getBoolean(DriverControlsEnum.HATCH_SHOOT) && drivingHatch;
         extendButtonPush = extendButtonRisingEdgeDetector.update(extendButton);
         extendButtonRelease = extendButtonFallingEdgeDetector.update(extendButton);
 
@@ -174,18 +172,7 @@ public class Hatch implements Loop {
         state = _newState;
     }
 
-    public boolean getHatchDeploy()
-    {
-        JoystickControlsBase controls = TmTwoStickJoystick.getInstance();
-
-        switch (Constants.kControlType)
-        {
-            case DEFAULT:
-            default:
-                return controls.getButton(Constants.kHatchShootAxisStick, Constants.kHatchShootAxis);
-        }
-    }
-
+ 
     private final DataLogger logger = new DataLogger() {
         @Override
         public void log() {
