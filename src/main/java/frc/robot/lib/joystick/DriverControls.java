@@ -1,7 +1,9 @@
 package frc.robot.lib.joystick;
 
+import frc.robot.CargoIntake;
+import frc.robot.CargoIntake.CargoDeployPositionEnum;
 import frc.robot.SmartDashboardInteractions;
-
+import frc.robot.lib.util.RisingEdgeDetector;
 
 
 public class DriverControls
@@ -15,7 +17,7 @@ public class DriverControls
 
     public enum SchemeEnum 
     {
-       // XBOX("XBox"),
+        XBOX("XBox"),
         THRUSTMASTER("ThrustMaster"),
         MICHAEL("Michael"),
         TYLER("Tyler"),				
@@ -48,12 +50,19 @@ public class DriverControls
         controlScheme = SmartDashboardInteractions.getInstance().getDriverControlsScheme();
     }
 
+    public RisingEdgeDetector grabButtonRisingEdgeDetector = new RisingEdgeDetector();
+    
+    boolean riseEdgeDetect = false;
+    boolean oldEdgeDetect = false;
+    
     public boolean getBoolean( DriverControlsEnum _control ) 
     {
         SelectedJoystick controls = SelectedJoystick.getInstance();
         ButtonBoard buttonBoard = ButtonBoard.getInstance();
-
-
+        
+        oldEdgeDetect = riseEdgeDetect;
+        riseEdgeDetect = grabButtonRisingEdgeDetector.update(controls.getPOV(ThrustMasterConstants.kLeftStick) == 180);
+        
         switch (controlScheme)  // control scheme selected in SmartDashboard
         {
             case XBOX:
@@ -105,9 +114,9 @@ public class DriverControls
                     case VISION_ASSIST:                 return controls.getButton(ThrustMasterConstants.kLeftStick,  ThrustMasterConstants.kLeftThumbButton);
                     case HATCH_DEPLOY:                  return controls.getPOV(ThrustMasterConstants.kRightStick) == 180;
                     case HATCH_SHOOT:                   return controls.getPOV(ThrustMasterConstants.kRightStick) == 0;
-                    case CARGO_INTAKE:                  return controls.getPOV(ThrustMasterConstants.kLeftStick) == 180;
+                    case CARGO_INTAKE:                  return riseEdgeDetect && CargoIntake.getInstance().getTarget() != CargoDeployPositionEnum.GROUND;
                     case CARGO_OUTTAKE:                 return controls.getPOV(ThrustMasterConstants.kLeftStick) == 0;
-                    case CARGO_INTAKE_DEPOT_HEIGHT:     return controls.getButton(ThrustMasterConstants.kLeftStick,  ThrustMasterConstants.kTriggerButton);
+                    case CARGO_INTAKE_DEPOT_HEIGHT:     return oldEdgeDetect && CargoIntake.getInstance().getTarget() == CargoDeployPositionEnum.GROUND;
                     case CARGO_INTAKE_ROCKET_HEIGHT:    return controls.getButton(ThrustMasterConstants.kLeftStick, ThrustMasterConstants.kRightThumbButton);
                     case CARGO_INTAKE_CARGO_HEIGHT:     return controls.getButton(ThrustMasterConstants.kLeftStick, ThrustMasterConstants.kBottomThumbButton);
                     case DEFENSE:                       return controls.getButton(ThrustMasterConstants.kRightStick, ThrustMasterConstants.kTriggerButton);
