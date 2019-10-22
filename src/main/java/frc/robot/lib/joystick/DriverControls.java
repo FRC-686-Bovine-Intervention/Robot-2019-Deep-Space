@@ -112,8 +112,8 @@ public class DriverControls
                 switch (_control)
                 {
                     case VISION_ASSIST:                 return controls.getButton(ThrustMasterConstants.kLeftStick,  ThrustMasterConstants.kLeftThumbButton);
-                    case HATCH_DEPLOY:                  return controls.getPOV(ThrustMasterConstants.kRightStick) == 180;
-                    case HATCH_SHOOT:                   return controls.getPOV(ThrustMasterConstants.kRightStick) == 0;
+                    case HATCH_DEPLOY:                  return controls.getPOV(ThrustMasterConstants.kRightStick) == 45 || controls.getPOV(ThrustMasterConstants.kRightStick) == 315 || controls.getPOV(ThrustMasterConstants.kRightStick) == 0;
+                    case HATCH_SHOOT:                   return controls.getPOV(ThrustMasterConstants.kRightStick) <= 225 && controls.getPOV(ThrustMasterConstants.kRightStick) >= 135;
                     case CARGO_INTAKE:                  return riseEdgeDetect && CargoIntake.getInstance().getTarget() != CargoDeployPositionEnum.GROUND;
                     case CARGO_OUTTAKE:                 return controls.getPOV(ThrustMasterConstants.kLeftStick) == 0;
                     case CARGO_INTAKE_DEPOT_HEIGHT:     return oldEdgeDetect && CargoIntake.getInstance().getTarget() == CargoDeployPositionEnum.GROUND;
