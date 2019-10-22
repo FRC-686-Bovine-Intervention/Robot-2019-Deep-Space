@@ -14,7 +14,7 @@ public class TmArcadeDriveSteering extends SteeringBase
     DeadbandNonLinearity deadbandNonLinearity;
 	double throttle;
 	double turn;
-    DriveCommand driveCmd;
+    DriveCommand driveCmd = new DriveCommand(0,0); 
 
     public TmArcadeDriveSteering(JoystickBase _stick, DeadbandNonLinearity _deadbandNonLinearity) 
     {

@@ -14,7 +14,7 @@ public class TmTankDriveSteering extends SteeringBase
     DeadbandNonLinearity deadbandNonLinearity;
     double lSpeed;
     double rSpeed;
-    DriveCommand driveCmd;
+    DriveCommand driveCmd = new DriveCommand(0,0); 
 
     public TmTankDriveSteering(JoystickBase _lStick, JoystickBase _rStick, DeadbandNonLinearity _deadbandNonLinearity) 
     {

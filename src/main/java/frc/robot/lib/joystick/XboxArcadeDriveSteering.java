@@ -15,7 +15,7 @@ public class XboxArcadeDriveSteering extends SteeringBase
     DeadbandNonLinearity deadbandNonLinearity;
     double throttle; 
     double turn;
-    DriveCommand driveCmd;
+    DriveCommand driveCmd = new DriveCommand(0,0); 
 
     public XboxArcadeDriveSteering(JoystickBase _controls, DeadbandNonLinearity _deadbandNonLinearity) 
     {

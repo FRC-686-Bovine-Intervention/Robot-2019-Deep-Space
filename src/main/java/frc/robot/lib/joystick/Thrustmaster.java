@@ -44,7 +44,7 @@ public class Thrustmaster extends JoystickBase
         @Override
         public void log()
         {
-            String name = "Thrustmaster[" + port + "]/";
+            String name = "Thrustmaster" + port + "/";
             put(name + "xAxis", getAxis(kXAxis));
             put(name + "yAxis", getAxis(kYAxis));
             put(name + "zAxis", getAxis(kZRotateAxis));

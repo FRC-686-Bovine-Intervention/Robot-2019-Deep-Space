@@ -16,7 +16,7 @@ public class XboxTriggerDriveSteering extends SteeringBase
     boolean quickTurn = false;
     double throttle; 
     double turn;
-    DriveCommand driveCmd;
+    DriveCommand driveCmd = new DriveCommand(0,0); 
 
     public XboxTriggerDriveSteering(JoystickBase _controls, DeadbandNonLinearity _deadbandNonLinearity) 
     {

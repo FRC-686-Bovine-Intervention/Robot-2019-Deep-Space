@@ -41,6 +41,17 @@ public class SelectedDriverControlsReversible
     public boolean getDrivingCargo() { return driverControls.getDrivingCargo(); }
     public boolean joystickActive() { return driverControls.joystickActive(); }
 
-    public DataLogger getLogger() { return driverControls.getLogger(); }
 
+
+
+    public DataLogger getLogger() { return logger; }
+    
+    private final DataLogger logger = new DataLogger()
+    {
+        @Override
+        public void log()
+        {
+            driverControls.getLogger().log();
+        }
+    };        
 }

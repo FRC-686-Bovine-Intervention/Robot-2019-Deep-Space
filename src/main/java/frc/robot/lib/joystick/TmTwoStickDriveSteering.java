@@ -14,7 +14,7 @@ public class TmTwoStickDriveSteering extends SteeringBase
     double throttle;
     double turn;
     DeadbandNonLinearity deadbandNonLinearity;
-    DriveCommand driveCmd;
+    DriveCommand driveCmd = new DriveCommand(0,0); 
 
     public TmTwoStickDriveSteering(JoystickBase _lStick, JoystickBase _rStick, DeadbandNonLinearity _deadbandNonLinearity) 
     {

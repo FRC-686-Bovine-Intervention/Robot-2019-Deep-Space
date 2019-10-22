@@ -101,10 +101,10 @@ public class DriverControlsReversibleThrustmaster extends ReversibleDriverContro
         @Override
         public void log()
         {
-            lStick.getLogger().log();
-            rStick.getLogger().log();
-            buttonBoard.getLogger().log();
-            steeringControls.getLogger().log();
+            if (lStick != null)             { lStick.getLogger().log(); }
+            if (rStick != null)             { rStick.getLogger().log(); }
+            if (buttonBoard != null)        { buttonBoard.getLogger().log(); }
+            if (steeringControls != null)   { steeringControls.getLogger().log(); }
         }
     };    
 

@@ -20,8 +20,8 @@ public class TmReversibleArcadeDriveSteering extends ReversibleSteeringBase
 	double rTurn;
 	double lThrottle;
 	double lTurn;
-    ThrottleTurn throttleTurn;
-    DriveCommand driveCmd;
+    ThrottleTurn throttleTurn = new ThrottleTurn();
+    DriveCommand driveCmd = new DriveCommand(0,0); 
 
     boolean usingLeftStick = false;     // default this way so autonomous uses hatch camera
 	double kCrossoverThreshold = 0.2;

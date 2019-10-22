@@ -15,7 +15,7 @@ public class XboxTankDriveSteering extends SteeringBase
     DeadbandNonLinearity deadbandNonLinearity;
     double lSpeed;
     double rSpeed;
-    DriveCommand driveCmd;
+    DriveCommand driveCmd = new DriveCommand(0,0); 
 
     public XboxTankDriveSteering(JoystickBase _controls, DeadbandNonLinearity _deadbandNonLinearity) 
     {

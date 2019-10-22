@@ -20,7 +20,7 @@ public class XboxCheesyTriggerDriveSteering extends SteeringBase
     double kTurnSensitivity;
     double throttle; 
     double turn;
-    DriveCommand driveCmd;
+    DriveCommand driveCmd = new DriveCommand(0,0); 
 
     public XboxCheesyTriggerDriveSteering(JoystickBase _controls, DeadbandNonLinearity _deadbandNonLinearity, double _kTurnSensitivity) 
     {

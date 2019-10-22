@@ -91,9 +91,9 @@ public class DriverControlsThrustmaster extends DriverControlsBase
         @Override
         public void log()
         {
-            stick.getLogger().log();
-            buttonBoard.getLogger().log();
-            steeringControls.getLogger().log();
+            if (stick != null)              { stick.getLogger().log(); }
+            if (buttonBoard != null)        { buttonBoard.getLogger().log(); }
+            if (steeringControls != null)   { steeringControls.getLogger().log(); }
         }
     };        
 }
