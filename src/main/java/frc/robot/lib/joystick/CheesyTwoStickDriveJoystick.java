@@ -33,9 +33,9 @@ public class CheesyTwoStickDriveJoystick extends JoystickControlsBase
     
     public DriveCommand getDriveCommand()
     {
-    	double throttle = -mStick[0].getRawAxis(XboxConstants.kXboxLStickYAxis);
-        double turn     = +mStick[0].getRawAxis(XboxConstants.kXboxRStickXAxis);
-        boolean isQuickTurn = mStick[0].getRawButton(XboxConstants.kXboxButtonRB);
+    	double throttle = -mStick[0].getRawAxis(XboxConstants.kLStickYAxis);
+        double turn     = +mStick[0].getRawAxis(XboxConstants.kRStickXAxis);
+        boolean isQuickTurn = mStick[0].getRawButton(XboxConstants.kButtonRB);
         
         throttle = handleDeadband(throttle, kThrottleDeadband);
         turn     = handleDeadband(turn,     kturnDeadband);

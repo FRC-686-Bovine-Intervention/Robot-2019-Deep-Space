@@ -24,10 +24,10 @@ public class ReversibleArcadeDriveJoystick extends JoystickControlsBase
 	
 	public DriveCommand getDriveCommand()
 	{
-		double rThrottle = -mStick[0].getRawAxis(XboxConstants.kXboxRStickYAxis);
-		double rTurn     = -mStick[0].getRawAxis(XboxConstants.kXboxRStickXAxis);
-		double lThrottle = -mStick[0].getRawAxis(XboxConstants.kXboxLStickYAxis);
-		double lTurn     = -mStick[0].getRawAxis(XboxConstants.kXboxLStickXAxis);
+		double rThrottle = -mStick[0].getRawAxis(XboxConstants.kRStickYAxis);
+		double rTurn     = -mStick[0].getRawAxis(XboxConstants.kRStickXAxis);
+		double lThrottle = -mStick[0].getRawAxis(XboxConstants.kLStickYAxis);
+		double lTurn     = -mStick[0].getRawAxis(XboxConstants.kLStickXAxis);
 
 		double throttle = lThrottle;
 		double turn = lTurn;
@@ -75,10 +75,10 @@ public class ReversibleArcadeDriveJoystick extends JoystickControlsBase
 		// in autonomous, we want to check if driver is attempting to override autonomous
 		// by moving joystick.  This is the function that does this.
 		
-		double rThrottle = -mStick[0].getRawAxis(XboxConstants.kXboxRStickYAxis);
-		double rTurn     = -mStick[0].getRawAxis(XboxConstants.kXboxRStickXAxis);
-		double lThrottle = -mStick[0].getRawAxis(XboxConstants.kXboxLStickYAxis);
-		double lTurn     = -mStick[0].getRawAxis(XboxConstants.kXboxLStickXAxis);
+		double rThrottle = -mStick[0].getRawAxis(XboxConstants.kRStickYAxis);
+		double rTurn     = -mStick[0].getRawAxis(XboxConstants.kRStickXAxis);
+		double lThrottle = -mStick[0].getRawAxis(XboxConstants.kLStickYAxis);
+		double lTurn     = -mStick[0].getRawAxis(XboxConstants.kLStickXAxis);
 
         leftStickActive =  ((Math.abs(lThrottle) >= kCrossoverThreshold) || (Math.abs(lTurn) >= kCrossoverThreshold));
         rightStickActive = ((Math.abs(rThrottle) >= kCrossoverThreshold) || (Math.abs(rTurn) >= kCrossoverThreshold));

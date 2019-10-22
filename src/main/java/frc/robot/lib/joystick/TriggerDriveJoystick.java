@@ -26,7 +26,7 @@ public class TriggerDriveJoystick extends JoystickControlsBase
 	    boolean squaredTrigger = false;
 	    boolean squaredTurn    = false;
 	    
-    	double throttle = mStick[0].getRawAxis(XboxConstants.kXboxRTriggerAxis) - mStick[0].getRawAxis(XboxConstants.kXboxLTriggerAxis);
+    	double throttle = mStick[0].getRawAxis(XboxConstants.kRTriggerAxis) - mStick[0].getRawAxis(XboxConstants.kLTriggerAxis);
         double turn     = mStick[0].getX();
         boolean isQuickTurn = DriverControls.getInstance().getBoolean(DriverControlsEnum.QUICK_TURN);
     		    
