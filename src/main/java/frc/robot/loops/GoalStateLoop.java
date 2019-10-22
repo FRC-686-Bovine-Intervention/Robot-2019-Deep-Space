@@ -9,7 +9,7 @@ import frc.robot.Constants;
 import frc.robot.command_status.GoalStates;
 import frc.robot.command_status.GoalStates.GoalState;
 import frc.robot.command_status.RobotState;
-import frc.robot.lib.joystick.SelectedJoystick;
+import frc.robot.lib.joystick.SelectedDriverControlsReversible;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.Pose;
 import frc.robot.lib.util.Vector2d;
@@ -67,7 +67,6 @@ public class GoalStateLoop implements Loop
 	}
 
 	double hAngle, vAngle, hWidth, vWidth, range, horizontalDistance;
-	SelectedJoystick selectedJoystick = SelectedJoystick.getInstance();
 
 	private void updateGoalLocations()
 	{
@@ -81,7 +80,7 @@ public class GoalStateLoop implements Loop
 		double kCameraPitchRad = Constants.kHatchCameraPitchRad;
 		double kCameraPoseZ = Constants.kHatchCameraPoseZ;
 		
-		if (selectedJoystick.getDrivingCargo())
+		if (SelectedDriverControlsReversible.getInstance().getDrivingCargo())
 		{
 			kCameraPoseThetaRad = 0.0;
 			kCameraPitchRad = Constants.kCargoCameraPitchRad;

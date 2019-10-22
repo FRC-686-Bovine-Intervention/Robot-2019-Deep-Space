@@ -13,9 +13,8 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import frc.robot.lib.joystick.DriverControls;
 import frc.robot.lib.joystick.DriverControlsEnum;
-import frc.robot.lib.joystick.SelectedJoystick;
+import frc.robot.lib.joystick.SelectedDriverControlsReversible;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.FallingEdgeDetector;
 import frc.robot.lib.util.PulseTrain;
@@ -43,7 +42,6 @@ public class CargoIntake implements Loop
     public VictorSPX intakeMotor;
     public DigitalInput ballDetectSensor;
 
-    public DriverControls driverControls = DriverControls.getInstance();
     public RisingEdgeDetector  intakeButtonRisingEdgeDetector = new RisingEdgeDetector();
     public FallingEdgeDetector intakeButtonFallingEdgeDetector = new FallingEdgeDetector();
     public RisingEdgeDetector onDefenseButtonPress = new RisingEdgeDetector();
@@ -233,12 +231,12 @@ public class CargoIntake implements Loop
     {
         getLimitSwitches();
 
-        drivingCargo = SelectedJoystick.getInstance().getDrivingCargo();
+        drivingCargo = SelectedDriverControlsReversible.getInstance().getDrivingCargo();
 
-        intakeButton = driverControls.getBoolean(DriverControlsEnum.CARGO_INTAKE) && drivingCargo;
+        intakeButton = SelectedDriverControlsReversible.getInstance().getBoolean(DriverControlsEnum.CARGO_INTAKE) && drivingCargo;
         intakeButtonPress = intakeButtonRisingEdgeDetector.update(intakeButton);
         intakeButtonUnpress = intakeButtonFallingEdgeDetector.update(intakeButton);
-        outtakeButton = driverControls.getBoolean(DriverControlsEnum.CARGO_OUTTAKE) && drivingCargo;
+        outtakeButton = SelectedDriverControlsReversible.getInstance().getBoolean(DriverControlsEnum.CARGO_OUTTAKE) && drivingCargo;
 
         runDeploy();
         runIntake();
@@ -247,7 +245,7 @@ public class CargoIntake implements Loop
 
     public void runDeploy()
     {
-        climbingStartEdgeDetector.update(driverControls.getBoolean(DriverControlsEnum.CLIMB_PREPARE));
+        climbingStartEdgeDetector.update(SelectedDriverControlsReversible.getInstance().getBoolean(DriverControlsEnum.CLIMB_PREPARE));
 
         switch (state) 
         {
@@ -287,7 +285,7 @@ public class CargoIntake implements Loop
             // Do nothing in this file -- see Climber.java
 
             // can get out of climbing mode only by hitting retract button
-            if (driverControls.getBoolean(DriverControlsEnum.DEFENSE))
+            if (SelectedDriverControlsReversible.getInstance().getBoolean(DriverControlsEnum.DEFENSE))
             {
                 state = CargoDeployStateEnum.OPERATIONAL;
                 Climber.startOver(); // emergency retract cylinders
@@ -306,10 +304,10 @@ public class CargoIntake implements Loop
         
         // get current target angle from driver & operator
         if (intakeButtonPress)                                              { setTarget(CargoDeployPositionEnum.GROUND); }      // go to ground on driver button, not operator's button board
-        if (driverControls.getBoolean(DriverControlsEnum.CARGO_INTAKE_DEPOT_HEIGHT))  { setTarget(CargoDeployPositionEnum.DEPOT_LEVEL); }      
-        if (driverControls.getBoolean(DriverControlsEnum.CARGO_INTAKE_ROCKET_HEIGHT))      { setTarget(CargoDeployPositionEnum.ROCKET); }      
-        if (driverControls.getBoolean(DriverControlsEnum.CARGO_INTAKE_CARGO_HEIGHT))   { setTarget(CargoDeployPositionEnum.CARGO_SHIP); }  
-        if (driverControls.getBoolean(DriverControlsEnum.DEFENSE))                { setTarget(CargoDeployPositionEnum.RETRACTED); }
+        if (SelectedDriverControlsReversible.getInstance().getBoolean(DriverControlsEnum.CARGO_INTAKE_DEPOT_HEIGHT))  { setTarget(CargoDeployPositionEnum.DEPOT_LEVEL); }      
+        if (SelectedDriverControlsReversible.getInstance().getBoolean(DriverControlsEnum.CARGO_INTAKE_ROCKET_HEIGHT))      { setTarget(CargoDeployPositionEnum.ROCKET); }      
+        if (SelectedDriverControlsReversible.getInstance().getBoolean(DriverControlsEnum.CARGO_INTAKE_CARGO_HEIGHT))   { setTarget(CargoDeployPositionEnum.CARGO_SHIP); }  
+        if (SelectedDriverControlsReversible.getInstance().getBoolean(DriverControlsEnum.DEFENSE))                { setTarget(CargoDeployPositionEnum.RETRACTED); }
  
 
         // if in the ground state, turn off motor while riding on wheels
@@ -334,7 +332,10 @@ public class CargoIntake implements Loop
             setTarget(CargoDeployPositionEnum.RETRACTED);
         }
 
-        if (driverControls.getBoolean(DriverControlsEnum.EMERGENCY_ZEROING))                { deployMotorMaster.set(ControlMode.PercentOutput, zeroingPercentOutput); }
+        if (SelectedDriverControlsReversible.getInstance().getBoolean(DriverControlsEnum.EMERGENCY_ZEROING))
+        { 
+            deployMotorMaster.set(ControlMode.PercentOutput, zeroingPercentOutput); 
+        }
 
     }
 

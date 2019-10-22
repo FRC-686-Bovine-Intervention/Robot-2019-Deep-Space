@@ -2,10 +2,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.lib.joystick.ButtonBoard;
-import frc.robot.lib.joystick.DriverControls;
+import frc.robot.lib.joystick.SelectedDriverControlsReversible;
 import frc.robot.lib.joystick.DriverControlsEnum;
-import frc.robot.lib.joystick.SelectedJoystick;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.FallingEdgeDetector;
 import frc.robot.lib.util.RisingEdgeDetector;
@@ -22,12 +20,10 @@ public class Hatch implements Loop {
     public Solenoid hatchExtendSolenoid;
     private double mStartTime;
     private double mTimeToWait = 0.25;
-    DriverControls driverControls = DriverControls.getInstance();
     public RisingEdgeDetector grabButtonRisingEdgeDetector = new RisingEdgeDetector();
     public FallingEdgeDetector grabButtonFallingEdgeDetector = new FallingEdgeDetector();
     public RisingEdgeDetector extendButtonRisingEdgeDetector = new RisingEdgeDetector();
     public FallingEdgeDetector extendButtonFallingEdgeDetector = new FallingEdgeDetector();
-    public ButtonBoard buttonBoard = ButtonBoard.getInstance();
 
     public enum HatchStateEnum {
         INIT, ACQUIRE, PICKUP, HOLDHATCH, APPROACH, SCORE, RELEASE, DEFENSE;
@@ -68,7 +64,9 @@ public class Hatch implements Loop {
 
     @Override
     public void onLoop() {
-        drivingHatch = !SelectedJoystick.getInstance().getDrivingCargo();
+        SelectedDriverControlsReversible driverControls = SelectedDriverControlsReversible.getInstance();
+
+        drivingHatch = !driverControls.getDrivingCargo();
 
         dBtnIsPushed = driverControls.getBoolean(DriverControlsEnum.DEFENSE);
 

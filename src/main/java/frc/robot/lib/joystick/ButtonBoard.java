@@ -1,5 +1,6 @@
 package frc.robot.lib.joystick;
 
+import frc.robot.lib.util.DataLogger;
 
 public class ButtonBoard extends JoystickBase
 {
@@ -18,4 +19,20 @@ public class ButtonBoard extends JoystickBase
     {
         super(_port);
     }
+
+    public DataLogger getLogger() { return logger; }
+    
+    private final DataLogger logger = new DataLogger()
+    {
+        @Override
+        public void log()
+        {
+            int buttons = 0;
+            for (int button=1; button<=10; button++)
+            {
+                buttons |= (getButton(button) ? 1 : 0) << (button-1);
+            }
+            put("ButtonBoard/buttons", buttons);
+        }
+    };    
 }

@@ -18,9 +18,9 @@ import frc.robot.command_status.DriveCommand;
 import frc.robot.command_status.DriveState;
 import frc.robot.command_status.GoalStates;
 import frc.robot.command_status.RobotState;
-import frc.robot.lib.joystick.DriverControls;
 import frc.robot.lib.joystick.DriverControlsEnum;
-import frc.robot.lib.joystick.SelectedJoystick;
+import frc.robot.lib.joystick.SelectedDriverControls;
+import frc.robot.lib.joystick.SelectedDriverControlsReversible;
 import frc.robot.lib.sensors.Limelight;
 import frc.robot.lib.util.CrashTracker;
 import frc.robot.lib.util.DataLogController;
@@ -41,7 +41,7 @@ public class Robot extends TimedRobot {
 	PowerDistributionPanel pdp = new PowerDistributionPanel();
 
 	SmartDashboardInteractions smartDashboardInteractions = SmartDashboardInteractions.getInstance();
-	SelectedJoystick selectedJoystick = SelectedJoystick.getInstance();
+	SelectedDriverControlsReversible selectedDriverControls = SelectedDriverControlsReversible.getInstance();
 
 	RobotState robotState = RobotState.getInstance();
 	Drive drive = Drive.getInstance();
@@ -95,7 +95,7 @@ public class Robot extends TimedRobot {
 				loopController.register(Climber.getInstance());
 			}
 
-			selectedJoystick.update();
+            SelectedDriverControlsReversible.getInstance().setDriverControls( smartDashboardInteractions.getDriverControlsSelection() );
     		
     		// set datalogger and time info
     		TimeZone.setDefault(TimeZone.getTimeZone("America/New_York"));
@@ -112,6 +112,7 @@ public class Robot extends TimedRobot {
 			robotLogger.register(GoalStateLoop.getInstance().getGoalTracker().getLogger());
 			robotLogger.register(GoalStates.getInstance().getLogger());
 			robotLogger.register(VisionDriveAssistant.getInstance().getLogger());
+			robotLogger.register(SelectedDriverControlsReversible.getInstance().getLogger());
 			// robotLogger.register(Hatch.getInstance().getLogger());
 		
 			if (!PRACTICE_BOT)
@@ -228,7 +229,7 @@ public class Robot extends TimedRobot {
 			
 			CrashTracker.logAutoInit();
 			
-			selectedJoystick.update();
+            SelectedDriverControlsReversible.getInstance().setDriverControls( smartDashboardInteractions.getDriverControlsSelection() );
 			cargoCamera.autoInit();
 			hatchCamera.autoInit();
 	
@@ -264,7 +265,7 @@ public class Robot extends TimedRobot {
 	{
         if (operationalMode.get() == OperationalMode.OperationalModeEnum.AUTONOMOUS)
         {
-            if (selectedJoystick.joystickActive())
+            if (selectedDriverControls.joystickActive())
             {
                 // Driver just started using joystick.  Abandon autonomous
                 teleopInit();
@@ -299,9 +300,8 @@ public class Robot extends TimedRobot {
 		{
 			CrashTracker.logTeleopInit();
 			
-			// Select joystick control method
-            selectedJoystick.update();
-            DriverControls.getInstance().updateDriverControlScheme();
+            // Select joystick control method
+            SelectedDriverControlsReversible.getInstance().setDriverControls( smartDashboardInteractions.getDriverControlsSelection() );
 			cargoCamera.teleopInit();
 			hatchCamera.teleopInit();
 			
@@ -329,10 +329,12 @@ public class Robot extends TimedRobot {
 	{
 		try
 		{
-			boolean visionButton = DriverControls.getInstance().getBoolean(DriverControlsEnum.VISION_ASSIST);
+            SelectedDriverControlsReversible driverControls = SelectedDriverControlsReversible.getInstance();
+
+			boolean visionButton = driverControls.getBoolean(DriverControlsEnum.VISION_ASSIST);
 			boolean ledsActive = !ledsOnlyWhenActive || (ledsOnlyWhenActive && visionButton);
 
-			DriveCommand driveCmd = selectedJoystick.getDriveCommand();
+			DriveCommand driveCmd = selectedDriverControls.getDriveCommand();
 			driveCmd = visionDriveAssistant.assist(driveCmd, visionButton);
 
 			//modify drive controls based on buttons
@@ -344,7 +346,7 @@ public class Robot extends TimedRobot {
 				 cargoCamera.setLEDMode(Limelight.LedMode.kBlink);
 				 hatchCamera.setLEDMode(Limelight.LedMode.kBlink);
 			}
-			else if (selectedJoystick.getDrivingCargo() && ledsActive)
+			else if (driverControls.getDrivingCargo() && ledsActive)
 			{
 				cargoCamera.setLEDMode(Limelight.LedMode.kOn);
 				hatchCamera.setLEDMode(Limelight.LedMode.kOff);
@@ -363,7 +365,7 @@ public class Robot extends TimedRobot {
 			// change shuffleboard tabs
 			if(CargoIntake.getInstance().state != CargoIntake.CargoDeployStateEnum.CLIMBING)
 			{
-				if (selectedJoystick.getDrivingCargo())
+				if (driverControls.getDrivingCargo())
 				{
 					Shuffleboard.selectTab(cargoCamera.getTableName());     // select cargo camera tab in Shuffleboard
 				}

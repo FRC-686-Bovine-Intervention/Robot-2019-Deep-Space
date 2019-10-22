@@ -2,7 +2,7 @@ package frc.robot.command_status;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
-import frc.robot.lib.joystick.SelectedJoystick;
+import frc.robot.lib.joystick.SelectedDriverControlsReversible;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.InterpolatingDouble;
 import frc.robot.lib.util.InterpolatingTreeMap;
@@ -153,7 +153,7 @@ public class RobotState
 
 	public synchronized Pose getFieldToCamera(double timestamp) {
 		Pose robotToCamera = new Pose(Constants.kHatchCameraPoseX, Constants.kHatchCameraPoseY, Constants.kHatchCameraPoseThetaRad);
-		if (SelectedJoystick.getInstance().getDrivingCargo())
+		if (SelectedDriverControlsReversible.getInstance().getDrivingCargo())
 		{
 			robotToCamera = new Pose(Constants.kCargoCameraPoseX, Constants.kCargoCameraPoseY, Constants.kCargoCameraPoseThetaRad);
 		}
@@ -164,7 +164,7 @@ public class RobotState
 
 	public synchronized Pose getPredictedFieldToCamera(double _lookaheadTime) {
 		Pose robotToCamera = new Pose(Constants.kHatchCameraPoseX, Constants.kHatchCameraPoseY, Constants.kHatchCameraPoseThetaRad);
-		if (SelectedJoystick.getInstance().getDrivingCargo())
+		if (SelectedDriverControlsReversible.getInstance().getDrivingCargo())
 		{
 			robotToCamera = new Pose(Constants.kCargoCameraPoseX, Constants.kCargoCameraPoseY, Constants.kCargoCameraPoseThetaRad);
 		}
@@ -178,7 +178,7 @@ public class RobotState
 
 	public synchronized Pose getFieldToShooter(double timestamp) {
 		Pose robotToShooter = new Pose(0, 0, Math.PI);
-		if (SelectedJoystick.getInstance().getDrivingCargo())
+		if (SelectedDriverControlsReversible.getInstance().getDrivingCargo())
 		{
 			robotToShooter = new Pose(0, 0, 0);
 		}
@@ -190,7 +190,7 @@ public class RobotState
 
 	public synchronized Pose getPredictedFieldToShooter(double _lookaheadTime) {
 		Pose robotToShooter = new Pose(0, 0, Math.PI);
-		if (SelectedJoystick.getInstance().getDrivingCargo())
+		if (SelectedDriverControlsReversible.getInstance().getDrivingCargo())
 		{
 			robotToShooter = new Pose(0, 0, 0);
 		}

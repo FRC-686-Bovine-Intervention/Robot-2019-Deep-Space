@@ -1,5 +1,7 @@
 package frc.robot.lib.joystick;
 
+// A list of all driver controls to be mapped to joystick buttons
+
 public enum DriverControlsEnum {    // Controls Description
     VISION_ASSIST,                  // enable vision assistance
     HATCH_DEPLOY,                   // extend hatch mechanism, grab hatch panel when released 

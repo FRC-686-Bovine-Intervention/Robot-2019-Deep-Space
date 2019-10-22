@@ -6,9 +6,7 @@ import frc.robot.auto.AutoModeBase;
 import frc.robot.auto.modes.FieldDimensions;
 import frc.robot.auto.modes.HatchAutoChamps;
 import frc.robot.auto.modes.StandStillMode;
-import frc.robot.lib.joystick.DriverControls;
-import frc.robot.lib.joystick.JoystickControlsBase;
-import frc.robot.lib.joystick.TmReversibleArcadeDriveJoystick;
+import frc.robot.lib.joystick.*;
 import frc.robot.lib.util.Pose;
 
 /**
@@ -36,31 +34,20 @@ public class SmartDashboardInteractions
 
     public void initWithDefaults() 
     {
-    	joystickModeChooser = new SendableChooser<JoystickOption>();
-    	// joystickModeChooser.addOption(JoystickOption.ARCADE_DRIVE.name,        JoystickOption.ARCADE_DRIVE);
-    	//joystickModeChooser.setDefaultOption(JoystickOption.REVERSIBLE_ARCADE_DRIVE.toString(),        JoystickOption.REVERSIBLE_ARCADE_DRIVE);
-		// joystickModeChooser.addOption(JoystickOption.TRIGGER_DRIVE.name,        JoystickOption.TRIGGER_DRIVE);
-    	// joystickModeChooser.addOption(JoystickOption.TANK_DRIVE.name, 	      JoystickOption.TANK_DRIVE);
-     	// joystickModeChooser.addOption(JoystickOption.CHEESY_ARCADE_DRIVE.name,  JoystickOption.CHEESY_ARCADE_DRIVE);
-    	// joystickModeChooser.addOption(JoystickOption.CHEESY_TRIGGER_DRIVE.name, JoystickOption.CHEESY_TRIGGER_DRIVE);
-        // joystickModeChooser.addOption(JoystickOption.CHEESY_2STICK_DRIVE.name,  JoystickOption.CHEESY_2STICK_DRIVE);
-        joystickModeChooser.setDefaultOption(JoystickOption.THRUSTMASTER_REVERSIBLE_ARCADE_DRIVE.name,  JoystickOption.THRUSTMASTER_REVERSIBLE_ARCADE_DRIVE);
-        // joystickModeChooser.addOption(JoystickOption.THRUSTMASTER_ARCADE_DRIVE.name,  JoystickOption.THRUSTMASTER_ARCADE_DRIVE);
-        // joystickModeChooser.addOption(JoystickOption.THRUSTMASTER_TANK_DRIVE.name,  JoystickOption.THRUSTMASTER_TANK_DRIVE);
-        // joystickModeChooser.addOption(JoystickOption.THRUSTMASTER_2STICK_DRIVE.name,  JoystickOption.THRUSTMASTER_2STICK_DRIVE);
-    	SmartDashboard.putData("Joystick Chooser", joystickModeChooser);
+    	driverControlsChooser = new SendableChooser<DriverControlsOption>();
+    	driverControlsChooser.addOption(DriverControlsOption.XBOX_REVERSIBLE_ARCADE.toString(),        DriverControlsOption.XBOX_REVERSIBLE_ARCADE);
+        driverControlsChooser.setDefaultOption(DriverControlsOption.THRUSTMASTER_REVERSIBLE_ARCADE.name,  DriverControlsOption.THRUSTMASTER_REVERSIBLE_ARCADE);
+    	// driverControlsChooser.addOption(DriverControlsOption.ARCADE.name,        DriverControlsOption.ARCADE);
+		// driverControlsChooser.addOption(DriverControlsOption.TRIGGER.name,        DriverControlsOption.TRIGGER);
+    	// driverControlsChooser.addOption(DriverControlsOption.TANK.name, 	      DriverControlsOption.TANK);
+     	// driverControlsChooser.addOption(DriverControlsOption.CHEESY_ARCADE.name,  DriverControlsOption.CHEESY_ARCADE);
+    	// driverControlsChooser.addOption(DriverControlsOption.CHEESY_TRIGGER.name, DriverControlsOption.CHEESY_TRIGGER);
+        // driverControlsChooser.addOption(DriverControlsOption.CHEESY_2STICK.name,  DriverControlsOption.CHEESY_2STICK);
+        // driverControlsChooser.addOption(DriverControlsOption.THRUSTMASTER_ARCADE.name,  DriverControlsOption.THRUSTMASTER_ARCADE);
+        // driverControlsChooser.addOption(DriverControlsOption.THRUSTMASTER_TANK.name,  DriverControlsOption.THRUSTMASTER_TANK);
+        // driverControlsChooser.addOption(DriverControlsOption.THRUSTMASTER_2STICK.name,  DriverControlsOption.THRUSTMASTER_2STICK);
+    	SmartDashboard.putData("Driver Controls", driverControlsChooser);
 
-        // automatically list all driver control schemes
-        driverControlsChooser = new SendableChooser<DriverControls.SchemeEnum>();
-        for (DriverControls.SchemeEnum scheme : DriverControls.SchemeEnum.values())
-        {
-            if (scheme == DriverControls.SchemeEnum.THRUSTMASTER) {
-                driverControlsChooser.setDefaultOption(scheme.name, scheme);
-            } else {
-                driverControlsChooser.addOption(scheme.name, scheme);
-            }
-        }
-        SmartDashboard.putData("Driver Scheme", driverControlsChooser);
 
 
         autoModeChooser = new SendableChooser<AutoModeOption>();
@@ -109,87 +96,42 @@ public class SmartDashboardInteractions
         
     
     
-    SendableChooser<JoystickOption> joystickModeChooser;
+    SendableChooser<DriverControlsOption> driverControlsChooser;
     
-    enum JoystickOption 
+    enum DriverControlsOption 
     {
-        ARCADE_DRIVE("Arcade Drive"),
-        REVERSIBLE_ARCADE_DRIVE("Reversible Arcade Drive"),
-        TRIGGER_DRIVE("Trigger Drive"),				// works for Xbox controller and Xbox steering wheel
-        TANK_DRIVE("Tank Drive"),
-        CHEESY_ARCADE_DRIVE("Cheesy Arcade Drive"),
-        CHEESY_TRIGGER_DRIVE("Cheesy Trigger Drive"),
-        CHEESY_2STICK_DRIVE("Cheesy Two-Stick Drive"),
-        THRUSTMASTER_REVERSIBLE_ARCADE_DRIVE("Thrustmaster Reversible Arcade Drive"),
-        THRUSTMASTER_ARCADE_DRIVE("Thrustmaster Arcade Drive"),
-        THRUSTMASTER_TANK_DRIVE("Thrustmaster Tank Drive"),
-        THRUSTMASTER_2STICK_DRIVE("Thrustmaster Two-Stick Drive");
+        XBOX_REVERSIBLE_ARCADE("Xbox Reversible Arcade"),
+        THRUSTMASTER_REVERSIBLE_ARCADE("Thrustmaster Reversible Arcade");
+        // ARCADE("Arcade"),
+        // TRIGGER("Trigger"),				// works for Xbox controller and Xbox steering wheel
+        // TANK("Tank"),
+        // CHEESY_ARCADE("Cheesy Arcade"),
+        // CHEESY_TRIGGER("Cheesy Trigger"),
+        // CHEESY_2STICK("Cheesy Two-Stick"),
+        // THRUSTMASTER_ARCADE("Thrustmaster Arcade"),
+        // THRUSTMASTER_TANK("Thrustmaster Tank"),
+        // THRUSTMASTER_2STICK("Thrustmaster Two-Stick");
 
     	public final String name;
     	
-        JoystickOption(String name) {
+        DriverControlsOption(String name) {
     		this.name= name;
     	}
     }
    
-    public JoystickControlsBase getJoystickControlsMode() 
+    public ReversibleDriverControlsBase getDriverControlsSelection() 
     {
-    	JoystickOption selMode = (JoystickOption)joystickModeChooser.getSelected(); 
+    	DriverControlsOption selection = (DriverControlsOption)driverControlsChooser.getSelected(); 
     
-    	switch (selMode)
+    	switch (selection)
     	{
-    	// case ARCADE_DRIVE:
-		// 	return ArcadeDriveJoystick.getInstance();
-        
-		//case REVERSIBLE_ARCADE_DRIVE:
-        //    return ReversibleArcadeDriveJoystick.getInstance();
+		case XBOX_REVERSIBLE_ARCADE:
+           return new DriverControlsReversibleXbox();
 
-        case THRUSTMASTER_REVERSIBLE_ARCADE_DRIVE:
-            return TmReversibleArcadeDriveJoystick.getInstance();
-    
-        // case THRUSTMASTER_ARCADE_DRIVE:
-        //     return TmArcadeJoystick.getInstance();
-    
-        // case THRUSTMASTER_TANK_DRIVE:
-        //     return TmTwoStickJoystick.getInstance();
-    
-        // case THRUSTMASTER_2STICK_DRIVE:
-        //     return TmTwoStickJoystick.getInstance();
-    
-    	// case TRIGGER_DRIVE:
-		// 	return TriggerDriveJoystick.getInstance();
-    	
-    	// case TANK_DRIVE:
-    	// 	return TankDriveJoystick.getInstance();
-
-    	// case CHEESY_ARCADE_DRIVE:
-    	// 	return CheesyArcadeDriveJoystick.getInstance();
-
-    	// case CHEESY_TRIGGER_DRIVE:
-    	// 	return CheesyTriggerDriveJoystick.getInstance();
-
-    	// case CHEESY_2STICK_DRIVE:
-    	// 	return CheesyTwoStickDriveJoystick.getInstance();
-    
-
-    	default:
-            System.out.println("ERROR: unexpected joystick selection: " + selMode);
-			return TmReversibleArcadeDriveJoystick.getInstance();
-        }
-    
-    }
-    
-    
-        
-    SendableChooser<DriverControls.SchemeEnum> driverControlsChooser;
-    
-          
-
-    public DriverControls.SchemeEnum getDriverControlsScheme() 
-    {
-    	DriverControls.SchemeEnum selMode = (DriverControls.SchemeEnum)driverControlsChooser.getSelected(); 
-    
-        return selMode;
+        case THRUSTMASTER_REVERSIBLE_ARCADE:
+        default:
+            return new DriverControlsReversibleThrustmaster(); 
+        }   
     }
     
     

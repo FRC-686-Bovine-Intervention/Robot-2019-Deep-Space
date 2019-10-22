@@ -1,30 +1,14 @@
 package frc.robot.lib.joystick;
 
 import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.lib.util.DataLogger;
 
-public class JoystickBase extends Joystick
+public abstract class JoystickBase extends Joystick
 {
     // constructor
     public JoystickBase(int _port)
     {
         super(_port);
-    }
-
-    public static class ThrottleTurn
-    {
-        public double throttle;
-        public double turn;
-    
-        public ThrottleTurn()
-		{
-            this(0.0, 0.0);
-        }
-        
-        public ThrottleTurn(double _throttle, double _turn)
-		{
-            throttle = _throttle;
-            turn = _turn;
-		}
     }
 
     public boolean getButton(int _button)
@@ -47,4 +31,8 @@ public class JoystickBase extends Joystick
         return getRawAxis(_axis);
     }
 
+    // public int getPOV() already exists in Joystick class
+
+
+    public abstract DataLogger getLogger();
 }

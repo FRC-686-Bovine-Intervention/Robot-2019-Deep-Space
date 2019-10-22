@@ -3,7 +3,7 @@ package frc.robot.vision;
 import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.lib.joystick.SelectedJoystick;
+import frc.robot.lib.joystick.SelectedDriverControlsReversible;
 import frc.robot.lib.sensors.Limelight;
 import frc.robot.lib.sensors.Limelight.BoundingAngles;
 import frc.robot.lib.sensors.Limelight.BoundingRectangle;
@@ -20,8 +20,6 @@ public class VisionLoop implements Loop {
 	public static VisionLoop getInstance() {
 		return instance;
 	}
-
-	SelectedJoystick selectedJoystick = SelectedJoystick.getInstance();
 
 	// camera selection
 	public Limelight cargoCamera = Limelight.getCargoInstance();
@@ -51,7 +49,7 @@ public class VisionLoop implements Loop {
 	}
 
 	public void getTargets(double currentTime) {
-		cameraSelection = selectedJoystick.getDrivingCargo() ? cargoCamera : hatchCamera;
+		cameraSelection = SelectedDriverControlsReversible.getInstance().getDrivingCargo() ? cargoCamera : hatchCamera;
 
 		double cameraLatency = cameraSelection.getTotalLatencyMs() / 1000.0;
 		double imageCaptureTimestamp = currentTime - cameraLatency; // assumes transport time from phone to this code is
@@ -99,19 +97,6 @@ public class VisionLoop implements Loop {
     
     public DataLogger getLogger() { return logger; }
 
-	/**
-	 * @return the selectedJoystick
-	 */
-	public SelectedJoystick getSelectedJoystick() {
-		return selectedJoystick;
-	}
-
-	/**
-	 * @param selectedJoystick the selectedJoystick to set
-	 */
-	public void setSelectedJoystick(SelectedJoystick selectedJoystick) {
-		this.selectedJoystick = selectedJoystick;
-	}
 
 	/**
 	 * @return the cargoCamera

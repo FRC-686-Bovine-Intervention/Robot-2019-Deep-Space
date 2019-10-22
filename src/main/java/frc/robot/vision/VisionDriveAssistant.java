@@ -8,7 +8,7 @@ import frc.robot.command_status.DriveCommand;
 import frc.robot.command_status.GoalStates;
 import frc.robot.command_status.GoalStates.GoalState;
 import frc.robot.command_status.RobotState;
-import frc.robot.lib.joystick.SelectedJoystick;
+import frc.robot.lib.joystick.SelectedDriverControlsReversible;
 import frc.robot.lib.util.DataLogger;
 import frc.robot.lib.util.Kinematics;
 import frc.robot.lib.util.Kinematics.WheelSpeed;
@@ -78,7 +78,7 @@ public class VisionDriveAssistant
         if (haveGoal)
         {
 			kTargetDistanceThresholdFromCenterInches = Constants.kHatchTargetDistanceThresholdFromCenterInches;
-			if (SelectedJoystick.getInstance().getDrivingCargo())
+			if (SelectedDriverControlsReversible.getInstance().getDrivingCargo())
 			{
 				kTargetDistanceThresholdFromCenterInches = Constants.kCargoTargetDistanceThresholdFromCenterInches;
 			}
