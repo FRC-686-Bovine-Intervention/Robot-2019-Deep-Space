@@ -6,7 +6,6 @@ import frc.robot.command_status.DriveCommand;
 import frc.robot.lib.joystick.SteeringLib.DeadbandNonLinearity;
 import frc.robot.lib.joystick.SteeringLib.NonLinearityEnum;
 import frc.robot.lib.util.DataLogger;
-import edu.wpi.first.wpilibj.Timer;
 
 
 public class DriverControlsMichael extends ReversibleDriverControlsBase
@@ -31,10 +30,9 @@ public class DriverControlsMichael extends ReversibleDriverControlsBase
     public static JoystickBase rStick;
     public static JoystickBase buttonBoard;
 
-    public double prevMatchTime = 0;
-    public int prevPOV = -1;
-    boolean povPressed = false;
-    boolean povDown = false;
+    public int prevLeftPOV = -1;
+    boolean leftPOVPressed = false;
+    boolean leftPOVDown = false;
 
     public static ReversibleSteeringBase steeringControls;
 
@@ -69,12 +67,12 @@ public class DriverControlsMichael extends ReversibleDriverControlsBase
 
     public boolean getBoolean( DriverControlsEnum _control ) 
     {
-        if (CheckForNewDS.getInstance().check())
+        if (_control == DriverControlsEnum.VISION_ASSIST)
         {
-            // update these only once per DS packet
-            prevPOV = lStick.getPOV();
-            povPressed =  (prevPOV == -1) && (lStick.getPOV() != prevPOV);
-            povDown = lStick.getPOV() >= 135 && lStick.getPOV() <= 225;
+            // once per tick, check if POV has changed
+            prevLeftPOV = lStick.getPOV();
+            leftPOVPressed =  (prevLeftPOV == -1) && (lStick.getPOV() != prevLeftPOV);
+            leftPOVDown = lStick.getPOV() >= 135 && lStick.getPOV() <= 225;
         }
  
         switch (_control)
@@ -82,9 +80,9 @@ public class DriverControlsMichael extends ReversibleDriverControlsBase
             case VISION_ASSIST:                 return lStick.getButton(Thrustmaster.kLeftThumbButton);
             case HATCH_DEPLOY:                  return rStick.getPOV() == 45 || rStick.getPOV() == 315 || rStick.getPOV() == 0;
             case HATCH_SHOOT:                   return rStick.getPOV() <= 225 && rStick.getPOV() >= 135;
-            case CARGO_INTAKE:                  return povPressed && povDown && CargoIntake.getInstance().getTarget() != CargoDeployPositionEnum.GROUND;
+            case CARGO_INTAKE:                  return leftPOVPressed && leftPOVDown && CargoIntake.getInstance().getTarget() != CargoDeployPositionEnum.GROUND;
             case CARGO_OUTTAKE:                 return lStick.getPOV() == 0;
-            case CARGO_INTAKE_DEPOT_HEIGHT:     return povPressed && povDown && CargoIntake.getInstance().getTarget() == CargoDeployPositionEnum.GROUND;
+            case CARGO_INTAKE_DEPOT_HEIGHT:     return leftPOVPressed && leftPOVDown && CargoIntake.getInstance().getTarget() == CargoDeployPositionEnum.GROUND;
             case CARGO_INTAKE_ROCKET_HEIGHT:    return lStick.getButton(Thrustmaster.kRightThumbButton);
             case CARGO_INTAKE_CARGO_HEIGHT:     return lStick.getButton(Thrustmaster.kBottomThumbButton);
             case DEFENSE:                       return rStick.getButton(Thrustmaster.kTriggerButton);
