@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.Timer;
  * Drive.java and DriveLoop.java implement the five differential-drive control modes in the DriveControlMode enumeration
  * 
  * OPEN_LOOP:    		Used in Teleop.  Joystick controls are mapped into left/right motor speeds, using
- *               		the getDriveCommand() functions in lib.jostick.  Motor controllers are placed in %Vbus mode.
+ *               		the getDriveCommand() functions in lib.joystick.  Motor controllers are placed in %Vbus mode.
  *                
  * BASE_LOCKED:  		The robot attempts to maintain it's current position.  
  *               		Motor controllers use a position PID loop, and brake mode is enabled.

@@ -35,7 +35,8 @@ public class SmartDashboardInteractions
     public void initWithDefaults() 
     {
     	driverControlsChooser = new SendableChooser<DriverControlsOption>();
-    	driverControlsChooser.addOption(DriverControlsOption.XBOX_REVERSIBLE_ARCADE.toString(),        DriverControlsOption.XBOX_REVERSIBLE_ARCADE);
+    	driverControlsChooser.addOption(DriverControlsOption.XBOX_REVERSIBLE_ARCADE.name,        DriverControlsOption.XBOX_REVERSIBLE_ARCADE);
+    	driverControlsChooser.addOption(DriverControlsOption.MICHAEL.name,        DriverControlsOption.MICHAEL);
         driverControlsChooser.setDefaultOption(DriverControlsOption.THRUSTMASTER_REVERSIBLE_ARCADE.name,  DriverControlsOption.THRUSTMASTER_REVERSIBLE_ARCADE);
     	// driverControlsChooser.addOption(DriverControlsOption.ARCADE.name,        DriverControlsOption.ARCADE);
 		// driverControlsChooser.addOption(DriverControlsOption.TRIGGER.name,        DriverControlsOption.TRIGGER);
@@ -101,7 +102,8 @@ public class SmartDashboardInteractions
     enum DriverControlsOption 
     {
         XBOX_REVERSIBLE_ARCADE("Xbox Reversible Arcade"),
-        THRUSTMASTER_REVERSIBLE_ARCADE("Thrustmaster Reversible Arcade");
+        THRUSTMASTER_REVERSIBLE_ARCADE("Thrustmaster Reversible Arcade"),
+        MICHAEL("Michael");
         // ARCADE("Arcade"),
         // TRIGGER("Trigger"),				// works for Xbox controller and Xbox steering wheel
         // TANK("Tank"),
@@ -131,7 +133,11 @@ public class SmartDashboardInteractions
         case THRUSTMASTER_REVERSIBLE_ARCADE:
         default:
             return new DriverControlsReversibleThrustmaster(); 
-        }   
+
+        case MICHAEL:
+            return new DriverControlsMichael();
+
+}   
     }
     
     

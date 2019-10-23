@@ -15,18 +15,18 @@ public class Thrustmaster extends JoystickBase
     public static int kRightThumbButton =   4;
 
     // counting from inner (or thumb) side
-    public static int kTop1Button =		    5;         
-    public static int kTop2Button =		    6;
-    public static int kTop3Button =		    7;
-    public static int kBottom3Button =		8;
-    public static int kBottom2Button =		9;
-    public static int kBottom1Button =		10;
-    public static int kTop6Button =		    11;
-    public static int kTop5Button =		    12;
-    public static int kTop4Button =		    13;
-    public static int kBottom4Button =		14;
-    public static int kBottom5Button =		15;
-    public static int kBottom6Button =      16;
+    public static int kTopButton1 =		    5;         
+    public static int kTopButton2 =		    6;
+    public static int kTopButton3 =		    7;
+    public static int kBottomButton3 =		8;
+    public static int kBottomButton2 =		9;
+    public static int kBottomButton1 =		10;
+    public static int kTopButton6 =		    11;
+    public static int kTopButton5 =		    12;
+    public static int kTopButton4 =		    13;
+    public static int kBottomButton4 =		14;
+    public static int kBottomButton5 =		15;
+    public static int kBottomButton6 =      16;
     
     public int port;
 

@@ -18,8 +18,8 @@ import frc.robot.command_status.DriveCommand;
 import frc.robot.command_status.DriveState;
 import frc.robot.command_status.GoalStates;
 import frc.robot.command_status.RobotState;
+import frc.robot.lib.joystick.CheckForNewDS;
 import frc.robot.lib.joystick.DriverControlsEnum;
-import frc.robot.lib.joystick.SelectedDriverControls;
 import frc.robot.lib.joystick.SelectedDriverControlsReversible;
 import frc.robot.lib.sensors.Limelight;
 import frc.robot.lib.util.CrashTracker;
@@ -62,6 +62,7 @@ public class Robot extends TimedRobot {
 	Hatch hatch;
 	
 	OperationalMode operationalMode = OperationalMode.getInstance();
+
 
 	final boolean PRACTICE_BOT = false;		// set to true when running on practice bot without Cargo Intake / Climber
 
@@ -407,7 +408,8 @@ public class Robot extends TimedRobot {
 	public void robotPeriodic()
 	{
 		loopController.run();		
-		robotLogger.log();
+        robotLogger.log();
+        frc.robot.lib.joystick.CheckForNewDS.getInstance().reset();
 	}
 
 
